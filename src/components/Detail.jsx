@@ -54,7 +54,8 @@ export function HeritageDetailModal({ item, onClose }) {
         };
     }, []);
 
-    const handlePlayAudio = async () => {
+const handlePlayAudio = () => {
+        // 1. Kiểm tra tên file
         if (!item.audioFile) {
             setAudioError(true);
             return;
@@ -62,50 +63,55 @@ export function HeritageDetailModal({ item, onClose }) {
 
         if (!audioRef.current) return;
 
-        // If audio is already loaded and ready
+        // 2. Xử lý Pause nếu đang Play
         if (audioRef.current.src && !audioRef.current.paused) {
             audioRef.current.pause();
             setIsPlaying(false);
             return;
         }
 
-        if (audioRef.current.src && audioRef.current.paused) {
+        // 3. Xử lý Play tiếp nếu đang Pause (mà đã có src rồi)
+        // Kiểm tra xem src hiện tại có khớp với file cần phát không
+        const currentSrcPath = audioRef.current.src.split('/').pop(); // Lấy tên file cuối
+        // Cần decodeURI vì trình duyệt có thể mã hóa tên file (ví dụ dấu cách thành %20)
+        const isSameFile = decodeURIComponent(currentSrcPath) === item.audioFile;
+
+        if (audioRef.current.src && audioRef.current.paused && isSameFile) {
             audioRef.current.play();
             setIsPlaying(true);
             return;
         }
 
-        // Load audio file
+        // 4. Load file mới (Logic chính đã sửa)
         setIsLoading(true);
         setAudioError(false);
 
-        try {
-            // Import the audio file dynamically
-            const audioModule = await import(`../audio/${item.audioFile}`);
-            audioRef.current.src = audioModule.default;
-
-            audioRef.current.onloadeddata = () => {
-                setIsLoading(false);
-                audioRef.current.play();
-                setIsPlaying(true);
-            };
-
-            audioRef.current.onended = () => {
-                setIsPlaying(false);
-            };
-
-            audioRef.current.onerror = () => {
-                setAudioError(true);
-                setIsPlaying(false);
-                setIsLoading(false);
-            };
-        } catch (error) {
-            // Production: consider using proper error logging
-            // Error loading audio
-            setAudioError(true);
+        // --- SỬA Ở ĐÂY: Trỏ thẳng vào thư mục public ---
+        // Giả định bạn đã move file vào folder public/audio
+        audioRef.current.src = item.audioFile;
+        
+        audioRef.current.onloadeddata = () => {
             setIsLoading(false);
-        }
-    };
+            audioRef.current.play()
+                .then(() => setIsPlaying(true))
+                .catch((err) => {
+                    console.error("Play error:", err);
+                    setAudioError(true);
+                    setIsLoading(false);
+                });
+        };
+
+        audioRef.current.onended = () => {
+            setIsPlaying(false);
+        };
+
+        audioRef.current.onerror = () => {
+            console.error("Audio load error. Check if file exists in /public/audio/");
+            setAudioError(true);
+            setIsPlaying(false);
+            setIsLoading(false);
+        };
+    };   
 
     const handleStopAudio = () => {
         if (audioRef.current) {

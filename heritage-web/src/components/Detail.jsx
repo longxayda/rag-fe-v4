@@ -55,36 +55,33 @@ export function HeritageDetailModal({ item, onClose }) {
     }, []);
 
     const handlePlayAudio = async () => {
+        console.log("ITEM", item)
         if (!item.audioFile) {
             setAudioError(true);
             return;
         }
+        console.log("AUDIO FILE", item.audioFile)
 
         if (!audioRef.current) return;
 
-        // If audio is already loaded and ready
-        if (audioRef.current.src && !audioRef.current.paused) {
+        // Nếu đang phát → pause
+        if (!audioRef.current.paused) {
             audioRef.current.pause();
             setIsPlaying(false);
             return;
         }
 
-        if (audioRef.current.src && audioRef.current.paused) {
-            audioRef.current.play();
-            setIsPlaying(true);
-            return;
-        }
 
-        // Load audio file
-        setIsLoading(true);
-        setAudioError(false);
 
         try {
-            // Import the audio file dynamically
-            const audioModule = await import(`../audio/${item.audioFile}`);
-            audioRef.current.src = audioModule.default;
+            setIsLoading(true);
+            setAudioError(false);
 
-            audioRef.current.onloadeddata = () => {
+            // GÁN TRỰC TIẾP URL TỪ API
+            audioRef.current.src = item.audioFile;
+            audioRef.current.load();
+
+            audioRef.current.oncanplaythrough = () => {
                 setIsLoading(false);
                 audioRef.current.play();
                 setIsPlaying(true);
@@ -96,12 +93,12 @@ export function HeritageDetailModal({ item, onClose }) {
 
             audioRef.current.onerror = () => {
                 setAudioError(true);
-                setIsPlaying(false);
                 setIsLoading(false);
+                setIsPlaying(false);
             };
-        } catch (error) {
-            // Production: consider using proper error logging
-            // Error loading audio
+
+        } catch (err) {
+            console.trace('error trace');
             setAudioError(true);
             setIsLoading(false);
         }
@@ -445,7 +442,7 @@ export function HeritageDetailModal({ item, onClose }) {
                 <div className="h-1 bg-gradient-to-r from-heritage-red-700 via-heritage-gold-500 to-heritage-red-700" />
             </div>
 
-            <audio ref={audioRef} className="hidden" />
+            <audio ref={audioRef} preload="none" className="hidden" />
         </div>
     );
 }
