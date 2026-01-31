@@ -163,16 +163,16 @@ export default function FloatingNavbar() {
           <div className="w-px h-6 bg-gray-200/50 dark:bg-gray-700/50 mx-1" />
 
           {/* Theme Toggle */}
-          <button
+          {/* <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
             aria-label={isDarkMode ? 'Light mode' : 'Dark mode'}
           >
             {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
+          </button> */}
 
           {/* Language Dropdown */}
-          <div ref={langRef} className="relative">
+          {/* <div ref={langRef} className="relative">
             <button
               onClick={() => setIsLangOpen(!isLangOpen)}
               className="flex items-center gap-1 px-2 py-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400"
@@ -197,7 +197,7 @@ export default function FloatingNavbar() {
                 ))}
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </nav>
 
@@ -307,7 +307,7 @@ export default function FloatingNavbar() {
                 </div>
 
                 {/* Theme Toggle */}
-                <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4">
+                {/* <div className="flex items-center justify-between bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4">
                   <div className="flex items-center gap-3">
                     {isDarkMode ? (
                       <Moon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
@@ -335,10 +335,10 @@ export default function FloatingNavbar() {
                       )}
                     </div>
                   </button>
-                </div>
+                </div> */}
 
                 {/* Language Selection */}
-                <div>
+                {/* <div>
                   <div className="flex items-center gap-2 mb-4">
                     <Globe className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -361,7 +361,7 @@ export default function FloatingNavbar() {
                       </button>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
                 {/* Bottom spacing */}
                 <div className="h-4"></div>

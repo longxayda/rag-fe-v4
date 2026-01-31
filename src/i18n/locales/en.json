@@ -105,6 +105,76 @@
       "statLocations": "Locations",
       "statFestivals": "Festivals"
     },
+    "welcome": {
+      "title": "Discover Ca Mau's Rich Heritage",
+      "subtitle": "Start your journey through history, culture, and traditions of Ca Mau province. Learn, explore, and connect with your roots.",
+      "highlight1": "Historic Sites",
+      "highlight2": "Cultural Traditions",
+      "highlight3": "Interactive Learning",
+      "highlight4": "Local Heritage",
+      "journeySteps": "4-Step Learning Journey"
+    },
+    "pathways": {
+      "badge": "Learning Paths",
+      "title": "Choose Your Learning Journey",
+      "subtitle": "Explore Ca Mau's heritage through curated learning paths designed for different interests and knowledge levels.",
+      "sites": "sites",
+      "achievement": "Achievement",
+      "explore": "Explore",
+      "bottomMessage": "Complete pathways to earn achievements and track your learning progress!",
+      "historical": {
+        "title": "Historical Sites",
+        "description": "Explore temples, monuments, and ancient structures that tell Ca Mau's story.",
+        "duration": "~8 hours"
+      },
+      "cultural": {
+        "title": "Cultural Traditions",
+        "description": "Discover festivals, customs, and performing arts unique to Ca Mau.",
+        "duration": "~6 hours"
+      },
+      "people": {
+        "title": "Notable Figures",
+        "description": "Learn about heroes, artists, and scholars who shaped Ca Mau's history.",
+        "duration": "~4 hours"
+      },
+      "natural": {
+        "title": "Natural Heritage",
+        "description": "Experience Ca Mau's landscapes, ecosystems, and traditional practices.",
+        "duration": "~5 hours"
+      }
+    },
+    "categories": {
+      "badge": "Heritage Types",
+      "title": "Explore Heritage Categories",
+      "subtitle": "Browse Ca Mau's diverse heritage collection organized by type and significance.",
+      "items": "items",
+      "explore": "Explore category",
+      "viewAll": "View All Heritage",
+      "architectural": {
+        "title": "Architectural Heritage",
+        "description": "Traditional buildings, temples, and historic structures."
+      },
+      "intangible": {
+        "title": "Intangible Cultural Heritage",
+        "description": "Festivals, performing arts, and cultural traditions."
+      },
+      "historical": {
+        "title": "Historical Sites",
+        "description": "Sites of national special significance and importance."
+      },
+      "crafts": {
+        "title": "Traditional Crafts",
+        "description": "Artisan skills and traditional manufacturing methods."
+      },
+      "natural": {
+        "title": "Natural Heritage",
+        "description": "Landscapes, ecosystems, and natural landmarks."
+      },
+      "people": {
+        "title": "Notable Figures",
+        "description": "Heroes, scholars, and cultural contributors."
+      }
+    },
     "featured": {
       "badge": "Featured Heritage",
       "title": "Explore Featured Heritage",

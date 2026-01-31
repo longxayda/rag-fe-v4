@@ -105,12 +105,50 @@
       "statLocations": "Địa điểm",
       "statFestivals": "Lễ hội"
     },
+    "welcome": {
+      "title": "Khám Phá Di Sản Cà Mau",
+      "subtitle": "Bắt đầu hành trình khám phá lịch sử, văn hóa và truyền thống của tỉnh Cà Mau. Học hỏi, khám phá và kết nối với cội nguồn của bạn.",
+      "highlight1": "Di Tích Lịch Sử",
+      "highlight2": "Truyền Thống Văn Hóa",
+      "highlight3": "Học Tập Tương Tác",
+      "highlight4": "Di Sản Địa Phương",
+      "journeySteps": "Hành Trình 4 Bước"
+    },
     "featured": {
       "badge": "Di sản nổi bật",
       "title": "Khám Phá Di Sản Tiêu Biểu",
       "subtitle": "Những di sản văn hóa được công nhận và bảo tồn qua nhiều thế hệ",
       "viewAll": "Xem tất cả di sản",
       "viewDetails": "Xem chi tiết"
+    },
+    "pathways": {
+      "badge": "Lộ Trình Học Tập",
+      "title": "Chọn Hành Trình Học Tập Của Bạn",
+      "subtitle": "Khám phá di sản Cà Mau thông qua các lộ trình học tập được thiết kế cho nhiều sở thích và trình độ khác nhau.",
+      "sites": "địa điểm",
+      "achievement": "Thành tích",
+      "explore": "Khám phá",
+      "bottomMessage": "Hoàn thành lộ trình để nhận thành tích và theo dõi tiến độ học tập!",
+      "historical": {
+        "title": "Di Tích Lịch Sử",
+        "description": "Khám phá đình, chùa, miếu và các công trình kiến trúc kể câu chuyện Cà Mau.",
+        "duration": "~8 giờ"
+      },
+      "cultural": {
+        "title": "Truyền Thống Văn Hóa",
+        "description": "Tìm hiểu lễ hội, tập quán và nghệ thuật biểu diễn độc đáo của Cà Mau.",
+        "duration": "~6 giờ"
+      },
+      "people": {
+        "title": "Danh Nhân",
+        "description": "Tìm hiểu về anh hùng, nghệ sĩ và học giả đã định hình lịch sử Cà Mau.",
+        "duration": "~4 giờ"
+      },
+      "natural": {
+        "title": "Di Sản Thiên Nhiên",
+        "description": "Trải nghiệm cảnh quan, hệ sinh thái và các hoạt động truyền thống.",
+        "duration": "~5 giờ"
+      }
     },
     "stats": {
       "title": "Di sản văn hóa tỉnh Cà Mau",
@@ -136,12 +174,47 @@
       "favorites": "Yêu Thích",
       "favoritesDesc": "Xem danh sách di sản yêu thích"
     },
+    "categories": {
+      "badge": "Phân Loại Di Sản",
+      "title": "Khám Phá Các Loại Di Sản",
+      "subtitle": "Duyệt qua bộ sưu tập di sản đa dạng của Cà Mau được tổ chức theo loại và tầm quan trọng.",
+      "items": "mục",
+      "explore": "Khám phá danh mục",
+      "viewAll": "Xem Tất Cả Di Sản",
+      "architectural": {
+        "title": "Di Sản Kiến Trúc",
+        "description": "Công trình truyền thống, đình chùa và các công trình lịch sử."
+      },
+      "intangible": {
+        "title": "Di Sản Văn Hóa Phi Vật Thể",
+        "description": "Lễ hội, nghệ thuật biểu diễn và truyền thống văn hóa."
+      },
+      "historical": {
+        "title": "Di Tích Lịch Sử",
+        "description": "Các di tích đặc biệt cấp quốc gia và có tầm quan trọng."
+      },
+      "crafts": {
+        "title": "Nghề Thủ Công Truyền Thống",
+        "description": "Kỹ năng nghệ nhân và phương pháp sản xuất truyền thống."
+      },
+      "natural": {
+        "title": "Di Sản Thiên Nhiên",
+        "description": "Cảnh quan, hệ sinh thái và danh lam thắng cảnh."
+      },
+      "people": {
+        "title": "Danh Nhân",
+        "description": "Anh hùng, học giả và những người đóng góp văn hóa."
+      }
+    },
     "cta": {
       "title1": "Cùng Bảo Tồn",
       "title2": "Di Sản Văn Hóa",
       "subtitle": "Đóng góp thông tin, hình ảnh và câu chuyện về di sản văn hóa địa phương để cùng nhau gìn giữ và phát huy giá trị văn hóa dân tộc",
       "contributeButton": "Đóng Góp Ngay",
-      "learnMore": "Tìm Hiểu Thêm"
+      "learnMore": "Tìm Hiểu Thêm",
+      "startJourney": "Bắt Đầu Hành Trình",
+      "exploreMap": "Khám Phá Bản Đồ",
+      "takeQuiz": "Làm Bài Kiểm Tra"
     }
   },
   "filter": {
