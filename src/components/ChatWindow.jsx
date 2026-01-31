@@ -1,8 +1,6 @@
 import { useStreamingChat } from "../hooks/streamingChat";
-// import { useStreamingChat } from "../hooks/streamingFakeChat";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslation } from 'react-i18next';
-
 import { Send, Loader2, MessageSquare, Sparkles, Landmark, ArrowDown } from 'lucide-react';
 import { MessageBubble } from "./MessageBubble";
 import { SuggestedQuestions } from "./SuggestedQuestions";

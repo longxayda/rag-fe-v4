@@ -178,7 +178,7 @@ export default function HeroSection() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-8 max-w-2xl mx-auto">
-          <StatItem value={85} label={t('home.hero.statHeritage')} delay={1.2} />
+          <StatItem value={78} label={t('home.hero.statHeritage')} delay={1.2} />
           <StatItem value={64} label={t('home.hero.statLocations')} delay={1.4} />
           <StatItem value={6} label={t('home.hero.statFestivals')} delay={1.6} />
         </div>

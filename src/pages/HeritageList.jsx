@@ -1,64 +1,22 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Search, Grid, List, MapPin, Landmark, X, Filter, Sparkles, LayoutGrid, Loader2 } from 'lucide-react';
+import { Search, Grid, List, MapPin, Landmark, X, RotateCcw, Calendar, Award, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import heritageApi from '../services/api';
-import { PEOPLE_DATA } from '../data/people';
-import { FESTIVAL_DATA } from '../data/festivals';
 
-import { HeritageCard } from '../components/HeritageCard';
-import { HeritageListItem } from '../components/HeritageItem';
-import { HeritageDetailModal } from '../components/Detail';
-import { BentoGrid, FilterPanel } from '../components/heritage';
-
-// Helper function to normalize API response to match old data structure
-function normalizeApiHeritage(item) {
-  return {
-    id: item.id,
-    name: item.name?.trim() ?? '',
-    address: item.address ?? '',
-    commune: item.commune ?? '',
-    district: item.district ?? '',
-    province: item.province ?? '',
-    yearRanked: item.year_ranked ?? null,
-    rankingType: item.ranking_type ?? 'Unknown',
-    yearBuilt: item.year_built ?? null,
-    information: item.information ?? '',
-    notes: item.notes ?? '',
-    audioFile: item.audio_url ?? null,
-    image: item.image_url ?? null
-  };
-}
-
-const extractCommuneFromAddress = (address) => {
-  if (!address) return '';
-  const match = address.match(/(xã|phường)\s+([^,]+)/i);
-  if (match) {
-    const type = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
-    const name = match[2].trim();
-    return `${type} ${name}`;
-  }
-  return '';
-};
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const getItemCommune = (item) => {
-  if (item.commune) return item.commune;
-  return extractCommuneFromAddress(item.address);
+  return item.commune || '';
 };
 
 export default function HeritageListPage() {
-  const { t, i18n } = useTranslation();
   const [filters, setFilters] = useState({
     ranking: '',
     type: '',
     commune: '',
-    sort: 'name-asc',
   });
-  const [viewMode, setViewMode] = useState('bento');
+  const [viewMode, setViewMode] = useState('grid');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
-  const [filterPanelOpen, setFilterPanelOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   
   // API state
   const [heritageData, setHeritageData] = useState([]);
@@ -66,18 +24,10 @@ export default function HeritageListPage() {
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 100, // Load more items at once
+    limit: 100,
     total: 0,
     totalPages: 0
   });
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   // Fetch heritage data from API
   useEffect(() => {
@@ -86,15 +36,20 @@ export default function HeritageListPage() {
         setLoading(true);
         setError(null);
         
-        const lang = i18n.language || 'vi';
-        const response = await heritageApi.getAll(lang, pagination.page, pagination.limit);
-        // Normalize API data to match old structure
-        const normalizedData = response.data.map(normalizeApiHeritage);
-        setHeritageData(normalizedData);
+        const response = await fetch(
+          `${API_BASE_URL}/heritages?page=${pagination.page}&limit=${pagination.limit}`
+        );
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch heritage data');
+        }
+        
+        const result = await response.json();
+        setHeritageData(result.data || []);
         setPagination(prev => ({
           ...prev,
-          total: response.pagination.total,
-          totalPages: response.pagination.totalPages
+          total: result.pagination.total,
+          totalPages: result.pagination.totalPages
         }));
       } catch (err) {
         console.error('Failed to fetch heritage data:', err);
@@ -105,70 +60,35 @@ export default function HeritageListPage() {
     };
 
     fetchHeritageData();
-  }, [i18n.language, pagination.page, pagination.limit]);
-
-  const allData = useMemo(() => [
-    ...heritageData.map(item => ({ ...item, dataType: 'heritage' })),
-    ...PEOPLE_DATA.map(item => ({ ...item, dataType: 'people' })),
-    ...FESTIVAL_DATA.map(item => ({ ...item, dataType: 'festival' }))
-  ], [heritageData]);
-
-  // Helper function to categorize heritage items based on their notes field
-  const categorizeHeritageType = (notes) => {
-    if (!notes) return 'heritage';
-
-    const notesLower = notes.toLowerCase();
-
-    if (notesLower.includes('di tích')) return 'historical-site';
-    if (notesLower.includes('ẩm thực') || notesLower.includes('cuisine')) return 'cuisine';
-    if (notesLower.includes('âm nhạc') || notesLower.includes('music')) return 'music';
-    if (notesLower.includes('mỹ thuật') || notesLower.includes('fine arts')) return 'fine-arts';
-    if (notesLower.includes('văn học') || notesLower.includes('literature')) return 'literature';
-    if (notesLower.includes('địa lý') || notesLower.includes('geography')) return 'geography';
-
-    return 'heritage';
-  };
+  }, [pagination.page, pagination.limit]);
 
   const filteredData = useMemo(() => {
-    return allData.filter(item => {
-      // Filter by ranking type
-      const matchesRanking = !filters.ranking || item.rankingType === filters.ranking;
-
-      // Filter by type category
-      let matchesType = true;
-      if (filters.type) {
-        if (item.dataType === 'heritage') {
-          const itemCategory = categorizeHeritageType(item.notes);
-          matchesType = itemCategory === filters.type || filters.type === 'heritage';
-        } else {
-          matchesType = false;
-        }
-      }
-
-      // Filter by commune
+    return heritageData.filter(item => {
+      const matchesRanking = !filters.ranking || item.ranking_type === filters.ranking;
       const itemCommune = getItemCommune(item);
-      const matchesCommune = !filters.commune ||
-        itemCommune.toLowerCase() === filters.commune.toLowerCase() ||
-        itemCommune.toLowerCase().includes(filters.commune.toLowerCase());
-
-      // Filter by search query
+      const matchesCommune = !filters.commune || itemCommune.toLowerCase().includes(filters.commune.toLowerCase());
       const matchesSearch = !searchQuery ||
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        (item.information && item.information.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      return matchesRanking && matchesType && matchesCommune && matchesSearch;
+      return matchesRanking && matchesCommune && matchesSearch;
     });
-  }, [allData, filters, searchQuery]);
+  }, [heritageData, filters, searchQuery]);
 
   const availableCommunes = useMemo(() => {
     const communesWithData = new Set(
-      allData
-        .map(item => getItemCommune(item))
-        .filter(Boolean)
+      heritageData.map(item => getItemCommune(item)).filter(Boolean)
     );
     return Array.from(communesWithData).sort((a, b) => a.localeCompare(b, 'vi'));
-  }, [allData]);
+  }, [heritageData]);
+
+  const availableRankings = useMemo(() => {
+    const rankings = new Set(
+      heritageData.map(item => item.ranking_type).filter(Boolean)
+    );
+    return Array.from(rankings).sort();
+  }, [heritageData]);
 
   const handleItemClick = (item) => {
     setSelectedItem(item);
@@ -183,44 +103,35 @@ export default function HeritageListPage() {
       ranking: '',
       type: '',
       commune: '',
-      sort: 'name-asc',
     });
     setSearchQuery('');
   };
 
-  const hasActiveFilters = filters.ranking || filters.commune || filters.type || searchQuery;
-
-  // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-heritage-red-700 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-gray-400">
-            {t('heritage.loading') || 'Đang tải dữ liệu di sản...'}
-          </p>
+          <Loader2 className="w-12 h-12 text-[#FF4A52] animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 font-medium">Đang tải dữ liệu di sản...</p>
         </div>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-6 glass rounded-2xl">
-          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-            <X className="w-8 h-8 text-red-600 dark:text-red-400" />
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <div className="text-center max-w-md mx-auto p-8 bg-white rounded-2xl shadow-lg">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X className="w-8 h-8 text-red-600" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
-            {t('heritage.error') || 'Lỗi tải dữ liệu'}
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
+          <h3 className="text-xl font-semibold text-gray-800 mb-2">Lỗi Tải Dữ Liệu</h3>
+          <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="px-5 py-2.5 bg-heritage-red-700 text-white rounded-lg font-medium hover:bg-heritage-red-800 transition-colors"
+            className="px-6 py-3 bg-[#FF4A52] text-white rounded-lg font-medium hover:bg-[#e63e46] transition-colors"
           >
-            {t('heritage.retry') || 'Thử lại'}
+            Thử Lại
           </button>
         </div>
       </div>
@@ -228,235 +139,105 @@ export default function HeritageListPage() {
   }
 
   return (
-    <div className="min-h-screen theme-transition">
-      <div className="flex">
-        {/* Filter Panel - Desktop Sidebar */}
-        {!isMobile && (
-          <div className="w-80 flex-shrink-0 p-4">
-            <FilterPanel
-              isOpen={true}
-              filters={filters}
-              onFilterChange={handleFilterChange}
-              onReset={clearFilters}
-              communes={availableCommunes}
-            />
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Page Header with Breadcrumb */}
+      <div className="bg-white border-b border-gray-200 py-10 mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Di Sản Văn Hóa</h1>
+          <div className="flex items-center gap-2 text-sm text-gray-500">
+            <span className="hover:text-[#FF4A52] transition-colors cursor-pointer">Trang Chủ</span>
+            <span>/</span>
+            <span className="text-gray-900 font-medium">Di Sản Văn Hóa</span>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Filter Panel - Mobile Drawer */}
-        {isMobile && (
-          <FilterPanel
-            isOpen={filterPanelOpen}
-            onClose={() => setFilterPanelOpen(false)}
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onReset={clearFilters}
-            communes={availableCommunes}
-          />
-        )}
-
-        {/* Main Content */}
-        <div className="flex-1 p-4 sm:p-6 lg:p-8">
-          <div className="max-w-7xl mx-auto">
-            {/* Hero Section */}
-            <div className="relative glass rounded-2xl p-6 sm:p-8 lg:p-10 mb-8 overflow-hidden shadow-lg border border-heritage-gold-200/30 dark:border-gray-700">
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-heritage-red-800/10 via-heritage-gold-500/10 to-heritage-red-800/10 dark:from-gray-800/50 dark:via-gray-700/50 dark:to-gray-800/50" />
-
-              {/* Decorative pattern overlay */}
-              <div className="absolute inset-0 opacity-5">
-                <div className="absolute inset-0 bg-lotus-pattern" />
-              </div>
-
-              {/* Gold accent lines */}
-              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-heritage-gold-400 via-heritage-gold-300 to-heritage-gold-400" />
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-heritage-gold-400 via-heritage-gold-300 to-heritage-gold-400" />
-
-              <div className="relative z-10">
-                {/* Title */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-heritage-gold-500 flex items-center justify-center shadow-gold">
-                        <Landmark className="w-7 h-7 sm:w-8 sm:h-8 text-heritage-red-800" />
-                      </div>
-                      <div className="absolute -inset-2 rounded-full border-2 border-heritage-gold-400/50" />
-                    </div>
-                    <div>
-                      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-display font-bold text-heritage-red-800 dark:text-heritage-red-400 drop-shadow-sm">
-                        {t('heritage.title')}
-                      </h1>
-                      <p className="text-heritage-earth-600 dark:text-gray-400 text-sm mt-1">
-                        {t('heritage.subtitle')}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Mobile Filter Button */}
-                  {isMobile && (
-                    <button
-                      onClick={() => setFilterPanelOpen(true)}
-                      className="p-3 rounded-xl bg-heritage-red-700 text-white shadow-md hover:bg-heritage-red-800 transition-colors flex items-center gap-2"
-                    >
-                      <Filter className="w-5 h-5" />
-                      {hasActiveFilters && (
-                        <span className="w-2 h-2 bg-heritage-gold-400 rounded-full animate-pulse" />
-                      )}
-                    </button>
-                  )}
-                </div>
-
-                {/* Search Bar and Controls */}
-                <div className="flex flex-col sm:flex-row gap-3 mb-4">
-                  <div className="relative flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* Sidebar Filter Panel */}
+          <aside className="w-full lg:w-80 flex-shrink-0">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
+              <h3 className="text-lg font-bold text-gray-800 mb-6">Bộ Lọc Kết Quả</h3>
+              
+              <div className="space-y-6">
+                {/* Search Input */}
+                <div>
+                  <div className="relative">
                     <input
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={t('heritage.searchPlaceholder')}
-                      className="w-full px-5 py-3.5 pl-12 rounded-xl text-gray-900 dark:text-gray-100 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-heritage-gold-400 shadow-md placeholder-gray-400 dark:placeholder-gray-500 border border-heritage-gold-200 dark:border-gray-600"
+                      placeholder="Tìm kiếm từ khóa"
+                      className="w-full pl-4 pr-10 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#FF4A52] focus:border-[#FF4A52] outline-none transition-all"
                     />
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-heritage-earth-400" />
-                    {searchQuery && (
-                      <button
-                        onClick={() => setSearchQuery('')}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-heritage-earth-100 dark:hover:bg-gray-700 rounded-full transition-colors"
-                      >
-                        <X className="w-4 h-4 text-heritage-earth-500 dark:text-gray-400" />
-                      </button>
-                    )}
-                  </div>
-
-                  {/* View Mode Toggle */}
-                  <div className="flex gap-2 glass rounded-xl p-1 border border-heritage-gold-200/30 dark:border-gray-700">
-                    <button
-                      onClick={() => setViewMode('bento')}
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                        viewMode === 'bento'
-                          ? 'bg-heritage-red-700 text-white shadow-sm'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50'
-                      }`}
-                      title="Bento Grid View"
-                    >
-                      <LayoutGrid className="w-4 h-4" />
-                      <span className="hidden sm:inline">Bento</span>
-                    </button>
-                    <button
-                      onClick={() => setViewMode('grid')}
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                        viewMode === 'grid'
-                          ? 'bg-heritage-red-700 text-white shadow-sm'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50'
-                      }`}
-                      title="Grid View"
-                    >
-                      <Grid className="w-4 h-4" />
-                      <span className="hidden sm:inline">Grid</span>
-                    </button>
-                    <button
-                      onClick={() => setViewMode('list')}
-                      className={`px-4 py-2.5 rounded-lg font-medium transition-all flex items-center gap-2 ${
-                        viewMode === 'list'
-                          ? 'bg-heritage-red-700 text-white shadow-sm'
-                          : 'text-gray-600 dark:text-gray-300 hover:bg-white/50 dark:hover:bg-gray-700/50'
-                      }`}
-                      title="List View"
-                    >
-                      <List className="w-4 h-4" />
-                      <span className="hidden sm:inline">List</span>
-                    </button>
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   </div>
                 </div>
 
-                {/* Active Filters Display */}
-                <AnimatePresence>
-                  {hasActiveFilters && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="flex flex-wrap gap-2 pt-4 border-t border-heritage-gold-200/30 dark:border-gray-700"
-                    >
-                      <span className="text-sm text-gray-600 dark:text-gray-400 font-medium flex items-center gap-1">
-                        <Filter className="w-4 h-4" />
-                        {t('heritage.activeFilters')}:
-                      </span>
-                      {filters.ranking && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0 }}
-                          className="px-3 py-1.5 bg-heritage-gold-100 dark:bg-heritage-gold-900/50 text-heritage-gold-800 dark:text-heritage-gold-200 rounded-full text-sm font-medium flex items-center gap-1.5 border border-heritage-gold-200 dark:border-heritage-gold-700"
-                        >
-                          🏛️ {filters.ranking}
-                          <button onClick={() => handleFilterChange('ranking', '')} className="hover:bg-heritage-gold-200 dark:hover:bg-heritage-gold-800 rounded-full p-0.5 transition-colors">
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </motion.span>
-                      )}
-                      {filters.commune && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0 }}
-                          className="px-3 py-1.5 bg-heritage-red-100 dark:bg-heritage-red-900/50 text-heritage-red-800 dark:text-heritage-red-200 rounded-full text-sm font-medium flex items-center gap-1.5 border border-heritage-red-200 dark:border-heritage-red-700"
-                        >
-                          <MapPin className="w-3.5 h-3.5" />
-                          {filters.commune}
-                          <button onClick={() => handleFilterChange('commune', '')} className="hover:bg-heritage-red-200 dark:hover:bg-heritage-red-800 rounded-full p-0.5 transition-colors">
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </motion.span>
-                      )}
-                      {searchQuery && (
-                        <motion.span
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          exit={{ scale: 0 }}
-                          className="px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium flex items-center gap-1.5 border border-gray-200 dark:border-gray-600"
-                        >
-                          🔍 "{searchQuery}"
-                          <button onClick={() => setSearchQuery('')} className="hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full p-0.5 transition-colors">
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </motion.span>
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                {/* Commune Dropdown */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Địa Điểm</label>
+                  <select 
+                    value={filters.commune}
+                    onChange={(e) => handleFilterChange('commune', e.target.value)}
+                    className="w-full p-3 rounded-lg border border-gray-200 bg-white text-gray-600 outline-none focus:ring-2 focus:ring-[#FF4A52] focus:border-[#FF4A52] transition-all"
+                  >
+                    <option value="">Chọn xã/phường</option>
+                    {availableCommunes.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
 
-              {/* Decorative sparkle */}
-              <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
-                <Sparkles className="w-5 h-5 text-heritage-gold-400 animate-pulse" />
+                {/* Ranking Type Dropdown */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Cấp Di Sản</label>
+                  <select 
+                    value={filters.ranking}
+                    onChange={(e) => handleFilterChange('ranking', e.target.value)}
+                    className="w-full p-3 rounded-lg border border-gray-200 bg-white text-gray-600 outline-none focus:ring-2 focus:ring-[#FF4A52] focus:border-[#FF4A52] transition-all"
+                  >
+                    <option value="">Tất cả cấp</option>
+                    {availableRankings.map(r => <option key={r} value={r}>{r}</option>)}
+                  </select>
+                </div>
+
+                {/* Reset Button */}
+                <button
+                  onClick={clearFilters}
+                  className="w-full py-4 bg-[#FF4A52] hover:bg-[#e63e46] text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-red-200"
+                >
+                  <RotateCcw className="w-5 h-5" />
+                  Đặt Lại Bộ Lọc
+                </button>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Results Area */}
+          <main className="flex-1">
+            {/* Sort & View Controls */}
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
+              <p className="text-gray-600 font-medium">
+                Hiển thị <span className="text-[#FF4A52] font-bold">{filteredData.length}</span> kết quả
+              </p>
+              
+              <div className="flex items-center gap-4 bg-white p-1.5 rounded-lg border border-gray-200">
+                <button 
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded-md transition-colors ${viewMode === 'grid' ? 'bg-red-50 text-[#FF4A52]' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  <Grid className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded-md transition-colors ${viewMode === 'list' ? 'bg-red-50 text-[#FF4A52]' : 'text-gray-400 hover:text-gray-600'}`}
+                >
+                  <List className="w-5 h-5" />
+                </button>
               </div>
             </div>
 
-            {/* Stats Bar */}
-            <div className="glass rounded-xl shadow-sm border border-heritage-gold-200/30 dark:border-gray-700 p-4 mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 sm:gap-6">
-                  <div className="text-center px-3 sm:px-4 py-2 bg-heritage-red-50 dark:bg-heritage-red-900/30 rounded-lg border border-heritage-red-100 dark:border-heritage-red-800">
-                    <div className="text-xl sm:text-2xl font-bold text-heritage-red-700 dark:text-heritage-red-400">{filteredData.length}</div>
-                    <div className="text-xs text-heritage-red-600 dark:text-heritage-red-300 font-medium">{t('heritage.results')}</div>
-                  </div>
-                  <div className="text-center px-3 sm:px-4 py-2 bg-heritage-gold-50 dark:bg-heritage-gold-900/30 rounded-lg border border-heritage-gold-100 dark:border-heritage-gold-800">
-                    <div className="text-xl sm:text-2xl font-bold text-heritage-gold-700 dark:text-heritage-gold-400">{availableCommunes.length}</div>
-                    <div className="text-xs text-heritage-gold-600 dark:text-heritage-gold-300 font-medium">{t('heritage.communes')}</div>
-                  </div>
-                  <div className="hidden sm:block text-center px-4 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-100 dark:border-gray-600">
-                    <div className="text-2xl font-bold text-gray-700 dark:text-gray-200">{pagination.total}</div>
-                    <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">{t('heritage.totalHeritage')}</div>
-                  </div>
-                </div>
-                <div className="hidden sm:flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-                  <Landmark className="w-4 h-4 text-heritage-gold-500" />
-                  <span>{viewMode === 'bento' ? 'Bento Grid' : viewMode === 'grid' ? 'Grid View' : 'List View'}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Heritage Grid/List/Bento */}
+            {/* Results Grid */}
             <AnimatePresence mode="wait">
               <motion.div
                 key={viewMode}
@@ -464,74 +245,209 @@ export default function HeritageListPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-8"
               >
-                {viewMode === 'bento' ? (
-                  <BentoGrid items={filteredData} onClick={handleItemClick} />
-                ) : viewMode === 'grid' ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredData.map(item => (
-                      <HeritageCard
-                        key={`${item.dataType}-${item.id}`}
-                        item={item}
-                        onClick={handleItemClick}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {filteredData.map(item => (
-                      <HeritageListItem
-                        key={`${item.dataType}-${item.id}`}
-                        item={item}
-                        onClick={handleItemClick}
-                      />
-                    ))}
-                  </div>
-                )}
+                {filteredData.map(item => (
+                  <motion.div
+                    layout
+                    key={item.id}
+                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all duration-300 cursor-pointer"
+                    onClick={() => handleItemClick(item)}
+                  >
+                    {/* Image Container with Badge */}
+                    <div className="relative h-64 overflow-hidden bg-gray-200">
+                      {item.image_url ? (
+                        <img 
+                          src={item.image_url} 
+                          alt={item.name}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          onError={(e) => {
+                            e.target.src = 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=800&q=80';
+                          }}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                          <Landmark className="w-16 h-16 text-gray-400" />
+                        </div>
+                      )}
+                      <div className="absolute top-4 left-4 bg-[#1EC6B6] text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-md">
+                        {item.ranking_type}
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-[#FF4A52] transition-colors line-clamp-2">
+                        {item.name}
+                      </h3>
+                      <div className="flex items-center gap-1 text-gray-500 text-sm mb-4">
+                        <MapPin className="w-4 h-4 text-[#FF4A52]" />
+                        <span className="line-clamp-1">{item.commune}, {item.district}</span>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        {/* <div className="flex items-center gap-1">
+                          <div className="flex text-yellow-400">
+                            {[...Array(5)].map((_, i) => (
+                              <span key={i} className="text-sm">★</span>
+                            ))}
+                          </div>
+                          <span className="text-xs text-gray-400 ml-1">(20 đánh giá)</span>
+                        </div> */}
+                        <div className="flex items-center gap-1 text-gray-500 text-sm">
+                          <Calendar className="w-4 h-4" />
+                          <span>{item.year_ranked || 'N/A'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
             </AnimatePresence>
-
-            {selectedItem && (
-              <HeritageDetailModal
-                item={selectedItem}
-                onClose={() => setSelectedItem(null)}
-              />
-            )}
 
             {/* Empty State */}
             {filteredData.length === 0 && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center py-16 glass rounded-2xl shadow-sm border border-heritage-gold-200/30 dark:border-gray-700"
+                className="text-center py-20 bg-white rounded-2xl border-2 border-dashed border-gray-200"
               >
-                <div className="relative inline-block mb-6">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-heritage-red-100 to-heritage-gold-100 dark:from-gray-700 dark:to-gray-600 flex items-center justify-center">
-                    <Search className="w-10 h-10 text-heritage-red-600 dark:text-heritage-red-400" />
-                  </div>
-                  <div className="absolute -inset-2 rounded-full border-2 border-heritage-gold-300 dark:border-heritage-gold-600 opacity-50" />
-                </div>
-
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
-                  {t('heritage.noResults')}
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md mx-auto">
-                  {filters.commune
-                    ? t('heritage.noDataFor', { commune: filters.commune })
-                    : t('heritage.tryDifferent')}
-                </p>
+                <Search className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-gray-800 mb-2">Không tìm thấy kết quả</h3>
+                <p className="text-gray-500 mb-6">Hãy thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
                 <button
                   onClick={clearFilters}
-                  className="px-5 py-2.5 bg-heritage-red-700 text-white rounded-lg font-medium hover:bg-heritage-red-800 transition-colors shadow-sm inline-flex items-center gap-2"
+                  className="px-6 py-3 bg-[#FF4A52] text-white rounded-lg font-medium hover:bg-[#e63e46] transition-colors"
                 >
-                  <X className="w-4 h-4" />
-                  {t('heritage.resetFilters')}
+                  Xóa Tất Cả Bộ Lọc
                 </button>
               </motion.div>
             )}
-          </div>
+          </main>
         </div>
       </div>
+
+      {/* Detail Modal */}
+      <AnimatePresence>
+        {selectedItem && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setSelectedItem(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="relative h-80 bg-gray-200">
+                {selectedItem.image_url ? (
+                  <img 
+                    src={selectedItem.image_url} 
+                    alt={selectedItem.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1589308078059-be1415eab4c3?w=800&q=80';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                    <Landmark className="w-24 h-24 text-gray-400" />
+                  </div>
+                )}
+                <button
+                  onClick={() => setSelectedItem(null)}
+                  className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-700" />
+                </button>
+                <div className="absolute bottom-4 left-4">
+                  <div className="bg-[#1EC6B6] text-white px-4 py-1.5 rounded-full font-bold text-sm shadow-md inline-flex items-center gap-2">
+                    <Award className="w-4 h-4" />
+                    {selectedItem.ranking_type}
+                  </div>
+                </div>
+              </div>
+
+              {/* Modal Content */}
+              <div className="p-8">
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">{selectedItem.name}</h2>
+                
+                <div className="flex flex-wrap items-center gap-4 mb-6">
+                  <div className="flex items-center gap-2 text-gray-600">
+                    <MapPin className="w-5 h-5 text-[#FF4A52]" />
+                    <span>{selectedItem.address}</span>
+                  </div>
+                  {selectedItem.year_ranked && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Calendar className="w-5 h-5 text-[#FF4A52]" />
+                      <span>Xếp hạng năm {selectedItem.year_ranked}</span>
+                    </div>
+                  )}
+                  {selectedItem.year_built && (
+                    <div className="flex items-center gap-2 text-gray-600">
+                      <Landmark className="w-5 h-5 text-[#FF4A52]" />
+                      <span>Xây dựng năm {selectedItem.year_built}</span>
+                    </div>
+                  )}
+                </div>
+
+                {selectedItem.information && (
+                  <div className="prose max-w-none mb-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">Thông Tin</h3>
+                    <p className="text-gray-700 leading-relaxed">
+                      {selectedItem.information}
+                    </p>
+                  </div>
+                )}
+
+                {selectedItem.audio_url && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">Hướng Dẫn Âm Thanh</h3>
+                    <audio controls className="w-full">
+                      <source src={selectedItem.audio_url} type="audio/wav" />
+                      Trình duyệt của bạn không hỗ trợ phát âm thanh.
+                    </audio>
+                  </div>
+                )}
+
+                <div className="pt-6 border-t border-gray-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Chi Tiết Địa Điểm</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {selectedItem.commune && (
+                      <div>
+                        <p className="text-sm text-gray-500 mb-1">Xã/Phường</p>
+                        <p className="font-medium text-gray-900">{selectedItem.commune}</p>
+                      </div>
+                    )}
+                    {selectedItem.district && (
+                      <div>
+                        <p className="text-sm text-gray-500 mb-1">Quận/Huyện</p>
+                        <p className="font-medium text-gray-900">{selectedItem.district}</p>
+                      </div>
+                    )}
+                    {selectedItem.province && (
+                      <div>
+                        <p className="text-sm text-gray-500 mb-1">Tỉnh/Thành phố</p>
+                        <p className="font-medium text-gray-900">{selectedItem.province}</p>
+                      </div>
+                    )}
+                    <div>
+                      <p className="text-sm text-gray-500 mb-1">Cấp Di Sản</p>
+                      <p className="font-medium text-gray-900">{selectedItem.ranking_type}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
