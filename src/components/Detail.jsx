@@ -1,46 +1,49 @@
 import { useState, useRef, useEffect } from 'react';
-import { X, MapPin, Calendar, Info, Volume2, Pause, Play, Loader, Landmark, Award, Star, Sparkles, Video } from 'lucide-react';
+import { X, MapPin, Calendar, Info, Volume2, Pause, Play, Loader, Landmark, Award, Star, Sparkles, Video, Image as ImageIcon } from 'lucide-react';
+import { heritageApi } from '../services/api';
 
-export function HeritageDetailModal({ item, onClose }) {
+export function HeritageDetailModal({ itemId, initialItem, onClose, language = 'vi' }) {
+    const [item, setItem] = useState(initialItem);
+    const [loading, setLoading] = useState(!initialItem);
     const [isPlaying, setIsPlaying] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingAudio, setIsLoadingAudio] = useState(false);
     const [audioError, setAudioError] = useState(false);
     const audioRef = useRef(null);
 
-    // Parse information field to separate text and images
-    const parseInformation = (info) => {
-        if (!info) return { sections: [] };
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                setLoading(true);
 
-        // Use a non-capturing group for the file extension
-        const urlRegex = /https?:\/\/[^\s]+\.(?:jpg|jpeg|png|gif|webp|JPG|JPEG|PNG|GIF|WEBP)/gi;
-        const sections = [];
-        let lastIndex = 0;
-        let match;
+                // Nếu có initialItem thì hiển thị trước (cho nhanh)
+                if (initialItem) {
+                    setItem(initialItem);
+                }
 
-        // Find all image URLs
-        while ((match = urlRegex.exec(info)) !== null) {
-            // Add text before the image URL
-            const textBefore = info.substring(lastIndex, match.index).trim();
-            if (textBefore) {
-                sections.push({ type: 'text', content: textBefore });
+                // Luôn fetch bản full từ API chi tiết
+                if (itemId) {
+                    const data = await heritageApi.getById(itemId, language);
+                    console.log("FULL DATA:", data);
+                    setItem(data); // ghi đè lại bằng bản đầy đủ
+                }
+
+            } catch (error) {
+                console.error('Error fetching heritage details:', error);
+            } finally {
+                setLoading(false);
             }
+        };
 
-            // Add the image URL
-            sections.push({ type: 'image', content: match[0] });
+        fetchDetails();
+    }, [itemId, language, initialItem]);
 
-            lastIndex = match.index + match[0].length;
-        }
-
-        // Add any remaining text after the last image
-        const remainingText = info.substring(lastIndex).trim();
-        if (remainingText) {
-            sections.push({ type: 'text', content: remainingText });
-        }
-
-        return { sections };
+    // Helper to extract YouTube video ID
+    const getYouTubeVideoId = (url) => {
+        if (!url) return null;
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+        const match = url.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
     };
-
-    const informationData = parseInformation(item.information);
 
     useEffect(() => {
         // Prevent body scroll when modal is open
@@ -54,50 +57,42 @@ export function HeritageDetailModal({ item, onClose }) {
         };
     }, []);
 
-const handlePlayAudio = () => {
-        // 1. Kiểm tra tên file
-        if (!item.audioFile) {
+    const handlePlayAudio = () => {
+        if (!item?.audio_url) {
             setAudioError(true);
             return;
         }
 
         if (!audioRef.current) return;
 
-        // 2. Xử lý Pause nếu đang Play
+        // Pause if playing
         if (audioRef.current.src && !audioRef.current.paused) {
             audioRef.current.pause();
             setIsPlaying(false);
             return;
         }
 
-        // 3. Xử lý Play tiếp nếu đang Pause (mà đã có src rồi)
-        // Kiểm tra xem src hiện tại có khớp với file cần phát không
-        const currentSrcPath = audioRef.current.src.split('/').pop(); // Lấy tên file cuối
-        // Cần decodeURI vì trình duyệt có thể mã hóa tên file (ví dụ dấu cách thành %20)
-        const isSameFile = decodeURIComponent(currentSrcPath) === item.audioFile;
-
-        if (audioRef.current.src && audioRef.current.paused && isSameFile) {
+        // Resume if paused
+        if (audioRef.current.src && audioRef.current.paused) {
             audioRef.current.play();
             setIsPlaying(true);
             return;
         }
 
-        // 4. Load file mới (Logic chính đã sửa)
-        setIsLoading(true);
+        // Load new audio
+        setIsLoadingAudio(true);
         setAudioError(false);
 
-        // --- SỬA Ở ĐÂY: Trỏ thẳng vào thư mục public ---
-        // Giả định bạn đã move file vào folder public/audio
-        audioRef.current.src = item.audioFile;
-        
+        audioRef.current.src = item.audio_url;
+
         audioRef.current.onloadeddata = () => {
-            setIsLoading(false);
+            setIsLoadingAudio(false);
             audioRef.current.play()
                 .then(() => setIsPlaying(true))
                 .catch((err) => {
                     console.error("Play error:", err);
                     setAudioError(true);
-                    setIsLoading(false);
+                    setIsLoadingAudio(false);
                 });
         };
 
@@ -106,12 +101,12 @@ const handlePlayAudio = () => {
         };
 
         audioRef.current.onerror = () => {
-            console.error("Audio load error. Check if file exists in /public/audio/");
+            console.error("Audio load error");
             setAudioError(true);
             setIsPlaying(false);
-            setIsLoading(false);
+            setIsLoadingAudio(false);
         };
-    };   
+    };
 
     const handleStopAudio = () => {
         if (audioRef.current) {
@@ -122,39 +117,53 @@ const handlePlayAudio = () => {
     };
 
     const getRankingStyle = (rankingType) => {
-        switch (rankingType?.toLowerCase()) {
-            case 'quốc gia đặc biệt':
-                return {
-                    badge: 'bg-heritage-red-100 text-heritage-red-800 border-heritage-red-300',
-                    gradient: 'from-heritage-red-700 via-heritage-red-600 to-heritage-red-700',
-                    icon: <Star className="w-4 h-4" />,
-                };
-            case 'quốc gia':
-                return {
-                    badge: 'bg-heritage-gold-100 text-heritage-gold-800 border-heritage-gold-300',
-                    gradient: 'from-heritage-gold-600 via-heritage-gold-500 to-heritage-gold-600',
-                    icon: <Award className="w-4 h-4" />,
-                };
-            case 'cấp tỉnh':
-                return {
-                    badge: 'bg-heritage-jade-100 text-heritage-jade-800 border-heritage-jade-300',
-                    gradient: 'from-heritage-jade-600 via-heritage-jade-500 to-heritage-jade-600',
-                    icon: <Landmark className="w-4 h-4" />,
-                };
-            default:
-                return {
-                    badge: 'bg-heritage-earth-100 text-heritage-earth-700 border-heritage-earth-300',
-                    gradient: 'from-heritage-earth-500 to-heritage-earth-600',
-                    icon: <Landmark className="w-4 h-4" />,
-                };
+        const type = rankingType?.toLowerCase() || '';
+        if (type.includes('đặc biệt')) {
+            return {
+                badge: 'bg-heritage-red-100 text-heritage-red-800 border-heritage-red-300',
+                gradient: 'from-heritage-red-700 via-heritage-red-600 to-heritage-red-700',
+                icon: <Star className="w-4 h-4" />,
+            };
         }
+        if (type.includes('quốc gia')) {
+            return {
+                badge: 'bg-heritage-gold-100 text-heritage-gold-800 border-heritage-gold-300',
+                gradient: 'from-heritage-gold-600 via-heritage-gold-500 to-heritage-gold-600',
+                icon: <Award className="w-4 h-4" />,
+            };
+        }
+        if (type.includes('tỉnh')) {
+            return {
+                badge: 'bg-heritage-jade-100 text-heritage-jade-800 border-heritage-jade-300',
+                gradient: 'from-heritage-jade-600 via-heritage-jade-500 to-heritage-jade-600',
+                icon: <Landmark className="w-4 h-4" />,
+            };
+        }
+        return {
+            badge: 'bg-heritage-earth-100 text-heritage-earth-700 border-heritage-earth-300',
+            gradient: 'from-heritage-earth-500 to-heritage-earth-600',
+            icon: <Landmark className="w-4 h-4" />,
+        };
     };
 
-    const style = getRankingStyle(item.rankingType);
+    if (loading) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heritage-earth-950/70 backdrop-blur-sm">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 flex items-center gap-4">
+                    <Loader className="w-6 h-6 animate-spin text-heritage-gold-600" />
+                    <span className="text-heritage-earth-900 dark:text-gray-100">Đang tải...</span>
+                </div>
+            </div>
+        );
+    }
 
+    if (!item) return null;
+
+    const style = getRankingStyle(item.ranking_type);
+    console.log("HERITAGE DETAIL ITEM:", item);
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heritage-earth-950/70 backdrop-blur-sm animate-fade-in">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-elegant-lg max-w-3xl w-full max-h-[90vh] overflow-hidden animate-scale-in border border-heritage-earth-200 dark:border-gray-700">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-elegant-lg max-w-4xl w-full max-h-[90vh] overflow-hidden animate-scale-in border border-heritage-earth-200 dark:border-gray-700">
                 {/* Decorative top border */}
                 <div className="h-1.5 bg-gradient-to-r from-heritage-red-700 via-heritage-gold-500 to-heritage-red-700" />
 
@@ -169,15 +178,14 @@ const handlePlayAudio = () => {
 
                     {/* Hero Image */}
                     <div className="relative h-72 overflow-hidden">
-                        {item.image ? (
+                        {item.image_url ? (
                             <img
-                                src={item.image}
+                                src={item.image_url}
                                 alt={item.name}
                                 className="w-full h-full object-cover"
                             />
                         ) : (
                             <div className={`bg-gradient-to-br ${style.gradient} h-full flex items-center justify-center relative overflow-hidden`}>
-                                {/* Pattern overlay */}
                                 <div className="absolute inset-0 opacity-10">
                                     <div className="absolute inset-0 bg-lotus-pattern" />
                                 </div>
@@ -189,10 +197,7 @@ const handlePlayAudio = () => {
                                 </div>
                             </div>
                         )}
-                        {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-gradient-to-t from-heritage-earth-950/80 via-heritage-earth-950/30 to-transparent" />
-
-                        {/* Gold accent line */}
                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-heritage-gold-400 via-heritage-gold-300 to-heritage-gold-400" />
                     </div>
 
@@ -201,26 +206,26 @@ const handlePlayAudio = () => {
                         <div className="mb-3">
                             <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${style.badge}`}>
                                 {style.icon}
-                                {item.rankingType}
+                                {item.ranking_type}
                             </span>
                         </div>
                         <h2 className="text-2xl sm:text-3xl font-display font-bold mb-3 drop-shadow-lg">{item.name}</h2>
                         <div className="flex items-center gap-3 text-sm flex-wrap">
-                            {item.yearBuilt && (
+                            {item.year_built && (
                                 <div className="flex items-center gap-1.5 bg-heritage-earth-900/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
                                     <Calendar className="w-4 h-4 text-heritage-gold-400" />
-                                    <span>Xây dựng: {item.yearBuilt}</span>
+                                    <span>Xây dựng: {item.year_built}</span>
                                 </div>
                             )}
-                            {item.yearRanked && (
+                            {item.year_ranked && (
                                 <div className="flex items-center gap-1.5 bg-heritage-earth-900/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
                                     <Award className="w-4 h-4 text-heritage-gold-400" />
-                                    <span>Xếp hạng: {item.yearRanked}</span>
+                                    <span>Xếp hạng: {item.year_ranked}</span>
                                 </div>
                             )}
                             <div className="flex items-center gap-1.5 bg-heritage-earth-900/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
                                 <MapPin className="w-4 h-4 text-heritage-gold-400" />
-                                <span>{item.address.split(',').slice(-2).join(',').trim()}</span>
+                                <span>{item.address}</span>
                             </div>
                         </div>
                     </div>
@@ -228,37 +233,9 @@ const handlePlayAudio = () => {
 
                 {/* Content */}
                 <div className="p-6 sm:p-8 overflow-y-auto max-h-[calc(90vh-320px)] scrollbar-heritage bg-white dark:bg-gray-800">
-                    {/* YouTube Video */}
-                    {item.youtubeUrl && (
-                        <div className="mb-6 rounded-xl overflow-hidden border-2 border-heritage-red-200 dark:border-gray-600">
-                            <div className="bg-gradient-to-r from-heritage-red-50 to-heritage-gold-50 dark:from-gray-700 dark:to-gray-700 p-4 border-b border-heritage-red-200 dark:border-gray-600">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-heritage-red-600 flex items-center justify-center shadow-lg">
-                                        <Video className="w-5 h-5 text-white" />
-                                    </div>
-                                    <div>
-                                        <span className="font-display font-semibold text-heritage-earth-900 dark:text-gray-100">Video giới thiệu</span>
-                                        <p className="text-xs text-heritage-earth-500 dark:text-gray-400">Tìm hiểu thêm qua video</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="relative pb-[56.25%] h-0">
-                                <iframe
-                                    src={item.youtubeUrl.replace('watch?v=', 'embed/')}
-                                    className="absolute top-0 left-0 w-full h-full"
-                                    frameBorder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    title={`Video giới thiệu ${item.name}`}
-                                />
-                            </div>
-                        </div>
-                    )}
-
                     {/* Audio Control */}
-                    {item.audioFile && (
+                    {item.audio_url && (
                         <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-heritage-gold-50 to-heritage-cream-100 dark:from-gray-700 dark:to-gray-700 border-2 border-heritage-gold-200 dark:border-gray-600 relative overflow-hidden">
-                            {/* Decorative accent */}
                             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-heritage-red-600 via-heritage-gold-500 to-heritage-red-600" />
 
                             <div className="flex items-center justify-between mb-4">
@@ -290,15 +267,15 @@ const handlePlayAudio = () => {
                             <div className="flex gap-3">
                                 <button
                                     onClick={handlePlayAudio}
-                                    disabled={isLoading}
-                                    className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${isLoading
+                                    disabled={isLoadingAudio}
+                                    className={`flex-1 px-6 py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${isLoadingAudio
                                         ? 'bg-heritage-earth-200 cursor-not-allowed text-heritage-earth-500'
                                         : isPlaying
                                             ? 'bg-gradient-to-r from-heritage-gold-500 to-heritage-gold-600 text-white shadow-gold'
                                             : 'bg-gradient-to-r from-heritage-red-700 to-heritage-red-800 text-white shadow-heritage'
                                         }`}
                                 >
-                                    {isLoading ? (
+                                    {isLoadingAudio ? (
                                         <>
                                             <Loader className="w-5 h-5 animate-spin" />
                                             Đang tải...
@@ -335,97 +312,152 @@ const handlePlayAudio = () => {
                         </div>
                     )}
 
-                    {/* Information Sections */}
-                    <div className="space-y-6">
-                        {/* Description with Text and Images */}
-                        {informationData.sections.length > 0 && (
-                            <div>
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="w-10 h-10 rounded-lg bg-heritage-red-100 dark:bg-heritage-red-900/30 flex items-center justify-center border border-heritage-red-200 dark:border-heritage-red-700">
-                                        <Info className="w-5 h-5 text-heritage-red-700 dark:text-heritage-red-400" />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-                                            Thông tin chi tiết
-                                        </h3>
-                                        <p className="text-xs text-heritage-earth-500 dark:text-gray-400">Lịch sử và giá trị văn hóa</p>
-                                    </div>
+                    {/* YouTube Videos */}
+                    {item.youtube_links && item.youtube_links.length > 0 && (
+                        <div className="mb-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-lg bg-heritage-red-100 dark:bg-heritage-red-900/30 flex items-center justify-center border border-heritage-red-200 dark:border-heritage-red-700">
+                                    <Video className="w-5 h-5 text-heritage-red-700 dark:text-heritage-red-400" />
                                 </div>
-
-                                {/* Ornamental divider */}
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-heritage-gold-400 dark:via-heritage-gold-600 to-transparent" />
-                                    <Sparkles className="w-4 h-4 text-heritage-gold-500 dark:text-heritage-gold-400" />
-                                    <div className="flex-1 h-px bg-gradient-to-r from-transparent via-heritage-gold-400 dark:via-heritage-gold-600 to-transparent" />
+                                <div>
+                                    <h3 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100">
+                                        Video giới thiệu ({item.youtube_links.length})
+                                    </h3>
+                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">Tìm hiểu thêm qua video</p>
                                 </div>
+                            </div>
 
-                                <div className="space-y-4">
-                                    {informationData.sections.map((section, index) => (
-                                        <div key={index}>
-                                            {section.type === 'text' ? (
-                                                <p className="text-heritage-earth-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                                                    {section.content}
-                                                </p>
-                                            ) : (
-                                                <div className="rounded-xl overflow-hidden shadow-elegant my-4 border border-heritage-earth-200 dark:border-gray-600">
-                                                    <img
-                                                        src={section.content}
-                                                        alt={`${item.name} - Hình ${index + 1}`}
-                                                        className="w-full h-auto object-cover"
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                        }}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {item.youtube_links.map((video) => {
+                                    const videoId = getYouTubeVideoId(video.url);
+                                    return (
+                                        <div key={video.id} className="rounded-xl overflow-hidden border-2 border-heritage-red-200 dark:border-gray-600">
+                                            {videoId ? (
+                                                <div className="relative pb-[56.25%] h-0">
+                                                    <iframe
+                                                        src={`https://www.youtube.com/embed/${videoId}`}
+                                                        className="absolute top-0 left-0 w-full h-full"
+                                                        frameBorder="0"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowFullScreen
+                                                        title={`Video ${video.order}`}
                                                     />
                                                 </div>
+                                            ) : (
+                                                <a
+                                                    href={video.url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center justify-center h-32 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                                                >
+                                                    <Video className="w-8 h-8 text-gray-400 mr-2" />
+                                                    <span className="text-gray-600 dark:text-gray-300">Xem video</span>
+                                                </a>
                                             )}
                                         </div>
-                                    ))}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Gallery */}
+                    {item.gallery && item.gallery.length > 0 && (
+                        <div className="mb-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-lg bg-heritage-jade-100 dark:bg-heritage-jade-900/30 flex items-center justify-center border border-heritage-jade-200 dark:border-heritage-jade-700">
+                                    <ImageIcon className="w-5 h-5 text-heritage-jade-700 dark:text-heritage-jade-400" />
                                 </div>
+                                <div>
+                                    <h3 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100">
+                                        Thư viện ảnh ({item.gallery.length})
+                                    </h3>
+                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">Hình ảnh chi tiết</p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {item.gallery.map((img) => (
+                                    <div key={img.id} className="relative group overflow-hidden rounded-lg border-2 border-heritage-earth-200 dark:border-gray-600">
+                                        <img
+                                            src={img.url}
+                                            alt={`Gallery ${img.order}`}
+                                            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-110"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Information */}
+                    {item.information && (
+                        <div className="mb-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-lg bg-heritage-red-100 dark:bg-heritage-red-900/30 flex items-center justify-center border border-heritage-red-200 dark:border-heritage-red-700">
+                                    <Info className="w-5 h-5 text-heritage-red-700 dark:text-heritage-red-400" />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100">
+                                        Thông tin chi tiết
+                                    </h3>
+                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">Lịch sử và giá trị văn hóa</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-heritage-gold-400 dark:via-heritage-gold-600 to-transparent" />
+                                <Sparkles className="w-4 h-4 text-heritage-gold-500 dark:text-heritage-gold-400" />
+                                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-heritage-gold-400 dark:via-heritage-gold-600 to-transparent" />
+                            </div>
+
+                            <p className="text-heritage-earth-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                                {item.information}
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Details Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {item.commune && (
+                            <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
+                                <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
+                                    <MapPin className="w-4 h-4 text-heritage-gold-500" />
+                                    <span>Xã/Phường</span>
+                                </div>
+                                <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.commune}</div>
                             </div>
                         )}
 
-                        {/* Details Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {item.rankingType && (
-                                <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
-                                    <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
-                                        <Award className="w-4 h-4 text-heritage-gold-500" />
-                                        <span>Loại xếp hạng</span>
-                                    </div>
-                                    <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.rankingType}</div>
+                        {item.district && (
+                            <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
+                                <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
+                                    <MapPin className="w-4 h-4 text-heritage-gold-500" />
+                                    <span>Quận/Huyện</span>
                                 </div>
-                            )}
+                                <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.district}</div>
+                            </div>
+                        )}
 
-                            {item.address && (
-                                <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
-                                    <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
-                                        <MapPin className="w-4 h-4 text-heritage-red-600 dark:text-heritage-red-400" />
-                                        <span>Địa chỉ đầy đủ</span>
-                                    </div>
-                                    <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.address}</div>
+                        {item.province && (
+                            <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
+                                <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
+                                    <MapPin className="w-4 h-4 text-heritage-red-600 dark:text-heritage-red-400" />
+                                    <span>Tỉnh/Thành phố</span>
                                 </div>
-                            )}
+                                <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.province}</div>
+                            </div>
+                        )}
 
-                            {item.yearBuilt && (
-                                <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
-                                    <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
-                                        <Calendar className="w-4 h-4 text-heritage-gold-600 dark:text-heritage-gold-400" />
-                                        <span>Năm xây dựng</span>
-                                    </div>
-                                    <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.yearBuilt}</div>
+                        {item.ranking_type && (
+                            <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
+                                <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
+                                    <Award className="w-4 h-4 text-heritage-gold-500" />
+                                    <span>Loại xếp hạng</span>
                                 </div>
-                            )}
-
-                            {item.yearRanked && (
-                                <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
-                                    <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
-                                        <Award className="w-4 h-4 text-heritage-jade-600 dark:text-heritage-jade-400" />
-                                        <span>Năm xếp hạng</span>
-                                    </div>
-                                    <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.yearRanked}</div>
-                                </div>
-                            )}
-                        </div>
+                                <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.ranking_type}</div>
+                            </div>
+                        )}
                     </div>
                 </div>
 
