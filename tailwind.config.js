@@ -37,12 +37,20 @@ export default {
             200: '#E2E8F0',
             500: '#64748B',
             800: '#334155',
+          },
+          cream: {
+            50: '#FFFBF5',   // nền cực nhạt, hợp background section
+            100: '#FEF3E2',
+            200: '#FDE6C7',
+            300: '#FBD5A5',
+            400: '#F8C27F',
+            500: '#F2A65A',
           }
         }
       },
       fontFamily: {
         // Tiêu đề sang trọng kiểu tạp chí du lịch
-        display: ['Cormorant Garamond', 'serif'], 
+        display: ['Cormorant Garamond', 'serif'],
         // Nội dung cực kỳ dễ đọc, chuẩn modern UI
         body: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
       },
