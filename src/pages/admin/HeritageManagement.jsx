@@ -3,7 +3,8 @@ import { useTranslation } from 'react-i18next';
 import {
   Landmark, Plus, Search, Edit2, Trash2, X, Save,
   ChevronLeft, ChevronRight, AlertCircle, CheckCircle,
-  BarChart3, FileText, Eye, Loader2, Upload
+  BarChart3, FileText, Eye, Loader2, Upload, Image as ImageIcon,
+  Video, Trash, Link as LinkIcon
 } from 'lucide-react';
 import AnalyticsDashboard from '../../components/admin/AnalyticsDashboard';
 import { heritageApi } from '../../services/api';
@@ -42,6 +43,13 @@ export default function HeritageManagement() {
   const [activeTab, setActiveTab] = useState('list');
   const [audioFile, setAudioFile] = useState(null);
   const [audioPreview, setAudioPreview] = useState(null);
+  
+  // NEW: Gallery and YouTube states
+  const [galleryFiles, setGalleryFiles] = useState([]);
+  const [galleryPreviews, setGalleryPreviews] = useState([]);
+  const [youtubeLinks, setYoutubeLinks] = useState(['']);
+  const [existingGallery, setExistingGallery] = useState([]); // For edit mode
+  const [keepMediaIds, setKeepMediaIds] = useState([]); // IDs to keep during update
 
   const itemsPerPage = 10;
 
@@ -50,11 +58,18 @@ export default function HeritageManagement() {
     setLoading(true);
     try {
       const result = await heritageApi.adminGetAll(page, itemsPerPage);
-      setHeritages(result.data || []);
-      setPagination(result.pagination || { total: 0, totalPages: 1 });
+      // Backend returns { success: true, data: [...], pagination: {...} }
+      if (result.success && result.data) {
+        setHeritages(result.data);
+        setPagination(result.pagination || { total: 0, totalPages: 1 });
+      } else {
+        setHeritages([]);
+        setPagination({ total: 0, totalPages: 1 });
+      }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       showNotification('Lỗi khi tải dữ liệu: ' + error.message, 'error');
+      setHeritages([]);
     } finally {
       setLoading(false);
     }
@@ -96,42 +111,109 @@ export default function HeritageManagement() {
     setAudioFile(null);
     setAudioPreview(null);
     setImagePreview(null);
+    
+    // NEW: Reset gallery and YouTube
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
+    setYoutubeLinks(['']);
+    setExistingGallery([]);
+    setKeepMediaIds([]);
+    
     setIsCreating(true);
     setIsEditing(false);
   };
 
   // Handle edit
-  const handleEdit = (heritage) => {
-    setFormData({
-      id: heritage.id,
-      name: heritage.name || '',
-      address: heritage.address || '',
-      commune: heritage.commune || '',
-      district: heritage.district || '',
-      province: heritage.province || '',
-      year_ranked: heritage.year_ranked || '',
-      ranking_type: heritage.ranking_type || 'Cấp tỉnh',
-      year_built: heritage.year_built || '',
-      information: heritage.information || '',
-      notes: heritage.notes || '',
-      input_lang: heritage.original_lang || 'vi',
-    });
-    setImagePreview(heritage.image_url ? `${STATIC_URL}${heritage.image_url}` : null);
-    setImageFile(null);
-    setAudioPreview(
-      heritage.audio_url ? `${STATIC_URL}${heritage.audio_url}` : null
-    );
-    setAudioFile(null);
-    setSelectedHeritage(heritage);
-    setIsEditing(true);
-    setIsCreating(false);
+  const handleEdit = async (heritage) => {
+    setLoading(true);
+    try {
+      // Fetch full heritage details with gallery and youtube_links
+      const result = await heritageApi.adminGetById(heritage.id);
+      const fullHeritage = result.success ? result.data : heritage;
+      
+      setFormData({
+        id: fullHeritage.id,
+        name: fullHeritage.name || '',
+        address: fullHeritage.address || '',
+        commune: fullHeritage.commune || '',
+        district: fullHeritage.district || '',
+        province: fullHeritage.province || '',
+        year_ranked: fullHeritage.year_ranked || '',
+        ranking_type: fullHeritage.ranking_type || 'Cấp tỉnh',
+        year_built: fullHeritage.year_built || '',
+        information: fullHeritage.information || '',
+        notes: fullHeritage.notes || '',
+        input_lang: fullHeritage.original_lang || 'vi',
+      });
+      
+      // Backend returns full URLs, use them directly
+      setImagePreview(fullHeritage.image_url || null);
+      setImageFile(null);
+      setAudioPreview(fullHeritage.audio_url || null);
+      setAudioFile(null);
+      
+      // NEW: Set existing gallery and YouTube links
+      setExistingGallery(fullHeritage.gallery || []);
+      setKeepMediaIds((fullHeritage.gallery || []).map(img => img.id));
+      setGalleryFiles([]);
+      setGalleryPreviews([]);
+      setYoutubeLinks(
+        fullHeritage.youtube_links && fullHeritage.youtube_links.length > 0
+          ? fullHeritage.youtube_links.map(link => link.url)
+          : ['']
+      );
+      
+      setSelectedHeritage(fullHeritage);
+      setIsEditing(true);
+      setIsCreating(false);
+    } catch (error) {
+      showNotification('Lỗi khi tải chi tiết: ' + error.message, 'error');
+      // Fallback to basic data if API call fails
+      setFormData({
+        id: heritage.id,
+        name: heritage.name || '',
+        address: heritage.address || '',
+        commune: heritage.commune || '',
+        district: heritage.district || '',
+        province: heritage.province || '',
+        year_ranked: heritage.year_ranked || '',
+        ranking_type: heritage.ranking_type || 'Cấp tỉnh',
+        year_built: heritage.year_built || '',
+        information: heritage.information || '',
+        notes: heritage.notes || '',
+        input_lang: heritage.original_lang || 'vi',
+      });
+      setImagePreview(heritage.image_url || null);
+      setAudioPreview(heritage.audio_url || null);
+      setExistingGallery([]);
+      setYoutubeLinks(['']);
+      setSelectedHeritage(heritage);
+      setIsEditing(true);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle view
-  const handleView = (heritage) => {
-    setSelectedHeritage(heritage);
-    setIsEditing(false);
-    setIsCreating(false);
+  const handleView = async (heritage) => {
+    setLoading(true);
+    try {
+      // Fetch full details with gallery and youtube_links
+      const result = await heritageApi.adminGetById(heritage.id);
+      const fullHeritage = result.success ? result.data : heritage;
+      
+      setSelectedHeritage(fullHeritage);
+      setIsEditing(false);
+      setIsCreating(false);
+    } catch (error) {
+      showNotification('Lỗi khi tải chi tiết: ' + error.message, 'error');
+      // Fallback to basic data
+      setSelectedHeritage(heritage);
+      setIsEditing(false);
+      setIsCreating(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle image change
@@ -151,6 +233,53 @@ export default function HeritageManagement() {
     }
   };
 
+  // NEW: Handle gallery images change
+  const handleGalleryChange = (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length > 0) {
+      setGalleryFiles(prev => [...prev, ...files]);
+      
+      // Create previews
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setGalleryPreviews(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  // NEW: Remove gallery preview (new upload)
+  const removeGalleryPreview = (index) => {
+    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+    setGalleryPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // NEW: Toggle existing gallery image (for update)
+  const toggleExistingGallery = (imageId) => {
+    setKeepMediaIds(prev => {
+      if (prev.includes(imageId)) {
+        return prev.filter(id => id !== imageId);
+      } else {
+        return [...prev, imageId];
+      }
+    });
+  };
+
+  // NEW: Add YouTube link field
+  const addYoutubeLink = () => {
+    setYoutubeLinks(prev => [...prev, '']);
+  };
+
+  // NEW: Remove YouTube link field
+  const removeYoutubeLink = (index) => {
+    setYoutubeLinks(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // NEW: Update YouTube link value
+  const updateYoutubeLink = (index, value) => {
+    setYoutubeLinks(prev => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
+  };
 
   // Handle save
   const handleSave = async () => {
@@ -174,23 +303,45 @@ export default function HeritageManagement() {
       data.append('notes', formData.notes || '');
       data.append('input_lang', formData.input_lang || 'vi');
 
+      // Main image
       if (imageFile) {
         data.append('image', imageFile);
       }
 
+      // Audio
       if (audioFile) {
-        data.append('audio', audioFile); // 👈 backend field name must match
+        data.append('audio', audioFile);
       }
 
+      // NEW: Gallery images (multiple files with same key name)
+      galleryFiles.forEach(file => {
+        data.append('gallery', file);
+      });
 
+      // NEW: YouTube links (as JSON string)
+      const validYoutubeLinks = youtubeLinks.filter(link => link.trim() !== '');
+      if (validYoutubeLinks.length > 0) {
+        data.append('youtube_links', JSON.stringify(validYoutubeLinks));
+      }
+
+      // NEW: For update - send keep_media_ids
+      if (isEditing) {
+        data.append('keep_media_ids', JSON.stringify(keepMediaIds));
+      }
+
+      let result;
       if (isCreating) {
-        await heritageApi.create(data);
-        showNotification('Đã thêm di sản mới! Đang dịch và tạo audio...', 'success');
+        result = await heritageApi.create(data);
+        showNotification(
+          result.message || 'Đã thêm di sản mới! Đang dịch và tạo audio...', 
+          'success'
+        );
       } else {
-        await heritageApi.update(formData.id, data);
-        showNotification('Đã cập nhật di sản!', 'success');
-        console.log(formData)
-        console.log(data)
+        result = await heritageApi.update(formData.id, data);
+        showNotification(
+          result.message || 'Đã cập nhật di sản!', 
+          'success'
+        );
       }
 
       setIsCreating(false);
@@ -210,8 +361,11 @@ export default function HeritageManagement() {
 
     setLoading(true);
     try {
-      await heritageApi.delete(heritage.id);
-      showNotification('Đã xóa di sản thành công!', 'success');
+      const result = await heritageApi.delete(heritage.id);
+      showNotification(
+        result.message || 'Đã xóa di sản thành công!', 
+        'success'
+      );
       setSelectedHeritage(null);
       setIsEditing(false);
       fetchHeritages(currentPage);
@@ -232,7 +386,21 @@ export default function HeritageManagement() {
     setImagePreview(null);
     setAudioFile(null);
     setAudioPreview(null);
+    
+    // NEW: Reset gallery and YouTube
+    setGalleryFiles([]);
+    setGalleryPreviews([]);
+    setYoutubeLinks(['']);
+    setExistingGallery([]);
+    setKeepMediaIds([]);
+  };
 
+  // NEW: Extract YouTube video ID for embedding
+  const getYouTubeVideoId = (url) => {
+    if (!url) return null;
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
   };
 
   return (
@@ -253,15 +421,17 @@ export default function HeritageManagement() {
             <div className="flex gap-2">
               <button
                 onClick={() => setActiveTab('list')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${activeTab === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
-                  }`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                  activeTab === 'list' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
+                }`}
               >
                 <FileText className="w-4 h-4" /> Danh Sách
               </button>
               <button
                 onClick={() => setActiveTab('analytics')}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${activeTab === 'analytics' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
-                  }`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                  activeTab === 'analytics' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300'
+                }`}
               >
                 <BarChart3 className="w-4 h-4" /> Phân Tích
               </button>
@@ -289,8 +459,9 @@ export default function HeritageManagement() {
 
         {/* Notification */}
         {notification && (
-          <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg flex items-center gap-3 ${notification.type === 'success' ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-800 border border-red-300'
-            }`}>
+          <div className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg flex items-center gap-3 ${
+            notification.type === 'success' ? 'bg-green-100 text-green-800 border border-green-300' : 'bg-red-100 text-red-800 border border-red-300'
+          }`}>
             {notification.type === 'success' ? <CheckCircle className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
             <span>{notification.message}</span>
           </div>
@@ -334,6 +505,7 @@ export default function HeritageManagement() {
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tên Di Sản</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Địa Chỉ</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Xếp Hạng</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Media</th>
                             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Thao Tác</th>
                           </tr>
                         </thead>
@@ -351,13 +523,30 @@ export default function HeritageManagement() {
                                 {heritage.address?.substring(0, 50)}...
                               </td>
                               <td className="px-6 py-4">
-                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${heritage.ranking_type?.includes('đặc biệt') ? 'bg-red-100 text-red-800' :
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                  heritage.ranking_type?.includes('đặc biệt') ? 'bg-red-100 text-red-800' :
                                   heritage.ranking_type?.includes('Quốc gia') ? 'bg-yellow-100 text-yellow-800' :
-                                    heritage.ranking_type?.includes('tỉnh') ? 'bg-green-100 text-green-800' :
-                                      'bg-gray-100 text-gray-800'
-                                  }`}>
+                                  heritage.ranking_type?.includes('tỉnh') ? 'bg-green-100 text-green-800' :
+                                  'bg-gray-100 text-gray-800'
+                                }`}>
                                   {heritage.ranking_type || 'Chưa xếp hạng'}
                                 </span>
+                              </td>
+                              <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                                <div className="flex items-center gap-3">
+                                  {heritage.media_count?.images > 0 && (
+                                    <span className="flex items-center gap-1 text-blue-600">
+                                      <ImageIcon className="w-4 h-4" />
+                                      {heritage.media_count.images}
+                                    </span>
+                                  )}
+                                  {heritage.media_count?.videos > 0 && (
+                                    <span className="flex items-center gap-1 text-red-600">
+                                      <Video className="w-4 h-4" />
+                                      {heritage.media_count.videos}
+                                    </span>
+                                  )}
+                                </div>
                               </td>
                               <td className="px-6 py-4">
                                 <div className="flex items-center gap-2">
@@ -421,7 +610,7 @@ export default function HeritageManagement() {
                 </div>
 
                 {selectedHeritage.image_url && (
-                  <img src={`${STATIC_URL}${selectedHeritage.image_url}`} alt={selectedHeritage.name} className="w-full max-w-md rounded-lg mb-4" />
+                  <img src={selectedHeritage.image_url} alt={selectedHeritage.name} className="w-full max-w-md rounded-lg mb-4" />
                 )}
 
                 <div className="space-y-4">
@@ -439,8 +628,61 @@ export default function HeritageManagement() {
                     <div>
                       <strong>Audio:</strong>
                       <audio controls className="mt-2 w-full">
-                        <source src={`${STATIC_URL}${selectedHeritage.audio_url}`} type="audio/wav" />
+                        <source src={selectedHeritage.audio_url} type="audio/wav" />
                       </audio>
+                    </div>
+                  )}
+
+                  {/* NEW: Gallery Display */}
+                  {selectedHeritage.gallery && selectedHeritage.gallery.length > 0 && (
+                    <div>
+                      <strong className="block mb-2">Thư viện ảnh ({selectedHeritage.gallery.length}):</strong>
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        {selectedHeritage.gallery.map((img) => (
+                          <div key={img.id} className="relative group">
+                            <img
+                              src={img.url}
+                              alt={`Gallery ${img.order}`}
+                              className="w-full h-48 object-cover rounded-lg"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* NEW: YouTube Videos Display */}
+                  {selectedHeritage.youtube_links && selectedHeritage.youtube_links.length > 0 && (
+                    <div>
+                      <strong className="block mb-2">Video YouTube ({selectedHeritage.youtube_links.length}):</strong>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedHeritage.youtube_links.map((video) => {
+                          const videoId = getYouTubeVideoId(video.url);
+                          return (
+                            <div key={video.id} className="aspect-video">
+                              {videoId ? (
+                                <iframe
+                                  src={`https://www.youtube.com/embed/${videoId}`}
+                                  className="w-full h-full rounded-lg"
+                                  frameBorder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                />
+                              ) : (
+                                <a
+                                  href={video.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center justify-center h-full bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200"
+                                >
+                                  <LinkIcon className="w-6 h-6 mr-2" />
+                                  Xem video
+                                </a>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -503,6 +745,15 @@ export default function HeritageManagement() {
                         type="text"
                         value={formData.commune || ''}
                         onChange={(e) => setFormData({ ...formData, commune: e.target.value })}
+                        className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Quận/Huyện</label>
+                      <input
+                        type="text"
+                        value={formData.district || ''}
+                        onChange={(e) => setFormData({ ...formData, district: e.target.value })}
                         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
                       />
                     </div>
@@ -574,7 +825,7 @@ export default function HeritageManagement() {
 
                   {/* Image Upload */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Hình ảnh</label>
+                    <label className="block text-sm font-medium mb-2">Hình ảnh chính</label>
                     <div className="flex items-center gap-4">
                       <label className="px-4 py-2 bg-purple-600 text-white rounded-lg cursor-pointer hover:bg-purple-700 flex items-center gap-2">
                         <Upload className="w-4 h-4" />
@@ -591,6 +842,7 @@ export default function HeritageManagement() {
                       )}
                     </div>
                   </div>
+
                   {/* Audio Upload */}
                   <div>
                     <label className="block text-sm font-medium mb-2">Audio thuyết minh</label>
@@ -615,6 +867,129 @@ export default function HeritageManagement() {
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Có thể upload file .mp3, .wav, .m4a...
+                    </p>
+                  </div>
+
+                  {/* NEW: Gallery Images Section */}
+                  <div className="border-t pt-6">
+                    <label className="block text-sm font-medium mb-4">
+                      <ImageIcon className="w-5 h-5 inline mr-2" />
+                      Thư viện ảnh
+                    </label>
+
+                    {/* Existing Gallery (Edit mode) */}
+                    {isEditing && existingGallery.length > 0 && (
+                      <div className="mb-4">
+                        <p className="text-sm text-gray-600 mb-2">Ảnh hiện có (chọn để giữ lại):</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {existingGallery.map((img) => (
+                            <div key={img.id} className="relative group">
+                              <img
+                                src={img.url}
+                                alt={`Gallery ${img.order}`}
+                                className={`w-full h-32 object-cover rounded-lg cursor-pointer border-4 transition-all ${
+                                  keepMediaIds.includes(img.id)
+                                    ? 'border-green-500'
+                                    : 'border-gray-300 opacity-50'
+                                }`}
+                                onClick={() => toggleExistingGallery(img.id)}
+                              />
+                              <div
+                                className="absolute top-2 right-2 bg-white rounded-full p-1 cursor-pointer"
+                                onClick={() => toggleExistingGallery(img.id)}
+                              >
+                                {keepMediaIds.includes(img.id) ? (
+                                  <CheckCircle className="w-5 h-5 text-green-500" />
+                                ) : (
+                                  <X className="w-5 h-5 text-gray-400" />
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                          Ảnh có viền xanh sẽ được giữ lại. Click để chọn/bỏ chọn.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* New Gallery Uploads */}
+                    <div className="flex items-center gap-4 mb-4">
+                      <label className="px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 flex items-center gap-2">
+                        <Upload className="w-4 h-4" />
+                        Thêm ảnh mới
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleGalleryChange}
+                          className="hidden"
+                        />
+                      </label>
+                      <span className="text-sm text-gray-500">
+                        {galleryFiles.length} ảnh mới được chọn
+                      </span>
+                    </div>
+
+                    {/* Gallery Previews */}
+                    {galleryPreviews.length > 0 && (
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {galleryPreviews.map((preview, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={preview}
+                              alt={`New ${index}`}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                            <button
+                              onClick={() => removeGalleryPreview(index)}
+                              className="absolute top-2 right-2 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* NEW: YouTube Links Section */}
+                  <div className="border-t pt-6">
+                    <label className="block text-sm font-medium mb-4">
+                      <Video className="w-5 h-5 inline mr-2" />
+                      Video YouTube
+                    </label>
+
+                    {youtubeLinks.map((link, index) => (
+                      <div key={index} className="flex items-center gap-2 mb-3">
+                        <input
+                          type="url"
+                          value={link}
+                          onChange={(e) => updateYoutubeLink(index, e.target.value)}
+                          className="flex-1 px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
+                          placeholder="https://www.youtube.com/watch?v=..."
+                        />
+                        {youtubeLinks.length > 1 && (
+                          <button
+                            onClick={() => removeYoutubeLink(index)}
+                            className="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    ))}
+
+                    <button
+                      onClick={addYoutubeLink}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Thêm video
+                    </button>
+
+                    <p className="text-xs text-gray-500 mt-2">
+                      Hỗ trợ các định dạng: youtube.com/watch?v=..., youtu.be/..., youtube.com/embed/...
                     </p>
                   </div>
                 </div>
