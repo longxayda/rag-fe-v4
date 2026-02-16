@@ -57,11 +57,20 @@ const MapPage = () => {
   useEffect(() => {
     if (!map.current || locations.length === 0) return;
 
-    // remove old markers
-    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current.forEach(m => m.remove());
     markersRef.current = [];
 
     locations.forEach(location => {
+      if (!isValidLngLat(location.coordinates)) {
+        console.warn(
+          '⚠️ Location skipped (invalid coordinates):',
+          location.id,
+          location.name,
+          location.coordinates
+        );
+        return; // ⬅️ SKIP location này
+      }
+
       const el = document.createElement('div');
       el.className = 'custom-marker';
       el.innerHTML = `
@@ -81,8 +90,40 @@ const MapPage = () => {
 
 
 
+  const isValidLngLat = (coordinates) => {
+    if (!coordinates) return false;
+
+    // Case: [lng, lat]
+    if (Array.isArray(coordinates)) {
+      if (coordinates.length !== 2) return false;
+
+      const [lng, lat] = coordinates;
+      return (
+        typeof lng === 'number' &&
+        typeof lat === 'number' &&
+        lng >= -180 && lng <= 180 &&
+        lat >= -90 && lat <= 90
+      );
+    }
+
+    // Case: { lng, lat }
+    if (
+      typeof coordinates === 'object' &&
+      typeof coordinates.lng === 'number' &&
+      typeof coordinates.lat === 'number'
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
 
   const flyToLocation = (location) => {
+    if (!isValidLngLat(location.coordinates)) {
+      alert('Địa điểm này chưa có dữ liệu vị trí trên bản đồ');
+      return;
+    }
     if (open360Timeout.current) {
       clearTimeout(open360Timeout.current)
     }
