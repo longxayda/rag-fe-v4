@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản Đồ Di Sản Bạc Liêu - Cà Mau</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            max-width: 300px;
+            z-index: 1000;
+        }
+        .info-panel h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .stats {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        .stats strong {
+            color: #2c5282;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div class="info-panel">
+        <h3>🗺️ Di Sản Bạc Liêu - Cà Mau</h3>
+        <div class="stats">
+            <div><strong>Tổng số:</strong> <span id="total">0</span> di sản</div>
+            <div><strong>Bạc Liêu:</strong> <span id="bacLieu">0</span></div>
+            <div><strong>Cà Mau:</strong> <span id="caMau">0</span></div>
+            <div><strong>Khác:</strong> <span id="other">0</span></div>
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo bản đồ trung tâm tại Bạc Liêu - Cà Mau
+        const map = L.map('map').setView([9.2353, 105.4411], 9);
+
+        // Thêm tile layer từ OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
+        }).addTo(map);
+
+        // Load dữ liệu từ heritages.json
+        fetch('./src/data/heritages.json')
+            .then(response => response.json())
+            .then(heritages => {
+                let bacLieuCount = 0;
+                let caMauCount = 0;
+                let otherCount = 0;
+
+                // Tạo marker cho mỗi di sản
+                heritages.forEach(heritage => {
+                    const { lat, lng, name, address, commune, rankingType } = heritage;
+                    
+                    // Đếm theo tỉnh
+                    if (address.includes('Bạc Liêu') || commune.includes('Bạc Liêu')) {
+                        bacLieuCount++;
+                    } else if (address.includes('Cà Mau') || commune.includes('Cà Mau')) {
+                        caMauCount++;
+                    } else {
+                        otherCount++;
+                    }
+
+                    // Chọn màu marker theo loại xếp hạng
+                    let markerColor = 'blue';
+                    if (rankingType && rankingType.includes('Quốc gia đặc biệt')) {
+                        markerColor = 'red';
+                    } else if (rankingType && rankingType.includes('Quốc gia')) {
+                        markerColor = 'orange';
+                    } else if (rankingType && rankingType.includes('tỉnh')) {
+                        markerColor = 'green';
+                    }
+
+                    // Tạo marker với custom icon
+                    const marker = L.marker([lat, lng], {
+                        icon: L.divIcon({
+                            className: 'custom-marker',
+                            html: `<div style="background-color: ${markerColor}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>`,
+                            iconSize: [12, 12],
+                            iconAnchor: [6, 6]
+                        })
+                    }).addTo(map);
+
+                    // Thêm popup
+                    marker.bindPopup(`
+                        <div style="max-width: 250px;">
+                            <h4 style="margin: 0 0 8px 0; color: #2c5282;">${name}</h4>
+                            <p style="margin: 4px 0; font-size: 13px;"><strong>Địa chỉ:</strong> ${address || 'N/A'}</p>
+                            <p style="margin: 4px 0; font-size: 13px;"><strong>Xã/Phường:</strong> ${commune || 'N/A'}</p>
+                            <p style="margin: 4px 0; font-size: 13px;"><strong>Xếp hạng:</strong> ${rankingType || 'N/A'}</p>
+                            <p style="margin: 4px 0; font-size: 12px; color: #666;"><strong>Tọa độ:</strong> ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
+                        </div>
+                    `);
+                });
+
+                // Cập nhật thống kê
+                document.getElementById('total').textContent = heritages.length;
+                document.getElementById('bacLieu').textContent = bacLieuCount;
+                document.getElementById('caMau').textContent = caMauCount;
+                document.getElementById('other').textContent = otherCount;
+
+                console.log('✅ Đã load thành công', heritages.length, 'di sản');
+            })
+            .catch(error => {
+                console.error('❌ Lỗi khi load dữ liệu:', error);
+                alert('Không thể load dữ liệu di sản. Vui lòng kiểm tra đường dẫn file.');
+            });
+    </script>
+</body>
+</html>
+
