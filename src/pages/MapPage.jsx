@@ -5,7 +5,7 @@ import './MapPage.css';
 import { heritageApi } from '../services/api';
 
 // Set your Mapbox access token
-mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_SECRET;
+mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_PK;
 
 const MapPage = () => {
   const mapContainer = useRef(null);
@@ -18,6 +18,8 @@ const MapPage = () => {
   const panoramaContainer = useRef(null);
   const pannellumViewer = useRef(null);
   const audioRef = useRef(null);
+  const markersRef = useRef([]);
+
 
   const getAllLocations = async () => {
     const response = await heritageApi.getAll();
@@ -34,7 +36,6 @@ const MapPage = () => {
   useEffect(() => {
     if (map.current) return;
 
-    // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/satellite-streets-v12',
@@ -46,43 +47,40 @@ const MapPage = () => {
 
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    // Add markers for each location
+    return () => {
+      map.current?.remove();
+      map.current = null;
+    };
+  }, []);
+
+
+  useEffect(() => {
+    if (!map.current || locations.length === 0) return;
+
+    // remove old markers
+    markersRef.current.forEach(marker => marker.remove());
+    markersRef.current = [];
+
     locations.forEach(location => {
       const el = document.createElement('div');
       el.className = 'custom-marker';
       el.innerHTML = `
-        <div class="marker-pulse"></div>
-        <div class="marker-pin"></div>
-      `;
+      <div class="marker-pulse"></div>
+      <div class="marker-pin"></div>
+    `;
 
-      new mapboxgl.Marker(el)
+      el.addEventListener('click', () => flyToLocation(location));
+
+      const marker = new mapboxgl.Marker(el)
         .setLngLat(location.coordinates)
         .addTo(map.current);
 
-      el.addEventListener('click', () => {
-        flyToLocation(location);
-      });
-
-      const popup = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        offset: 25
-      }).setHTML(`
-        <div class="location-popup">
-          <h3>${location.name}</h3>
-          <p>${location?.information}</p>
-        </div>
-      `);
-
-      el.addEventListener('mouseenter', () => {
-        popup.setLngLat(location.coordinates).addTo(map.current);
-      });
-
-      el.addEventListener('mouseleave', () => {
-        popup.remove();
-      });
+      markersRef.current.push(marker);
     });
-  }, []);
+  }, [locations]);
+
+
+
 
   const flyToLocation = (location) => {
     if (open360Timeout.current) {
