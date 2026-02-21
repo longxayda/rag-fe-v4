@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { fineArtApi } from "../../services/api";
 
 export default function FineArtManagement() {
+  const { t } = useTranslation();
   const [fineArtList, setFineArtList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -18,20 +20,20 @@ export default function FineArtManagement() {
       const result = await fineArtApi.adminGetAll(1, 100);
       setFineArtList(result.data || []);
     } catch (err) {
-      alert("Failed to load fine art");
+      alert(t('admin.loadError'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this image?")) return;
+    if (!window.confirm(t('admin.confirmDeleteImage'))) return;
 
     try {
       await fineArtApi.delete(id);
       fetchFineArt();
     } catch (err) {
-      alert("Delete failed");
+      alert(t('admin.errGeneric'));
     }
   };
 
@@ -41,7 +43,7 @@ export default function FineArtManagement() {
 
   const handleSubmit = async () => {
     if (selectedFiles.length === 0) {
-      alert("Please select at least one image");
+      alert(t('admin.pleaseSelectOneImage'));
       return;
     }
 
@@ -59,32 +61,32 @@ export default function FineArtManagement() {
       setSelectedFiles([]);
       fetchFineArt();
     } catch (err) {
-      alert(err.message);
+      alert(t('admin.errGeneric'));
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 text-gray-900 dark:text-gray-100">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Fine Art Management</h2>
+        <h2 className="text-xl font-semibold">{t('admin.fineArtManagement')}</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded dark:bg-blue-500 dark:hover:bg-blue-600"
         >
           + Add Images
         </button>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {fineArtList.map((item) => (
             <div
               key={item.id}
-              className="border rounded p-3 shadow-sm bg-white"
+              className="border border-gray-200 dark:border-gray-600 rounded p-3 shadow-sm bg-white dark:bg-gray-800"
             >
               <img
                 src={item.fineart_url}
@@ -94,9 +96,9 @@ export default function FineArtManagement() {
 
               <button
                 onClick={() => handleDelete(item.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded text-sm"
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm dark:bg-red-600 dark:hover:bg-red-700"
               >
-                Delete
+                {t('admin.deleteItem')}
               </button>
             </div>
           ))}
@@ -105,9 +107,9 @@ export default function FineArtManagement() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded w-full max-w-lg">
-            <h3 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded w-full max-w-lg border border-gray-200 dark:border-gray-600 shadow-xl">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
               Upload Multiple Images
             </h3>
 
@@ -116,11 +118,11 @@ export default function FineArtManagement() {
               multiple
               accept="image/*"
               onChange={handleFileChange}
-              className="mb-4"
+              className="mb-4 text-gray-600 dark:text-gray-300 file:mr-2 file:py-2 file:px-4 file:rounded file:border-0 file:bg-blue-50 dark:file:bg-gray-700 file:text-blue-700 dark:file:text-blue-300"
             />
 
             {selectedFiles.length > 0 && (
-              <div className="text-sm text-gray-600 mb-4">
+              <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 {selectedFiles.length} file(s) selected
               </div>
             )}
@@ -128,16 +130,16 @@ export default function FineArtManagement() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 border rounded"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="bg-blue-600 text-white px-4 py-2 rounded"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50"
               >
-                {submitting ? "Uploading..." : "Upload"}
+                {submitting ? t('common.loading') : "Upload"}
               </button>
             </div>
           </div>

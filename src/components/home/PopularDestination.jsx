@@ -42,15 +42,15 @@ const PopularDestinations = () => {
 ];
 
   return (
-    <section className="py-16 px-4 bg-white">
+    <section className="py-16 px-4 bg-white dark:bg-gray-900 theme-transition">
       <div className="max-w-5xl mx-auto">
         
         {/* Header Section */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
             Địa Điểm Nổi Bật
           </h2>
-          <p className="text-gray-500 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             Khám phá các địa điểm địa phương nổi tiếng thuộc tỉnh Cà Mau và Bạc Liêu
           </p>
         </div>

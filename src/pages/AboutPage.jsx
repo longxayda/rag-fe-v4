@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Users, Target, Award, Mail, Github, Globe, BookOpen } from 'lucide-react';
+import { Heart, Users, Target, Award, Mail, Github, Globe, BookOpen, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function AboutPage() {
@@ -128,13 +128,46 @@ export default function AboutPage() {
               {t('about.contact.description')}
             </p>
 
+            {/* Contact person card */}
+            <div className="mb-8 p-6 rounded-2xl bg-heritage-cream-50 dark:bg-gray-700/50 border border-heritage-earth-200 dark:border-gray-600 text-left max-w-md mx-auto">
+              <p className="text-sm font-medium text-heritage-earth-500 dark:text-gray-400 mb-1">
+                {t('about.contact.contactPerson')}
+              </p>
+              <p className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                Trương Minh Khiêm
+              </p>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+                <a
+                  href="mailto:truongminhkhiemvta@gmail.com"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-heritage-red-600 text-white rounded-xl hover:bg-heritage-red-700 transition-colors text-sm"
+                >
+                  <Mail className="w-4 h-4 flex-shrink-0" />
+                  truongminhkhiemvta@gmail.com
+                </a>
+                <a
+                  href="tel:0385844458"
+                  className="inline-flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors text-sm"
+                >
+                  <Phone className="w-4 h-4 flex-shrink-0" />
+                  0385844458
+                </a>
+              </div>
+            </div>
+
             <div className="flex flex-wrap justify-center gap-4">
               <a
-                href="mailto:contact@heritage-camau.vn"
+                href="mailto:truongminhkhiemvta@gmail.com"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-heritage-red-600 text-white rounded-xl hover:bg-heritage-red-700 transition-colors"
               >
                 <Mail className="w-5 h-5" />
                 {t('about.contact.email')}
+              </a>
+              <a
+                href="tel:0385844458"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-colors"
+              >
+                <Phone className="w-5 h-5" />
+                {t('about.contact.phone')}
               </a>
               <a
                 href="https://github.com"

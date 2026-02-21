@@ -1,5 +1,42 @@
 // src/services/api.js
+/**
+ * API contract (FE <-> BE)
+ * Base URL: VITE_BACKEND_URL (e.g. http://localhost:5000/api)
+ *
+ * Endpoints used by FE:
+ * - GET  /heritages?lang=&page=&limit=  -> { data, pagination }
+ * - GET  /heritages/:id?lang=           -> heritage object
+ * - GET  /admin/heritages?page=&limit= -> { success, data, pagination }
+ * - GET  /admin/heritages/:id           -> { success, data }
+ * - POST /admin/heritages               -> FormData -> { success, data, message }
+ * - PUT  /admin/heritages/:id           -> FormData -> { success, data, message }
+ * - DELETE /admin/heritages/:id         -> { success, message }
+ * - GET  /languages                    -> languages array
+ * - GET  /constants/ranking-types      -> { success, data: string[] } (codes or labels)
+ * - GET  /map-places                    -> places array
+ * - GET  /admin/map-places              -> { data }
+ * - POST /admin/map-places              -> FormData
+ * - PUT  /admin/map-places/:id          -> FormData
+ * - DELETE /admin/map-places/:id
+ * - GET  /music, /admin/music, POST/DELETE /admin/music, etc.
+ * - GET  /fineart, /admin/fineart, POST/DELETE /admin/fineart, etc.
+ */
 const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
+/** Parse response as JSON; if server returned HTML (e.g. SPA fallback), throw clear error. */
+async function parseJsonResponse(res) {
+  const text = await res.text();
+  const trimmed = text.trim();
+  if (trimmed.startsWith('<')) {
+    const url = typeof API_BASE_URL === 'string' ? API_BASE_URL : '(check VITE_BACKEND_URL)';
+    throw new Error(`Backend returned HTML instead of JSON. Is the API server running? Expected: ${url}`);
+  }
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch (e) {
+    throw new Error('Invalid JSON from API.');
+  }
+}
 
 const heritageApi = {
   // ========================================
@@ -12,8 +49,8 @@ const heritageApi = {
    */
   async getAll(lang = 'vi', page = 1, limit = 10) {
     const res = await fetch(`${API_BASE_URL}/heritages?lang=${lang}&page=${page}&limit=${limit}`);
-    if (!res.ok) throw new Error('Failed to fetch heritages');
-    const result = await res.json();
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(result?.message || 'Failed to fetch heritages');
 
     // Backend returns { data, pagination } directly
     return result;
@@ -25,8 +62,8 @@ const heritageApi = {
    */
   async getById(id, lang = 'vi') {
     const res = await fetch(`${API_BASE_URL}/heritages/${id}?lang=${lang}`);
-    if (!res.ok) throw new Error('Heritage not found');
-    const heritage = await res.json();
+    const heritage = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(heritage?.message || 'Heritage not found');
 
     // Backend returns heritage object directly (not wrapped)
     return heritage;
@@ -42,8 +79,8 @@ const heritageApi = {
    */
   async adminGetAll(page = 1, limit = 10) {
     const res = await fetch(`${API_BASE_URL}/admin/heritages?page=${page}&limit=${limit}`);
-    if (!res.ok) throw new Error('Failed to fetch heritages');
-    const result = await res.json();
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(result?.message || 'Failed to fetch heritages');
 
     // Backend returns { success: true, data, pagination }
     return result;
@@ -55,8 +92,8 @@ const heritageApi = {
    */
   async adminGetById(id) {
     const res = await fetch(`${API_BASE_URL}/admin/heritages/${id}`);
-    if (!res.ok) throw new Error('Heritage not found');
-    const result = await res.json();
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(result?.message || 'Heritage not found');
 
     // Backend returns { success: true, data: {...} }
     return result;
@@ -81,7 +118,7 @@ const heritageApi = {
       body: formData, // FormData object
     });
 
-    const result = await res.json();
+    const result = await parseJsonResponse(res);
 
     if (!res.ok) {
       throw new Error(result.error || result.message || 'Failed to create heritage');
@@ -105,7 +142,7 @@ const heritageApi = {
       body: formData,
     });
 
-    const result = await res.json();
+    const result = await parseJsonResponse(res);
 
     if (!res.ok) {
       throw new Error(result.error || result.message || 'Failed to update heritage');
@@ -125,7 +162,7 @@ const heritageApi = {
       method: 'DELETE',
     });
 
-    const result = await res.json();
+    const result = await parseJsonResponse(res);
 
     if (!res.ok) {
       throw new Error(result.error || result.message || 'Failed to delete heritage');
@@ -141,23 +178,26 @@ const heritageApi = {
 
   /**
    * Get supported languages
-   * Note: This endpoint may not exist in current backend
+   * Returns: { success: true, data: [{ code, name, ttsCode? }, ...] }
    * Supported languages: vi, en, km, zh
    */
   async getLanguages() {
     try {
       const res = await fetch(`${API_BASE_URL}/languages`);
+      const json = await parseJsonResponse(res);
       if (!res.ok) throw new Error('Endpoint not found');
-      return res.json();
-    } catch (error) {
-      // Fallback to hardcoded languages if endpoint doesn't exist
+      // Normalize: backend may return array or { success, data }
+      const data = Array.isArray(json) ? json : (json.data || []);
+      return { success: true, data };
+    } catch {
+      // Fallback if endpoint doesn't exist
       return {
         success: true,
         data: [
-          { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-          { code: 'en', name: 'English', flag: '🇬🇧' },
-          { code: 'km', name: 'ភាសាខ្មែរ', flag: '🇰🇭' },
-          { code: 'zh', name: '中文', flag: '🇨🇳' }
+          { code: 'vi', name: 'Tiếng Việt', ttsCode: 'vi-VN' },
+          { code: 'en', name: 'English', ttsCode: 'en-US' },
+          { code: 'km', name: 'ភាសាខ្មែរ', ttsCode: 'km-KH' },
+          { code: 'zh', name: '中文', ttsCode: 'zh-CN' }
         ]
       };
     }
@@ -179,9 +219,9 @@ const musicApi = {
       `${API_BASE_URL}/music?page=${page}&limit=${limit}`
     );
 
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Failed to fetch music');
-
-    return res.json();
+    return result;
   },
 
   /**
@@ -190,10 +230,9 @@ const musicApi = {
    */
   async getById(id) {
     const res = await fetch(`${API_BASE_URL}/music/${id}`);
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Music not found');
-
-    return res.json();
+    return result;
   },
 
   // ========================================
@@ -208,10 +247,9 @@ const musicApi = {
     const res = await fetch(
       `${API_BASE_URL}/admin/music?page=${page}&limit=${limit}`
     );
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Failed to fetch music');
-
-    return res.json();
+    return result;
   },
 
   /**
@@ -220,10 +258,9 @@ const musicApi = {
    */
   async adminGetById(id) {
     const res = await fetch(`${API_BASE_URL}/admin/music/${id}`);
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Music not found');
-
-    return res.json();
+    return result;
   },
 
   /**
@@ -239,13 +276,10 @@ const musicApi = {
       },
       body: JSON.stringify({ links }),
     });
-
-    const result = await res.json();
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) {
-      throw new Error(result.error || 'Failed to create music');
+      throw new Error(result?.error || 'Failed to create music');
     }
-
     return result;
   },
 
@@ -257,13 +291,10 @@ const musicApi = {
     const res = await fetch(`${API_BASE_URL}/admin/music/${id}`, {
       method: 'DELETE',
     });
-
-    const result = await res.json();
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) {
-      throw new Error(result.error || 'Failed to delete music');
+      throw new Error(result?.error || 'Failed to delete music');
     }
-
     return result;
   },
 };
@@ -282,10 +313,9 @@ const fineArtApi = {
     const res = await fetch(
       `${API_BASE_URL}/fineart?page=${page}&limit=${limit}`
     );
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Failed to fetch fineart');
-
-    return res.json();
+    return result;
   },
 
   /**
@@ -294,10 +324,9 @@ const fineArtApi = {
    */
   async getById(id) {
     const res = await fetch(`${API_BASE_URL}/fineart/${id}`);
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Fineart not found');
-
-    return res.json();
+    return result;
   },
 
   // ========================================
@@ -312,10 +341,9 @@ const fineArtApi = {
     const res = await fetch(
       `${API_BASE_URL}/admin/fineart?page=${page}&limit=${limit}`
     );
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Failed to fetch fineart');
-
-    return res.json();
+    return result;
   },
 
   /**
@@ -324,10 +352,9 @@ const fineArtApi = {
    */
   async adminGetById(id) {
     const res = await fetch(`${API_BASE_URL}/admin/fineart/${id}`);
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) throw new Error('Fineart not found');
-
-    return res.json();
+    return result;
   },
 
   /**
@@ -341,13 +368,10 @@ const fineArtApi = {
       method: 'POST',
       body: formData,
     });
-
-    const result = await res.json();
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) {
-      throw new Error(result.error || 'Failed to upload fineart');
+      throw new Error(result?.error || 'Failed to upload fineart');
     }
-
     return result;
   },
 
@@ -359,17 +383,84 @@ const fineArtApi = {
     const res = await fetch(`${API_BASE_URL}/admin/fineart/${id}`, {
       method: 'DELETE',
     });
-
-    const result = await res.json();
-
+    const result = await parseJsonResponse(res);
     if (!res.ok) {
-      throw new Error(result.error || 'Failed to delete fineart');
+      throw new Error(result?.error || 'Failed to delete fineart');
     }
-
     return result;
   },
 };
 
+const mapPlacesApi = {
+  async getAll() {
+    const res = await fetch(`${API_BASE_URL}/map-places`);
+    const json = await parseJsonResponse(res);
+    if (!res.ok) throw new Error('Failed to fetch map places');
+    return json?.data || [];
+  },
 
+  async adminGetAll() {
+    const res = await fetch(`${API_BASE_URL}/admin/map-places`);
+    const json = await parseJsonResponse(res);
+    if (!res.ok) throw new Error('Failed to fetch map places');
+    return json;
+  },
 
-export { heritageApi, musicApi, fineArtApi };
+  async adminGetById(id) {
+    const res = await fetch(`${API_BASE_URL}/admin/map-places/${id}`);
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error('Map place not found');
+    return result;
+  },
+
+  async create(formData) {
+    const res = await fetch(`${API_BASE_URL}/admin/map-places`, {
+      method: 'POST',
+      body: formData,
+    });
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(result?.error || 'Failed to create map place');
+    return result;
+  },
+
+  async update(id, formData) {
+    const res = await fetch(`${API_BASE_URL}/admin/map-places/${id}`, {
+      method: 'PUT',
+      body: formData,
+    });
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(result?.error || 'Failed to update map place');
+    return result;
+  },
+
+  async delete(id) {
+    const res = await fetch(`${API_BASE_URL}/admin/map-places/${id}`, {
+      method: 'DELETE',
+    });
+    const result = await parseJsonResponse(res);
+    if (!res.ok) throw new Error(result?.error || 'Failed to delete map place');
+    return result;
+  },
+};
+
+const constantsApi = {
+  /**
+   * Get ranking types from backend (single source of truth)
+   * Returns: { success: true, data: string[] }
+   */
+  async getRankingTypes() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/constants/ranking-types`);
+      const result = await parseJsonResponse(res);
+      if (!res.ok) throw new Error('Failed to fetch ranking types');
+      return result;
+    } catch {
+      return {
+        success: true,
+        data: ['Quốc gia đặc biệt', 'Quốc gia', 'Cấp tỉnh']
+      };
+    }
+  },
+};
+
+export { heritageApi, musicApi, fineArtApi, constantsApi, mapPlacesApi };

@@ -7,6 +7,9 @@ export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-i18next', 'i18next'],
+  },
   plugins: [
     react(),
     VitePWA({

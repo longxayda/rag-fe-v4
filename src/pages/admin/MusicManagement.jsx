@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { musicApi } from "../../services/api";
 
 export default function MusicManagement() {
+  const { t } = useTranslation();
   const [musicList, setMusicList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -18,14 +20,14 @@ export default function MusicManagement() {
       const result = await musicApi.adminGetAll(1, 100);
       setMusicList(result.data || []);
     } catch (err) {
-      alert("Failed to load music");
+      alert(t('admin.loadError'));
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this music?")) return;
+    if (!window.confirm(t('admin.confirmDeleteMusic'))) return;
 
     try {
       await musicApi.delete(id);
@@ -56,7 +58,7 @@ export default function MusicManagement() {
       .filter((l) => l !== "");
 
     if (filteredLinks.length === 0) {
-      alert("Please enter at least one link");
+      alert(t('admin.pleaseEnterOneLink'));
       return;
     }
 
@@ -67,7 +69,7 @@ export default function MusicManagement() {
       setNewLinks([""]);
       fetchMusic();
     } catch (err) {
-      alert(err.message);
+      alert(t('admin.errGeneric'));
     } finally {
       setSubmitting(false);
     }
@@ -94,25 +96,25 @@ export default function MusicManagement() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 text-gray-900 dark:text-gray-100">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Music Management</h2>
+        <h2 className="text-xl font-semibold">{t('admin.musicManagement')}</h2>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded dark:bg-blue-500 dark:hover:bg-blue-600"
         >
-          + Add Music
+          + {t('admin.addMusic')}
         </button>
       </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <p className="text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {musicList.map((music) => (
             <div
               key={music.id}
-              className="border rounded p-4 shadow-sm bg-white"
+              className="border border-gray-200 dark:border-gray-600 rounded p-4 shadow-sm bg-white dark:bg-gray-800"
             >
               <iframe
                 className="w-full h-48 rounded mb-3"
@@ -120,14 +122,14 @@ export default function MusicManagement() {
                 title="music"
                 allowFullScreen
               />
-              <p className="text-sm break-all mb-2">
+              <p className="text-sm break-all mb-2 text-gray-600 dark:text-gray-300">
                 {music.youtube_url}
               </p>
               <button
                 onClick={() => handleDelete(music.id)}
-                className="bg-red-500 text-white px-3 py-1 rounded text-sm"
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm dark:bg-red-600 dark:hover:bg-red-700"
               >
-                Delete
+                {t('admin.deleteItem')}
               </button>
             </div>
           ))}
@@ -136,9 +138,9 @@ export default function MusicManagement() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-          <div className="bg-white p-6 rounded w-full max-w-lg">
-            <h3 className="text-lg font-semibold mb-4">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded w-full max-w-lg border border-gray-200 dark:border-gray-600 shadow-xl">
+            <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">
               Add Multiple Music Links
             </h3>
 
@@ -152,12 +154,12 @@ export default function MusicManagement() {
                     onChange={(e) =>
                       handleChange(index, e.target.value)
                     }
-                    className="flex-1 border px-3 py-2 rounded"
+                    className="flex-1 border border-gray-300 dark:border-gray-600 px-3 py-2 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
                   />
                   {newLinks.length > 1 && (
                     <button
                       onClick={() => handleRemoveInput(index)}
-                      className="text-red-500"
+                      className="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300"
                     >
                       ✕
                     </button>
@@ -168,7 +170,7 @@ export default function MusicManagement() {
 
             <button
               onClick={handleAddInput}
-              className="mt-3 text-blue-600 text-sm"
+              className="mt-3 text-blue-600 dark:text-blue-400 text-sm hover:underline"
             >
               + Add another link
             </button>
@@ -176,16 +178,16 @@ export default function MusicManagement() {
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 border rounded"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="bg-blue-600 text-white px-4 py-2 rounded"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded dark:bg-blue-500 dark:hover:bg-blue-600 disabled:opacity-50"
               >
-                {submitting ? "Saving..." : "Save"}
+                {submitting ? t('common.loading') : t('common.save')}
               </button>
             </div>
           </div>

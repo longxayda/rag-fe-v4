@@ -135,7 +135,7 @@ export function Header({ onMenuClick }) {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 onFocus={() => setIsSearchOpen(true)}
-                placeholder={t('search.placeholder') || 'Tìm kiếm di sản...'}
+                placeholder={t('search.placeholder')}
                 className="w-full px-4 py-2 pl-10 pr-10 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20
                           text-white placeholder-white/60 focus:bg-white/20 focus:border-white/40
                           focus:outline-none transition-all"
@@ -187,7 +187,7 @@ export function Header({ onMenuClick }) {
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all border border-white/20 hover:border-white/30"
               aria-label="Search"
-              title={t('search.placeholder') || 'Tìm kiếm'}
+              title={t('search.placeholder')}
             >
               <Search className="w-4 h-4 sm:w-5 sm:h-5 text-heritage-gold-300" />
             </button>
@@ -343,7 +343,7 @@ export function Header({ onMenuClick }) {
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder={t('search.placeholder') || 'Tìm kiếm di sản...'}
+                placeholder={t('search.placeholder')}
                 className="w-full px-4 py-2 pl-10 pr-10 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20
                           text-white placeholder-white/60 focus:bg-white/20 focus:border-white/40
                           focus:outline-none transition-all"

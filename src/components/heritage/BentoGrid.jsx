@@ -1,21 +1,15 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { MapPin, Award, ArrowRight } from 'lucide-react';
 import { FavoriteButton } from '../ui';
-
-const rankingColors = {
-  'Quốc gia đặc biệt': 'from-heritage-red-600 to-heritage-red-800',
-  'Quốc gia': 'from-heritage-gold-500 to-heritage-gold-700',
-  'Cấp tỉnh': 'from-green-500 to-green-700',
-};
-
-const rankingBadgeColors = {
-  'Quốc gia đặc biệt': 'bg-heritage-red-600 text-white',
-  'Quốc gia': 'bg-heritage-gold-500 text-heritage-red-900',
-  'Cấp tỉnh': 'bg-green-600 text-white',
-};
+import { getRankingStyle, getRankingCode } from '../../utils/ranking';
 
 function BentoCard({ heritage, index, variant = 'normal', onClick }) {
+  const { t } = useTranslation();
+  const code = getRankingCode(heritage.rankingType);
+  const style = getRankingStyle(heritage.rankingType);
+  const rankingLabel = code ? t(`ranking.${code}`) : (heritage.rankingType || t('nav.heritage'));
   const isFeatured = variant === 'featured';
   const isWide = variant === 'wide';
   const isTall = variant === 'tall';
@@ -57,7 +51,7 @@ function BentoCard({ heritage, index, variant = 'normal', onClick }) {
     >
       <div onClick={handleClick} className="block h-full cursor-pointer">
         {/* Background */}
-        <div className={`absolute inset-0 bg-gradient-to-br ${rankingColors[heritage.rankingType] || 'from-gray-600 to-gray-800'}`}>
+        <div className={`absolute inset-0 bg-gradient-to-br ${style.gradient}`}>
           {heritage.image && (
             <img
               src={heritage.image}
@@ -79,9 +73,9 @@ function BentoCard({ heritage, index, variant = 'normal', onClick }) {
         {/* Content */}
         <div className={`relative z-10 p-5 md:p-6 h-full flex flex-col justify-end ${heightClasses}`}>
           {/* Badge */}
-          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-3 w-fit ${rankingBadgeColors[heritage.rankingType] || 'bg-gray-600 text-white'}`}>
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold mb-3 w-fit ${style.badgeCompact}`}>
             <Award className="w-3.5 h-3.5" />
-            {heritage.rankingType || 'Di sản'}
+            {rankingLabel}
           </div>
 
           {/* Title */}
@@ -104,7 +98,7 @@ function BentoCard({ heritage, index, variant = 'normal', onClick }) {
 
           {/* View More */}
           <div className="flex items-center gap-2 text-heritage-gold-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <span>Xem chi tiết</span>
+            <span>{t('common.viewDetails')}</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </div>
         </div>
@@ -117,11 +111,12 @@ export default function BentoGrid({ heritages = [], items = [], showFeatured = t
   const displayItems = items.length > 0 ? items : heritages;
   if (displayItems.length === 0) return null;
 
-  // Assign variants based on position and ranking
+  // Assign variants based on position and ranking (use code for language-agnostic logic)
   const getVariant = (heritage, index) => {
+    const code = getRankingCode(heritage.rankingType);
     if (index === 0 && showFeatured) return 'featured';
-    if (heritage.rankingType === 'Quốc gia đặc biệt' && index < 5) return 'wide';
-    if (heritage.rankingType === 'Quốc gia' && index % 7 === 3) return 'tall';
+    if (code === 'nationalSpecial' && index < 5) return 'wide';
+    if (code === 'national' && index % 7 === 3) return 'tall';
     return 'normal';
   };
 

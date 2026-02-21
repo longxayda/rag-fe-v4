@@ -43,9 +43,9 @@ export default i18n;
 // Language configuration for use in components
 export const languages = [
   { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', dir: 'ltr' },
-  { code: 'en', name: 'English', flag: '🇺🇸', dir: 'ltr' },
-  { code: 'zh', name: '中文', flag: '🇨🇳', dir: 'ltr' },
-  { code: 'km', name: 'ភាសាខ្មែរ', flag: '🇰🇭', dir: 'ltr' },
+  { code: 'en', name: 'Tiếng Anh', flag: '🇺🇸', dir: 'ltr' },
+  { code: 'zh', name: 'Tiếng Hoa', flag: '🇨🇳', dir: 'ltr' },
+  { code: 'km', name: 'Tiếng Khmer', flag: '🇰🇭', dir: 'ltr' },
 ];
 
 // Helper function to get current language info
