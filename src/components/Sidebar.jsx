@@ -8,10 +8,10 @@ export function Sidebar({ isOpen, onClose }) {
   const menuItems = [
     {
       id: 'home',
-      label: t('sidebar.home') || 'Trang chủ',
+      label: t('sidebar.home'),
       path: '/',
       icon: Home,
-      description: t('sidebar.homeDesc') || 'Trang chủ'
+      description: t('sidebar.homeDesc')
     },
     {
       id: 'heritage',
@@ -22,17 +22,17 @@ export function Sidebar({ isOpen, onClose }) {
     },
     {
       id: 'map',
-      label: t('sidebar.map') || 'Bản đồ',
+      label: t('sidebar.map'),
       path: '/map',
       icon: Map,
-      description: t('sidebar.mapDesc') || 'Xem bản đồ di sản'
+      description: t('sidebar.mapDesc')
     },
     {
       id: 'timeline',
-      label: t('sidebar.timeline') || 'Dòng thời gian',
+      label: t('sidebar.timeline'),
       path: '/timeline',
       icon: Clock,
-      description: t('sidebar.timelineDesc') || 'Dòng thời gian lịch sử'
+      description: t('sidebar.timelineDesc')
     },
     {
       id: 'chat',
@@ -57,24 +57,24 @@ export function Sidebar({ isOpen, onClose }) {
     },
     {
       id: 'contribute',
-      label: t('sidebar.contribute') || 'Đóng góp',
+      label: t('sidebar.contribute'),
       path: '/contribute',
       icon: PenLine,
-      description: t('sidebar.contributeDesc') || 'Gửi đề xuất di sản'
+      description: t('sidebar.contributeDesc')
     },
     {
       id: 'favorites',
-      label: t('sidebar.favorites') || 'Yêu thích',
+      label: t('sidebar.favorites'),
       path: '/favorites',
       icon: Heart,
-      description: t('sidebar.favoritesDesc') || 'Di sản yêu thích'
+      description: t('sidebar.favoritesDesc')
     },
     {
       id: 'about',
-      label: t('sidebar.about') || 'Giới thiệu',
+      label: t('sidebar.about'),
       path: '/about',
       icon: Info,
-      description: t('sidebar.aboutDesc') || 'Về dự án'
+      description: t('sidebar.aboutDesc')
     }
   ];
 
@@ -190,7 +190,7 @@ export function Sidebar({ isOpen, onClose }) {
           <div className="my-3 flex items-center gap-2 px-3">
             <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
             <span className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wide">
-              {t('common.all') === 'All' ? 'System' : 'Hệ thống'}
+              {t('common.system')}
             </span>
             <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
           </div>

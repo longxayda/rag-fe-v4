@@ -38,7 +38,7 @@ export default function QuizManager({ onBack }) {
     if (stored) {
       try {
         setQuizzes(JSON.parse(stored));
-      } catch (e) {
+      } catch {
         setQuizzes(initialQuizData || []);
       }
     } else {

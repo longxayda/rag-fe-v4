@@ -1,25 +1,17 @@
 import { useState, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Volume2, Pause, Play, Mic, Trash2, Settings, Loader, X } from 'lucide-react';
 
-const SAMPLE_TEXTS = [
-    {
-        title: 'Về Mũi Cà Mau',
-        text: 'Mũi Cà Mau là điểm cực Nam của đất liền Việt Nam, nơi giao thoa giữa biển Đông và vịnh Thái Lan. Đây là vùng đất mũi đầm lầy, có hệ sinh thái rừng ngập mặn phong phú và đa dạng.'
-    },
-    {
-        title: 'Về Công tử Bạc Liêu',
-        text: 'Công tử Bạc Liêu tên thật là Trần Trinh Huy, sinh năm 1900 tại Bạc Liêu. Ông nổi tiếng với lối sống xa hoa, phóng khoáng và là biểu tượng của sự giàu có thời Pháp thuộc.'
-    },
-    {
-        title: 'Về Lễ hội Chol Chnam Thmay',
-        text: 'Chol Chnam Thmay là Tết truyền thống của người Khmer, diễn ra vào tháng 4 âm lịch. Đây là dịp để cộng đồng người Khmer sum họp, cầu mong một năm mới bình an, phát tài phát lộc.'
-    }
-];
-
 export default function TextToSpeechPage() {
+    const { t } = useTranslation();
+    const SAMPLE_TEXTS = [
+        { title: t('tts.sample1Title'), text: t('tts.sample1Text') },
+        { title: t('tts.sample2Title'), text: t('tts.sample2Text') },
+        { title: t('tts.sample3Title'), text: t('tts.sample3Text') },
+    ];
     const [text, setText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [audioUrl, setAudioUrl] = useState(null);
+    const [, setAudioUrl] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState('');
     const [apiKey, setApiKey] = useState('');
@@ -31,12 +23,12 @@ export default function TextToSpeechPage() {
 
     const handleGenerate = async () => {
         if (!text.trim()) {
-            setError('Vui lòng nhập văn bản cần chuyển đổi');
+            setError(t('tts.errEnterText'));
             return;
         }
 
         if (!apiKey.trim()) {
-            setError('Vui lòng nhập API Key của Gemini trong phần Cài đặt');
+            setError(t('tts.errEnterApiKey'));
             setShowSettings(true);
             return;
         }
@@ -73,16 +65,14 @@ export default function TextToSpeechPage() {
                 throw new Error('API request failed');
             }
 
-            const data = await response.json();
+            await response.json();
 
             // Since Gemini doesn't directly support TTS, we'll use Web Speech API as fallback
             // This is for demo purposes - in production you'd use a proper TTS service
             handleWebSpeechTTS();
 
-        } catch (err) {
-            // Production: consider using proper error logging
-            setError('Lỗi khi gọi API. Sử dụng Web Speech API thay thế...');
-            // Fallback to Web Speech API
+        } catch {
+            setError(t('tts.errApiFallback'));
             handleWebSpeechTTS();
         }
     };
@@ -119,15 +109,15 @@ export default function TextToSpeechPage() {
             };
 
             utterance.onerror = (event) => {
-                setError('Lỗi khi phát âm thanh: ' + event.error);
+                setError(t('tts.errPlaySound') + ': ' + event.error);
                 setIsPlaying(false);
                 setIsLoading(false);
             };
 
             window.speechSynthesis.speak(utterance);
-            setError('✓ Đang sử dụng Web Speech API của trình duyệt');
+            setError('✓ ' + t('tts.usingWebSpeech'));
         } else {
-            setError('Trình duyệt không hỗ trợ Text-to-Speech');
+            setError(t('tts.noTtsSupport'));
             setIsLoading(false);
         }
     };
@@ -174,11 +164,11 @@ export default function TextToSpeechPage() {
                             <Volume2 className="w-6 h-6 text-white" />
                         </div>
                         <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                            AI Đọc Văn Bản
+                            {t('tts.pageTitle')}
                         </h1>
                     </div>
                     <p className="text-gray-600 dark:text-gray-400">
-                        Chuyển đổi văn bản thành giọng nói tự nhiên
+                        {t('tts.pageSubtitle')}
                     </p>
                 </div>
 
@@ -190,7 +180,7 @@ export default function TextToSpeechPage() {
                             <div className="flex items-center justify-between mb-4">
                                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                                     <Mic className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                                    Văn bản đầu vào
+                                    {t('tts.inputLabel')}
                                 </h2>
                                 <div className="flex gap-2">
                                     <button
@@ -200,14 +190,14 @@ export default function TextToSpeechPage() {
                                                 ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400'
                                                 : 'bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400'
                                         }`}
-                                        title="Cài đặt"
+                                        title={t('tts.settings')}
                                     >
                                         <Settings className="w-5 h-5" />
                                     </button>
                                     <button
                                         onClick={clearText}
                                         className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30 hover:bg-red-200 dark:hover:bg-red-800/50 transition-colors"
-                                        title="Xóa văn bản"
+                                        title={t('tts.clearText')}
                                     >
                                         <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
                                     </button>
@@ -217,14 +207,14 @@ export default function TextToSpeechPage() {
                             <textarea
                                 value={text}
                                 onChange={(e) => setText(e.target.value)}
-                                placeholder="Nhập văn bản bạn muốn chuyển thành giọng nói..."
+                                placeholder={t('tts.placeholder')}
                                 className="w-full h-64 px-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:border-purple-400 dark:focus:border-purple-500 resize-none text-gray-700 dark:text-gray-200 leading-relaxed bg-white dark:bg-gray-700 placeholder-gray-400 dark:placeholder-gray-500 theme-transition"
                                 disabled={isLoading}
                             />
 
                             <div className="flex items-center justify-between mt-4">
                                 <span className="text-sm text-gray-500 dark:text-gray-400">
-                                    {text.length} ký tự
+                                    {text.length} {t('tts.chars')}
                                 </span>
                                 <button
                                     onClick={handleGenerate}
@@ -237,12 +227,12 @@ export default function TextToSpeechPage() {
                                     {isLoading ? (
                                         <>
                                             <Loader className="w-5 h-5 animate-spin" />
-                                            Đang xử lý...
+                                            {t('tts.processing')}
                                         </>
                                     ) : (
                                         <>
                                             <Volume2 className="w-5 h-5" />
-                                            Chuyển đổi
+                                            {t('tts.convert')}
                                         </>
                                     )}
                                 </button>
@@ -255,7 +245,7 @@ export default function TextToSpeechPage() {
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                                         <Settings className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                                        Cài đặt
+                                        {t('tts.settings')}
                                     </h3>
                                     <button
                                         onClick={() => setShowSettings(false)}
@@ -268,38 +258,38 @@ export default function TextToSpeechPage() {
                                 <div className="space-y-4">
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                            Gemini API Key
+                                            {t('tts.apiKeyLabel')}
                                         </label>
                                         <input
                                             type="password"
                                             value={apiKey}
                                             onChange={(e) => setApiKey(e.target.value)}
-                                            placeholder="Nhập API key của bạn..."
+                                            placeholder={t('tts.apiKeyPlaceholder')}
                                             className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:border-purple-400 dark:focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                                         />
                                         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            Lấy API key tại: <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Google AI Studio</a>
+                                            {t('tts.apiKeyHelp')} <a href="https://makersuite.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-purple-600 dark:text-purple-400 hover:underline">Google AI Studio</a>
                                         </p>
                                     </div>
 
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                            Ngôn ngữ: {voice}
+                                            {t('tts.language')}: {voice}
                                         </label>
                                         <select
                                             value={voice}
                                             onChange={(e) => setVoice(e.target.value)}
                                             className="w-full px-4 py-2 border-2 border-gray-200 dark:border-gray-600 rounded-lg focus:outline-none focus:border-purple-400 dark:focus:border-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
                                         >
-                                            <option value="vi-VN">🇻🇳 Tiếng Việt</option>
-                                            <option value="en-US">🇺🇸 English</option>
-                                            <option value="zh-CN">🇨🇳 中文</option>
+                                            <option value="vi-VN">🇻🇳 {t('tts.voiceVi')}</option>
+                                            <option value="en-US">🇺🇸 {t('tts.voiceEn')}</option>
+                                            <option value="zh-CN">🇨🇳 {t('tts.voiceZh')}</option>
                                         </select>
                                     </div>
 
                                     <div>
                                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                            Tốc độ đọc: {speed}x
+                                            {t('tts.speedValue', { speed })}
                                         </label>
                                         <input
                                             type="range"
@@ -311,9 +301,9 @@ export default function TextToSpeechPage() {
                                             className="w-full accent-purple-600"
                                         />
                                         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                            <span>Chậm (0.5x)</span>
-                                            <span>Bình thường (1.0x)</span>
-                                            <span>Nhanh (2.0x)</span>
+                                            <span>{t('tts.slow')}</span>
+                                            <span>{t('tts.normal')}</span>
+                                            <span>{t('tts.fast')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -335,7 +325,7 @@ export default function TextToSpeechPage() {
                             <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl shadow-xl p-6 text-white">
                                 <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                                     <Volume2 className="w-5 h-5" />
-                                    Đang phát
+                                    {t('tts.nowPlaying')}
                                 </h3>
                                 <div className="flex items-center justify-center gap-4">
                                     <button
@@ -352,7 +342,7 @@ export default function TextToSpeechPage() {
                                         onClick={handleStop}
                                         className="px-6 py-3 bg-white/20 hover:bg-white/30 rounded-full font-semibold transition-all"
                                     >
-                                        Dừng
+                                        {t('tts.stop')}
                                     </button>
                                 </div>
                                 <div className="mt-4 flex items-center justify-center gap-2">
@@ -378,7 +368,7 @@ export default function TextToSpeechPage() {
                         {/* Sample Texts */}
                         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 p-6 theme-transition">
                             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-                                📝 Văn bản mẫu
+                                📝 {t('tts.sampleTexts')}
                             </h3>
                             <div className="space-y-3">
                                 {SAMPLE_TEXTS.map((sample, index) => (
@@ -401,20 +391,20 @@ export default function TextToSpeechPage() {
                         {/* Tips */}
                         <div className="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-2xl p-6 border border-purple-200 dark:border-purple-700">
                             <h3 className="text-lg font-bold text-purple-800 dark:text-purple-300 mb-3 flex items-center gap-2">
-                                💡 Mẹo sử dụng
+                                💡 {t('tts.tips')}
                             </h3>
                             <ul className="space-y-2 text-sm text-purple-700 dark:text-purple-300">
                                 <li className="flex items-start gap-2">
                                     <span className="text-purple-500">•</span>
-                                    <span>Nhập văn bản tiếng Việt để có kết quả tốt nhất</span>
+                                    <span>{t('tts.tip1')}</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-purple-500">•</span>
-                                    <span>Điều chỉnh tốc độ đọc trong phần Cài đặt</span>
+                                    <span>{t('tts.tip2')}</span>
                                 </li>
                                 <li className="flex items-start gap-2">
                                     <span className="text-purple-500">•</span>
-                                    <span>Sử dụng văn bản mẫu để thử nghiệm nhanh</span>
+                                    <span>{t('tts.tip3')}</span>
                                 </li>
                             </ul>
                         </div>

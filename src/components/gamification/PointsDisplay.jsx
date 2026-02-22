@@ -8,11 +8,8 @@ import { Star, TrendingUp, Award, Flame } from 'lucide-react';
  */
 export function PointsDisplay({ compact = false }) {
   const { i18n } = useTranslation();
-  const { progress, getCurrentLevel, getProgressToNextLevel } = useGamification();
+  const { progress } = useGamification();
   const isVietnamese = i18n.language === 'vi';
-
-  const currentLevel = getCurrentLevel();
-  const levelProgress = getProgressToNextLevel();
 
   if (compact) {
     return (
@@ -110,7 +107,7 @@ export function PointsDisplay({ compact = false }) {
  */
 export function LevelProgress({ showLabel = true }) {
   const { i18n } = useTranslation();
-  const { progress, getCurrentLevel, getProgressToNextLevel } = useGamification();
+  const { getCurrentLevel, getProgressToNextLevel } = useGamification();
   const isVietnamese = i18n.language === 'vi';
 
   const currentLevel = getCurrentLevel();

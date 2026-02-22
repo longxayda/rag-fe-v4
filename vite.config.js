@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -6,6 +7,13 @@ import { VitePWA } from 'vite-plugin-pwa'
 export default defineConfig({
   resolve: {
     dedupe: ['react', 'react-dom'],
+    alias: {
+      react: path.resolve(process.cwd(), 'node_modules/react'),
+      'react-dom': path.resolve(process.cwd(), 'node_modules/react-dom'),
+    },
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-i18next', 'i18next'],
   },
   plugins: [
     react(),
@@ -69,4 +77,15 @@ export default defineConfig({
     })
   ],
   base: '/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          mapbox: ['mapbox-gl'],
+          vendor: ['react', 'react-dom', 'react-router-dom', 'react-i18next', 'i18next'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 })

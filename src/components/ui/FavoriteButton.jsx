@@ -1,6 +1,7 @@
 import React from 'react';
-import { Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
+import { Heart } from 'lucide-react';
 import { useFavorites } from '../../context/FavoritesContext';
 
 export default function FavoriteButton({ 
@@ -9,6 +10,7 @@ export default function FavoriteButton({
   showLabel = false,
   className = '' 
 }) {
+  const { t } = useTranslation();
   const { isFavorite, toggleFavorite } = useFavorites();
   const isActive = isFavorite(heritageId);
 
@@ -40,7 +42,7 @@ export default function FavoriteButton({
         }
         ${className}
       `}
-      aria-label={isActive ? 'Bỏ yêu thích' : 'Thêm yêu thích'}
+      aria-label={isActive ? t('common.removeFavorite') : t('common.addFavorite')}
     >
       <motion.div
         initial={false}
@@ -54,7 +56,7 @@ export default function FavoriteButton({
       
       {showLabel && (
         <span className="ml-2 text-sm font-medium">
-          {isActive ? 'Đã thích' : 'Yêu thích'}
+          {isActive ? t('common.favoriteActive') : t('common.favoriteInactive')}
         </span>
       )}
     </motion.button>

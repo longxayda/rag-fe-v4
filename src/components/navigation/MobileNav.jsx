@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Home, BookOpen, Map, MessageSquare, Gamepad2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+/* eslint-disable-next-line no-unused-vars -- motion used in JSX (motion.div, motion.button, etc.) */
+import { motion, useMotionValue, animate } from 'framer-motion';
 
 export default function MobileNav() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function MobileNav() {
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- navItems is stable
   }, [location.pathname]);
 
   // Animated indicator position
@@ -37,6 +39,7 @@ export default function MobileNav() {
       stiffness: 300,
       damping: 30,
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- indicatorX is motion value ref
   }, [activeIndex, navItems.length]);
 
   const handleNavClick = (path, index) => {
@@ -66,7 +69,7 @@ export default function MobileNav() {
 
         {/* Navigation items */}
         <div className="flex items-center justify-around relative z-10 py-2">
-          {navItems.map(({ path, icon: Icon, label }, index) => {
+          {navItems.map(({ path, icon: Icon, label }, index) => { // eslint-disable-line no-unused-vars -- Icon used in JSX below
             const isActive = activeIndex === index;
 
             return (

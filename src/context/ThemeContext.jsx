@@ -33,7 +33,7 @@ export function ThemeProvider({ children }) {
     return 'normal';
   });
 
-  // Apply dark mode class to document
+  // Apply dark mode class to document and theme-color meta
   useEffect(() => {
     const root = document.documentElement;
     if (isDarkMode) {
@@ -42,6 +42,8 @@ export function ThemeProvider({ children }) {
       root.classList.remove('dark');
     }
     localStorage.setItem(THEME_KEY, isDarkMode ? 'dark' : 'light');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', isDarkMode ? '#111827' : '#b91c1c');
   }, [isDarkMode]);
 
   // Apply font size to document

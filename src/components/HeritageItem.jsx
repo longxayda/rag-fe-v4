@@ -1,36 +1,13 @@
+import { useTranslation } from 'react-i18next';
 import { MapPin, Calendar, Landmark, Award, Star, ChevronRight } from 'lucide-react';
+import { getRankingStyle, normalizeRankingCode, RANKING_CODES } from '../../utils/ranking';
 
 export function HeritageListItem({ item, onClick }) {
-  const getRankingStyle = (rankingType) => {
-    switch (rankingType?.toLowerCase()) {
-      case 'quốc gia đặc biệt':
-        return {
-          badge: 'bg-heritage-red-100 text-heritage-red-800 border-heritage-red-300',
-          accent: 'bg-heritage-red-700',
-          icon: <Star className="w-3 h-3" />,
-        };
-      case 'quốc gia':
-        return {
-          badge: 'bg-heritage-gold-100 text-heritage-gold-800 border-heritage-gold-300',
-          accent: 'bg-heritage-gold-600',
-          icon: <Award className="w-3 h-3" />,
-        };
-      case 'cấp tỉnh':
-        return {
-          badge: 'bg-heritage-jade-100 text-heritage-jade-800 border-heritage-jade-300',
-          accent: 'bg-heritage-jade-600',
-          icon: <Landmark className="w-3 h-3" />,
-        };
-      default:
-        return {
-          badge: 'bg-heritage-earth-100 text-heritage-earth-700 border-heritage-earth-300',
-          accent: 'bg-heritage-earth-500',
-          icon: <Landmark className="w-3 h-3" />,
-        };
-    }
-  };
-
+  const { t } = useTranslation();
+  const code = normalizeRankingCode(item.rankingType);
   const style = getRankingStyle(item.rankingType);
+  const rankingLabel = code ? t(`ranking.${code}`) : (item.rankingType || '');
+  const IconComponent = code === RANKING_CODES.NATIONAL_SPECIAL ? Star : code === RANKING_CODES.NATIONAL ? Award : Landmark;
 
   return (
     <div
@@ -74,8 +51,8 @@ export function HeritageListItem({ item, onClick }) {
               {item.name}
             </h3>
             <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border flex items-center gap-1 flex-shrink-0 ${style.badge}`}>
-              {style.icon}
-              <span className="hidden sm:inline">{item.rankingType}</span>
+              <IconComponent className="w-3 h-3" />
+              <span className="hidden sm:inline">{rankingLabel}</span>
             </span>
           </div>
 
@@ -98,7 +75,7 @@ export function HeritageListItem({ item, onClick }) {
           {item.yearRanked ? (
             <div className="flex items-center gap-1.5 text-xs text-heritage-earth-500">
               <Award className="w-3.5 h-3.5 text-heritage-gold-500" />
-              <span>Xếp hạng năm {item.yearRanked}</span>
+              <span>{t('detail.yearRanked')} {item.yearRanked}</span>
             </div>
           ) : (
             <div />
@@ -106,7 +83,7 @@ export function HeritageListItem({ item, onClick }) {
 
           {/* View more indicator */}
           <div className="flex items-center gap-1 text-xs font-medium text-heritage-red-600 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span>Xem chi tiết</span>
+            <span>{t('common.viewDetails')}</span>
             <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </div>
         </div>

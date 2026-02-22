@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Search, MapPin, Heart, MessageSquare, FileQuestion } from 'lucide-react';
 
 const illustrations = {
@@ -11,10 +12,13 @@ const illustrations = {
 
 export default function EmptyState({ 
   type = 'default',
-  title = 'Không có dữ liệu',
-  description = 'Chưa có nội dung để hiển thị',
+  title,
+  description,
   action = null 
 }) {
+  const { t } = useTranslation();
+  const displayTitle = title ?? t('common.noData');
+  const displayDescription = description ?? t('common.noContent');
   const Icon = illustrations[type] || illustrations.default;
   
   return (
@@ -24,11 +28,11 @@ export default function EmptyState({
       </div>
       
       <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
-        {title}
+        {displayTitle}
       </h3>
       
       <p className="text-gray-500 dark:text-gray-400 max-w-md mb-6">
-        {description}
+        {displayDescription}
       </p>
       
       {action && (

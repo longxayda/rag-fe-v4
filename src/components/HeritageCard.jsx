@@ -1,36 +1,13 @@
+import { useTranslation } from 'react-i18next';
 import { MapPin, Calendar, Landmark, Award, Star } from 'lucide-react';
+import { getRankingStyle, normalizeRankingCode, RANKING_CODES } from '../../utils/ranking';
 
 export function HeritageCard({ item, onClick }) {
-  const getRankingStyle = (rankingType) => {
-    switch (rankingType?.toLowerCase()) {
-      case 'quốc gia đặc biệt':
-        return {
-          badge: 'bg-heritage-red-100 dark:bg-heritage-red-900/50 text-heritage-red-800 dark:text-heritage-red-200 border-heritage-red-300 dark:border-heritage-red-700',
-          accent: 'from-heritage-red-600 to-heritage-red-700',
-          icon: <Star className="w-3 h-3" />,
-        };
-      case 'quốc gia':
-        return {
-          badge: 'bg-heritage-gold-100 dark:bg-heritage-gold-900/50 text-heritage-gold-800 dark:text-heritage-gold-200 border-heritage-gold-300 dark:border-heritage-gold-700',
-          accent: 'from-heritage-gold-500 to-heritage-gold-600',
-          icon: <Award className="w-3 h-3" />,
-        };
-      case 'cấp tỉnh':
-        return {
-          badge: 'bg-heritage-jade-100 dark:bg-emerald-900/50 text-heritage-jade-800 dark:text-emerald-200 border-heritage-jade-300 dark:border-emerald-700',
-          accent: 'from-heritage-jade-500 to-heritage-jade-600',
-          icon: <Landmark className="w-3 h-3" />,
-        };
-      default:
-        return {
-          badge: 'bg-heritage-earth-100 dark:bg-gray-700 text-heritage-earth-700 dark:text-gray-300 border-heritage-earth-300 dark:border-gray-600',
-          accent: 'from-heritage-earth-400 to-heritage-earth-500',
-          icon: <Landmark className="w-3 h-3" />,
-        };
-    }
-  };
-
+  const { t } = useTranslation();
+  const code = normalizeRankingCode(item.rankingType);
   const style = getRankingStyle(item.rankingType);
+  const rankingLabel = code ? t(`ranking.${code}`) : (item.rankingType || '');
+  const IconComponent = code === RANKING_CODES.NATIONAL_SPECIAL ? Star : code === RANKING_CODES.NATIONAL ? Award : Landmark;
 
   return (
     <div
@@ -66,8 +43,8 @@ export function HeritageCard({ item, onClick }) {
         {/* Ranking Badge */}
         <div className="absolute top-3 right-3">
           <span className={`px-3 py-1.5 rounded-full text-xs font-semibold border ${style.badge} shadow-sm flex items-center gap-1.5`}>
-            {style.icon}
-            {item.rankingType}
+            <IconComponent className="w-3 h-3" />
+            {rankingLabel}
           </span>
         </div>
 
@@ -75,7 +52,7 @@ export function HeritageCard({ item, onClick }) {
         {item.yearBuilt && (
           <div className="absolute bottom-3 left-3 bg-heritage-earth-900/80 dark:bg-gray-900/80 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <Calendar className="w-3 h-3 text-heritage-gold-400" />
-            <span>Xây dựng: {item.yearBuilt}</span>
+            <span>{t('detail.yearBuilt')}: {item.yearBuilt}</span>
           </div>
         )}
       </div>
@@ -113,7 +90,7 @@ export function HeritageCard({ item, onClick }) {
 
           {/* View more indicator */}
           <div className="text-xs font-medium text-heritage-red-600 dark:text-heritage-red-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
-            <span>Xem chi tiết</span>
+            <span>{t('common.viewDetails')}</span>
             <span className="group-hover:translate-x-1 transition-transform">→</span>
           </div>
         </div>

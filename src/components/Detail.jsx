@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X, MapPin, Calendar, Info, Volume2, Pause, Play, Loader, Landmark, Award, Star, Sparkles, Video, Image as ImageIcon } from 'lucide-react';
 import { heritageApi } from '../services/api';
 import { formatCategoryLabel } from '../pages/HeritageList';
+import { getRankingStyle, normalizeRankingCode, RANKING_CODES } from '../utils/ranking';
 export function HeritageDetailModal({ itemId, initialItem, onClose, language = 'vi' }) {
+    const { t } = useTranslation();
     const [item, setItem] = useState(initialItem);
     const [loading, setLoading] = useState(!initialItem);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -23,12 +26,11 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                 // Luôn fetch bản full từ API chi tiết
                 if (itemId) {
                     const data = await heritageApi.getById(itemId, language);
-                    console.log("FULL DATA:", data);
                     setItem(data); // ghi đè lại bằng bản đầy đủ
                 }
 
-            } catch (error) {
-                console.error('Error fetching heritage details:', error);
+            } catch {
+                // Error fetching heritage details
             } finally {
                 setLoading(false);
             }
@@ -48,11 +50,12 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
     useEffect(() => {
         // Prevent body scroll when modal is open
         document.body.style.overflow = 'hidden';
+        const audioEl = audioRef.current;
         return () => {
             document.body.style.overflow = 'unset';
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
+            if (audioEl) {
+                audioEl.pause();
+                audioEl.currentTime = 0;
             }
         };
     }, []);
@@ -89,8 +92,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
             setIsLoadingAudio(false);
             audioRef.current.play()
                 .then(() => setIsPlaying(true))
-                .catch((err) => {
-                    console.error("Play error:", err);
+                .catch(() => {
                     setAudioError(true);
                     setIsLoadingAudio(false);
                 });
@@ -101,7 +103,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
         };
 
         audioRef.current.onerror = () => {
-            console.error("Audio load error");
+            if (import.meta.env.DEV) console.error("Audio load error");
             setAudioError(true);
             setIsPlaying(false);
             setIsLoadingAudio(false);
@@ -116,35 +118,11 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
         }
     };
 
-    const getRankingStyle = (rankingType) => {
-        const type = rankingType?.toLowerCase() || '';
-        if (type.includes('đặc biệt')) {
-            return {
-                badge: 'bg-heritage-red-100 text-heritage-red-800 border-heritage-red-300',
-                gradient: 'from-heritage-red-700 via-heritage-red-600 to-heritage-red-700',
-                icon: <Star className="w-4 h-4" />,
-            };
-        }
-        if (type.includes('quốc gia')) {
-            return {
-                badge: 'bg-heritage-gold-100 text-heritage-gold-800 border-heritage-gold-300',
-                gradient: 'from-heritage-gold-600 via-heritage-gold-500 to-heritage-gold-600',
-                icon: <Award className="w-4 h-4" />,
-            };
-        }
-        if (type.includes('tỉnh')) {
-            return {
-                badge: 'bg-heritage-jade-100 text-heritage-jade-800 border-heritage-jade-300',
-                gradient: 'from-heritage-jade-600 via-heritage-jade-500 to-heritage-jade-600',
-                icon: <Landmark className="w-4 h-4" />,
-            };
-        }
-        return {
-            badge: 'bg-heritage-earth-100 text-heritage-earth-700 border-heritage-earth-300',
-            gradient: 'from-heritage-earth-500 to-heritage-earth-600',
-            icon: <Landmark className="w-4 h-4" />,
-        };
-    };
+    // Ranking style and label from util (language-agnostic code)
+    const rankingCode = normalizeRankingCode(item.ranking_type);
+    const rankingStyle = getRankingStyle(item.ranking_type);
+    const rankingLabel = rankingCode ? t(`ranking.${rankingCode}`) : (item.ranking_type || '');
+    const RankingIcon = rankingCode === RANKING_CODES.NATIONAL_SPECIAL ? Star : rankingCode === RANKING_CODES.NATIONAL ? Award : Landmark;
 
     const getCategoryStyle = (category) => {
         switch (category) {
@@ -177,7 +155,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-heritage-earth-950/70 backdrop-blur-sm">
                 <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 flex items-center gap-4">
                     <Loader className="w-6 h-6 animate-spin text-heritage-gold-600" />
-                    <span className="text-heritage-earth-900 dark:text-gray-100">Đang tải...</span>
+                    <span className="text-heritage-earth-900 dark:text-gray-100">{t('common.loading')}</span>
                 </div>
             </div>
         );
@@ -185,7 +163,6 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
 
     if (!item) return null;
 
-    const style = getRankingStyle(item.ranking_type);
     const categoryStyle = getCategoryStyle(item.category);
 
     return (
@@ -212,7 +189,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                 className="w-full h-full object-cover"
                             />
                         ) : (
-                            <div className={`bg-gradient-to-br ${style.gradient} h-full flex items-center justify-center relative overflow-hidden`}>
+                            <div className={`bg-gradient-to-br ${rankingStyle.gradient} h-full flex items-center justify-center relative overflow-hidden`}>
                                 <div className="absolute inset-0 opacity-10">
                                     <div className="absolute inset-0 bg-lotus-pattern" />
                                 </div>
@@ -232,16 +209,16 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                         <div className="mb-3 flex flex-wrap gap-2">
                             {/* Ranking Badge */}
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${style.badge}`}>
-                                {style.icon}
-                                {item.ranking_type}
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${rankingStyle.badge}`}>
+                                <RankingIcon className="w-4 h-4" />
+                                {rankingLabel}
                             </span>
 
                             {/* Category Badge */}
                             {item.category && (
                                 <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${categoryStyle.badge}`}>
                                     {categoryStyle.icon}
-                                    {formatCategoryLabel(item.category)}
+                                    {formatCategoryLabel(item.category, t)}
                                 </span>
                             )}
                         </div>
@@ -315,17 +292,17 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                     {isLoadingAudio ? (
                                         <>
                                             <Loader className="w-5 h-5 animate-spin" />
-                                            Đang tải...
+                                            {t('common.loading')}
                                         </>
                                     ) : isPlaying ? (
                                         <>
                                             <Pause className="w-5 h-5" />
-                                            Tạm dừng
+                                            {t('detail.pause')}
                                         </>
                                     ) : (
                                         <>
                                             <Play className="w-5 h-5" />
-                                            Phát audio
+                                            {t('detail.playAudio')}
                                         </>
                                     )}
                                 </button>
@@ -349,6 +326,25 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                         </div>
                     )}
 
+                    {/* Music audio (file âm thanh âm nhạc) */}
+                    {item.music_audio_url && (
+                        <div className="mb-6 p-5 rounded-xl bg-gradient-to-r from-emerald-50 to-heritage-cream-100 dark:from-gray-700 dark:to-gray-700 border-2 border-emerald-200 dark:border-gray-600">
+                            <div className="flex items-center gap-3 mb-3">
+                                <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center">
+                                    <Volume2 className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                    <span className="font-display font-semibold text-heritage-earth-900 dark:text-gray-100">Âm nhạc</span>
+                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">File âm thanh âm nhạc</p>
+                                </div>
+                            </div>
+                            <audio controls className="w-full mt-2 h-10">
+                                <source src={item.music_audio_url} />
+                                Trình duyệt không hỗ trợ audio
+                            </audio>
+                        </div>
+                    )}
+
                     {/* YouTube Videos */}
                     {item.youtube_links && item.youtube_links.length > 0 && (
                         <div className="mb-6">
@@ -358,9 +354,9 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-                                        Video giới thiệu ({item.youtube_links.length})
+                                        {t('detail.videoIntro', { count: item.youtube_links.length })}
                                     </h3>
-                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">Tìm hiểu thêm qua video</p>
+                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">{t('detail.learnMoreVideo')}</p>
                                 </div>
                             </div>
 
@@ -388,7 +384,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                                     className="flex items-center justify-center h-32 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                                                 >
                                                     <Video className="w-8 h-8 text-gray-400 mr-2" />
-                                                    <span className="text-gray-600 dark:text-gray-300">Xem video</span>
+                                                    <span className="text-gray-600 dark:text-gray-300">{t('detail.watchVideo')}</span>
                                                 </a>
                                             )}
                                         </div>
@@ -486,13 +482,13 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                             </div>
                         )}
 
-                        {item.ranking_type && (
+                        {(rankingLabel || item.ranking_type) && (
                             <div className="p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
                                 <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-1">
                                     <Award className="w-4 h-4 text-heritage-gold-500" />
-                                    <span>Loại xếp hạng</span>
+                                    <span>{t('detail.rankingType')}</span>
                                 </div>
-                                <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{item.ranking_type}</div>
+                                <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{rankingLabel || item.ranking_type}</div>
                             </div>
                         )}
                     </div>
@@ -504,14 +500,14 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                         <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1.5 text-sm text-heritage-earth-500 dark:text-gray-400">
                                 <Landmark className="w-4 h-4 text-heritage-gold-500" />
-                                <span>Mã số: <span className="font-semibold text-heritage-earth-700 dark:text-gray-200">#{item.id}</span></span>
+                                <span>{t('detail.codeNumber')}: <span className="font-semibold text-heritage-earth-700 dark:text-gray-200">#{item.id}</span></span>
                             </div>
                         </div>
                         <button
                             onClick={onClose}
                             className="px-6 py-2.5 rounded-lg bg-heritage-earth-800 hover:bg-heritage-earth-900 dark:bg-gray-600 dark:hover:bg-gray-500 text-white font-semibold transition-colors shadow-elegant"
                         >
-                            Đóng
+                            {t('common.close')}
                         </button>
                     </div>
                 </div>
