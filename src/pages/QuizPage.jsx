@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Trophy, RotateCcw, ArrowRight, Sparkles, CheckCircle, XCircle, Landmark, Award, Brain, Share2, Twitter, Facebook, Link2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { questions } from '../data/quiz';
 
@@ -12,7 +12,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [answered, setAnswered] = useState(false);
-  const [spinning, setSpinning] = useState(false);
+  const [, setSpinning] = useState(false);
   const [animatedScore, setAnimatedScore] = useState(0);
   const [showShareMenu, setShowShareMenu] = useState(false);
 

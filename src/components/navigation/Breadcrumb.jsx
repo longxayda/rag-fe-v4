@@ -46,7 +46,7 @@ export default function Breadcrumb() {
 
         return (
           <React.Fragment key={name}>
-            <ChevronRight className="w-4 h-4 text-gray-400" />
+            <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500" />
             {isLast ? (
               <span className="text-heritage-red-600 dark:text-heritage-gold-400 font-medium">
                 {displayName}

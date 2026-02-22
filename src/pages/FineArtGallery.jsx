@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Palette, X } from "lucide-react";
 import { fineArtApi } from "../services/api";
 
 export const FineArtsGallery = () => {
+  const { t } = useTranslation();
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -16,7 +18,7 @@ export const FineArtsGallery = () => {
       setLoading(true);
       const result = await fineArtApi.getAll(1, 100);
       setImages(result.data || []);
-    } catch (err) {
+    } catch {
       console.error("Failed to load fine art");
     } finally {
       setLoading(false);
@@ -25,20 +27,18 @@ export const FineArtsGallery = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-96 flex items-center justify-center text-gray-500">
-        Loading fine arts...
+      <div className="w-full h-96 flex items-center justify-center text-gray-500 dark:text-gray-400">
+        {t('common.loading')}
       </div>
     );
   }
 
   if (images.length === 0) {
     return (
-      <div className="w-full h-96 flex flex-col items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg text-gray-400">
+      <div className="w-full h-96 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-400 dark:text-gray-500">
         <Palette className="w-16 h-16 mb-4 opacity-50" />
-        <h3 className="text-xl font-bold text-gray-500">
-          Thư viện Mỹ Thuật
-        </h3>
-        <p>Chưa có hình ảnh nghệ thuật nào</p>
+        <h3 className="text-xl font-bold text-gray-500 dark:text-gray-400">{t('heritageList.fineArtsLibrary')}</h3>
+        <p>{t('heritageList.noFineArts')}</p>
       </div>
     );
   }

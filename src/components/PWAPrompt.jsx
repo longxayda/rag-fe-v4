@@ -106,14 +106,14 @@ export function PWAPrompt() {
               <>
                 <Wifi className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <span className="text-sm font-medium text-emerald-800 dark:text-emerald-200">
-                  {t('pwa.backOnline') || 'Đã kết nối lại'}
+                  {t('pwa.backOnline')}
                 </span>
               </>
             ) : (
               <>
                 <WifiOff className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 <span className="text-sm font-medium text-amber-800 dark:text-amber-200">
-                  {t('pwa.offline') || 'Bạn đang offline'}
+                  {t('pwa.offline')}
                 </span>
               </>
             )}
@@ -131,7 +131,7 @@ export function PWAPrompt() {
                 <div className="flex items-center gap-2">
                   <Smartphone className="w-5 h-5 text-heritage-gold-300" />
                   <span className="font-semibold text-white">
-                    {t('pwa.installTitle') || 'Cài đặt ứng dụng'}
+                    {t('pwa.installTitle')}
                   </span>
                 </div>
                 <button
@@ -146,22 +146,21 @@ export function PWAPrompt() {
             {/* Content */}
             <div className="p-4">
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                {t('pwa.installDescription') ||
-                  'Cài đặt ứng dụng Di sản Văn hóa Cà Mau để truy cập nhanh hơn và sử dụng offline.'}
+                {t('pwa.installDescription')}
               </p>
 
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <CheckCircle className="w-4 h-4 text-emerald-500" />
-                  <span>{t('pwa.benefit1') || 'Truy cập nhanh từ màn hình chính'}</span>
+                  <span>{t('pwa.benefit1')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <CheckCircle className="w-4 h-4 text-emerald-500" />
-                  <span>{t('pwa.benefit2') || 'Hoạt động khi không có mạng'}</span>
+                  <span>{t('pwa.benefit2')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                   <CheckCircle className="w-4 h-4 text-emerald-500" />
-                  <span>{t('pwa.benefit3') || 'Nhận thông báo về di sản mới'}</span>
+                  <span>{t('pwa.benefit3')}</span>
                 </div>
               </div>
 
@@ -171,14 +170,14 @@ export function PWAPrompt() {
                   onClick={handleDismissInstall}
                   className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
-                  {t('common.later') || 'Để sau'}
+                  {t('common.later')}
                 </button>
                 <button
                   onClick={handleInstall}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-heritage-red-700 rounded-xl hover:bg-heritage-red-800 transition-colors shadow-lg"
                 >
                   <Download className="w-4 h-4" />
-                  {t('pwa.install') || 'Cài đặt'}
+                  {t('pwa.install')}
                 </button>
               </div>
             </div>
@@ -196,7 +195,7 @@ export function PWAPrompt() {
                 <div className="flex items-center gap-2">
                   <RefreshCw className="w-5 h-5 text-blue-200" />
                   <span className="font-semibold text-white">
-                    {t('pwa.updateTitle') || 'Có bản cập nhật mới'}
+                    {t('pwa.updateTitle')}
                   </span>
                 </div>
                 <button
@@ -211,8 +210,7 @@ export function PWAPrompt() {
             {/* Content */}
             <div className="p-4">
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                {t('pwa.updateDescription') ||
-                  'Một phiên bản mới của ứng dụng đã sẵn sàng. Cập nhật ngay để có trải nghiệm tốt nhất.'}
+                {t('pwa.updateDescription')}
               </p>
 
               {/* Actions */}
@@ -221,14 +219,14 @@ export function PWAPrompt() {
                   onClick={() => setShowUpdatePrompt(false)}
                   className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
-                  {t('common.later') || 'Để sau'}
+                  {t('common.later')}
                 </button>
                 <button
                   onClick={handleUpdate}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-xl hover:bg-blue-700 transition-colors shadow-lg"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  {t('pwa.update') || 'Cập nhật'}
+                  {t('pwa.update')}
                 </button>
               </div>
             </div>

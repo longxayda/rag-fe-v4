@@ -7,9 +7,9 @@ const LANGUAGE_KEY = 'heritage-language';
 
 const languages = [
   { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳', dir: 'ltr' },
-  { code: 'en', name: 'English', flag: '🇺🇸', dir: 'ltr' },
-  { code: 'zh', name: '中文', flag: '🇨🇳', dir: 'ltr' },
-  { code: 'km', name: 'ភាសាខ្មែរ', flag: '🇰🇭', dir: 'ltr' },
+  { code: 'en', name: 'Tiếng Anh', flag: '🇺🇸', dir: 'ltr' },
+  { code: 'zh', name: 'Tiếng Hoa', flag: '🇨🇳', dir: 'ltr' },
+  { code: 'km', name: 'Tiếng Khmer', flag: '🇰🇭', dir: 'ltr' },
 ];
 
 export function LanguageProvider({ children }) {

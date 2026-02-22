@@ -5,6 +5,7 @@ import AdminDashboard from './AdminDashboard';
 import HeritageManager from './HeritageManager';
 import MusicManager from './MusicManager';
 import FineArtManager from './FineArtManager';
+import MapPlacesManagement from './MapPlacesManagement';
 import PeopleManager from './PeopleManager';
 import FestivalManager from './FestivalManager';
 import QuizManager from './QuizManager';
@@ -49,6 +50,8 @@ export default function AdminPage() {
         return <MusicManager onBack={() => handleNavigate('dashboard')} />;
       case 'fineart':
         return <FineArtManager onBack={() => handleNavigate('dashboard')} />;
+      case 'mapplaces':
+        return <MapPlacesManagement onBack={() => handleNavigate('dashboard')} />;
       case 'people':
         return <PeopleManager onBack={() => handleNavigate('dashboard')} />;
       case 'festivals':

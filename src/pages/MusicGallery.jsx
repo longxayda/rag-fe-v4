@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Music } from "lucide-react";
 import { musicApi } from "../services/api";
 
 export const MusicGallery = () => {
+  const { t } = useTranslation();
   const [musicList, setMusicList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedMusic, setSelectedMusic] = useState(null);
@@ -55,19 +57,17 @@ export const MusicGallery = () => {
   if (loading) {
     return (
       <div className="w-full h-96 flex items-center justify-center">
-        <p className="text-gray-500">Đang tải...</p>
+        <p className="text-gray-500 dark:text-gray-400">{t('common.loading')}</p>
       </div>
     );
   }
 
   if (musicList.length === 0) {
     return (
-      <div className="w-full h-96 flex flex-col items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg text-gray-400">
+      <div className="w-full h-96 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-800 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-400 dark:text-gray-500">
         <Music className="w-16 h-16 mb-4 opacity-50" />
-        <h3 className="text-xl font-bold text-gray-500">
-          Thư viện Âm Nhạc
-        </h3>
-        <p>Chưa có nhạc nào được thêm</p>
+        <h3 className="text-xl font-bold text-gray-500 dark:text-gray-400">{t('heritageList.musicLibrary')}</h3>
+        <p>{t('heritageList.noMusic')}</p>
       </div>
     );
   }
@@ -97,11 +97,11 @@ export const MusicGallery = () => {
 
       {/* Modal */}
       {selectedMusic && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-3xl p-4 relative">
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg w-full max-w-3xl p-4 relative border border-gray-200 dark:border-gray-700">
             <button
               onClick={() => setSelectedMusic(null)}
-              className="absolute top-2 right-2 text-gray-500 hover:text-black"
+              className="absolute top-2 right-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"
             >
               ✕
             </button>

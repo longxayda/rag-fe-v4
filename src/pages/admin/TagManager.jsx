@@ -16,14 +16,13 @@ import {
 } from 'lucide-react';
 
 export default function TagManager({ onBack }) {
-  const { t } = useTranslation();
+  useTranslation();
   const {
     tags,
     categories,
     addTag,
     updateTag,
     deleteTag,
-    getCategoryInfo,
     getCategoryColorClass,
     resetTags
   } = useTags();

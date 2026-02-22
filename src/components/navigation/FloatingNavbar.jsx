@@ -1,63 +1,67 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../context/ThemeContext';
+import { useLanguage } from '../../context/LanguageContext';
 
 import {
-  Home, BookOpen, Map, MessageSquare, Gamepad2,
-  Globe, Moon, Sun, Menu, X
+  Home, BookOpen, Map, MessageSquare, Gamepad2, Settings,
+  Globe, Moon, Sun
 } from 'lucide-react';
 
 export default function FloatingNavbar() {
+  const { t } = useTranslation();
+  const { currentLanguage: _currentLanguage, changeLanguage: _changeLanguage } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isLangOpen, setIsLangOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('vi');
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const [_isLangOpen, _setIsLangOpen] = useState(false);
+  useTheme(); // theme applied via class on document
   const langRef = useRef(null);
-
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const navItems = [
-    { path: '/', icon: Home, label: 'Trang chủ' },
-    { path: '/heritage', icon: BookOpen, label: 'Di sản' },
-    { path: '/map', icon: Map, label: 'Bản đồ' },
-    { path: '/chat', icon: MessageSquare, label: 'Trò chuyện' },
-    { path: '/quiz', icon: Gamepad2, label: 'Đố vui' },
+    { path: '/', icon: Home, labelKey: 'nav.home' },
+    { path: '/heritage', icon: BookOpen, labelKey: 'nav.heritage' },
+    { path: '/map', icon: Map, labelKey: 'nav.map' },
+    { path: '/chat', icon: MessageSquare, labelKey: 'nav.chat' },
+    { path: '/quiz', icon: Gamepad2, labelKey: 'nav.quiz' },
+    { path: '/settings', icon: Settings, labelKey: 'nav.settings' },
   ];
 
-  const languages = [
-    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-    { code: 'en', name: 'English', flag: '🇬🇧' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'zh', name: '中文', flag: '🇨🇳' },
+  const _languages = [
+    { code: 'vi', nameKey: 'language.vi', flag: '🇻🇳' },
+    { code: 'en', nameKey: 'language.en', flag: '🇺🇸' },
+    { code: 'zh', nameKey: 'language.zh', flag: '🇨🇳' },
+    { code: 'km', nameKey: 'language.km', flag: '🇰🇭' },
   ];
 
   useEffect(() => {
     const currentIndex = navItems.findIndex(item =>
       item.path === '/'
         ? location.pathname === '/'
-        : location.pathname.startsWith(item.path)
+        : item.path === '/settings'
+          ? location.pathname === '/settings'
+          : location.pathname.startsWith(item.path)
     );
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- navItems is stable
   }, [location.pathname]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (langRef.current && !langRef.current.contains(event.target)) {
-        setIsLangOpen(false);
+        _setIsLangOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const itemWidth = 100 / navItems.length;
-  const currentLang = languages.find(l => l.code === currentLanguage) || languages[0];
+  const getLabel = (labelKey) => t(labelKey) || labelKey;
 
   const handleNavClick = (index) => {
     setActiveIndex(index);
@@ -65,13 +69,20 @@ export default function FloatingNavbar() {
   };
 
 
-  const changeLanguage = (code) => {
-    setCurrentLanguage(code);
-    setIsLangOpen(false);
-  };
-
   return (
     <>
+      {/* Logo GDĐP Cà Mau - góc dưới trái */}
+      <div
+        className="fixed z-40 left-2 bottom-24 md:bottom-4 md:left-4"
+        aria-hidden
+      >
+        <img
+          src="/logo-camau.svg"
+          alt={t('common.logoAlt')}
+          className="h-10 w-auto md:h-12 opacity-90 hover:opacity-100 transition-opacity"
+        />
+      </div>
+
       <style>{`
         @keyframes slideUp {
           from {
@@ -125,34 +136,31 @@ export default function FloatingNavbar() {
       {/* Desktop Floating Nav */}
       <nav className="hidden md:flex fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-[95vw]">
         <div className="flex items-center gap-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-gray-200/60 dark:border-gray-700/60 rounded-full px-3 py-2 shadow-[0_12px_35px_rgba(0,0,0,0.15)] dark:shadow-[0_12px_35px_rgba(0,0,0,0.4)]">
-          {/* Logo */}
+          {/* Logo + GDĐP Tỉnh Cà Mau (không có chữ CM) */}
           <button onClick={() => handleNavClick(0)} className="flex items-center gap-2 pr-3 border-r border-gray-200/50 dark:border-gray-700/50 shrink-0">
-            <div className="w-8 h-8 bg-red-700 rounded-full flex items-center justify-center text-white font-bold text-sm">
-              CM
-            </div>
-            <div className="leading-tight hidden lg:block">
-              <p className="text-sm font-semibold text-gray-800 dark:text-gray-100 font-serif tracking-tight whitespace-nowrap">
-                GDĐP Tỉnh Cà Mau
-              </p>
-            </div>
+            <img src="/logo-camau.svg" alt={t('common.logoAlt')} className="h-8 w-auto" />
+            <span className="text-sm font-semibold text-gray-800 dark:text-gray-100 font-display tracking-tight whitespace-nowrap hidden lg:inline">
+              GDĐP {t('common.appSubtitle')}
+            </span>
           </button>
 
           {/* Nav Items */}
-          <div className="flex items-center gap-0.5">
-            {navItems.map(({ icon: Icon, label }, index) => {
+          <div className="flex items-center gap-0.5 flex-wrap justify-center">
+            {/* eslint-disable-next-line no-unused-vars -- Icon used in JSX */}
+            {navItems.map(({ icon: Icon, labelKey }, index) => {
               const isActive = activeIndex === index;
               return (
                 <button
                   key={index}
                   onClick={() => handleNavClick(index)}
-                  className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full transition-all duration-200 shrink-0 ${isActive
+                  className={`inline-flex items-center gap-1.5 px-2.5 py-2 rounded-full transition-all duration-200 shrink-0 ${isActive
                     ? 'bg-yellow-100 dark:bg-yellow-900/30 text-red-700 dark:text-yellow-400'
                     : 'text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-yellow-400 hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   style={{ transform: isActive ? 'scale(0.95)' : 'scale(1)' }}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'stroke-[2.5]' : ''}`} fill={isActive ? 'currentColor' : 'none'} />
-                  <span className="text-xs font-medium whitespace-nowrap">{label}</span>
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'stroke-[2.5]' : ''}`} fill={isActive ? 'currentColor' : 'none'} />
+                  <span className="text-xs font-medium whitespace-nowrap">{getLabel(labelKey)}</span>
                 </button>
               );
             })}
@@ -185,13 +193,13 @@ export default function FloatingNavbar() {
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
-                    onClick={() => changeLanguage(lang.code)}
+                    onClick={() => { changeLanguage(lang.code); setIsLangOpen(false); }}
                     className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 ${
                       currentLanguage === lang.code ? 'text-red-600 dark:text-yellow-400 font-medium' : 'text-gray-700 dark:text-gray-300'
                     }`}
                   >
                     <span>{lang.flag}</span>
-                    <span>{lang.name}</span>
+                    <span>{t(lang.nameKey)}</span>
                   </button>
                 ))}
               </div>
@@ -200,107 +208,38 @@ export default function FloatingNavbar() {
         </div>
       </nav>
 
-      {/* Mobile Floating Nav - IMPROVED */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50">
-        <div className="px-3 pb-3">
-          <div className="flex items-center bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] relative overflow-hidden">
+      {/* Mobile Floating Nav - 6 items, balanced */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 safe-area-pb">
+        <div className="px-2 sm:px-3 pb-2 sm:pb-3 pt-1">
+          <div className="flex items-center bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl sm:rounded-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] relative overflow-hidden">
             {/* Navigation items */}
-            <div className="flex items-center justify-around relative z-10 w-full py-2.5 px-1">
-              {navItems.map(({ icon: Icon, label }, index) => {
+            <div className="flex items-center justify-around relative z-10 w-full py-2.5 px-0.5">
+              {/* eslint-disable-next-line no-unused-vars -- Icon used in JSX */}
+              {navItems.map(({ icon: Icon, labelKey }, index) => {
                 const isActive = activeIndex === index;
                 return (
                   <button
                     key={index}
                     onClick={() => handleNavClick(index)}
-                    className={`flex flex-col items-center justify-center flex-1 px-1 py-2 relative min-h-[56px] overflow-hidden ${isActive
-                      && 'bg-red-500'
-                      }`
-                    }>
-                    <div className="relative bg-black flex items-center justify-center h-6">
-                      <div
-                        className={`absolute transition-transform duration-200`}
-                      >
-                        <Icon
-                          className={`w-6 h-6 transition-colors duration-200 ${isActive
-                            ? 'text-white stroke-[2.5]'
-                            : 'text-gray-500 dark:text-gray-400 stroke-[2]'
-                            }`}
-                          fill={isActive ? 'currentColor' : 'none'}
-                        />
-                      </div>
-                    </div>
-                    <span
-                      className={`text-[10px] mt-1 font-medium transition-all duration-200 leading-tight ${isActive
-                        ? 'text-white font-semibold'
-                        : 'text-gray-500 dark:text-gray-400 opacity-85'
+                    className={`flex flex-col items-center justify-center flex-1 min-w-0 px-0.5 py-2 relative min-h-[52px] overflow-hidden rounded-xl transition-colors ${isActive ? 'bg-red-500' : ''}`}
+                  >
+                    <Icon
+                      className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors duration-200 shrink-0 ${isActive
+                        ? 'text-white stroke-[2.5]'
+                        : 'text-gray-500 dark:text-gray-400 stroke-[2]'
                         }`}
-                    >
-                      {label}
+                      fill={isActive ? 'currentColor' : 'none'}
+                    />
+                    <span className={`text-[9px] sm:text-[10px] mt-1 font-medium leading-tight truncate max-w-full px-0.5 ${isActive ? 'text-white font-semibold' : 'text-gray-500 dark:text-gray-400'}`}>
+                      {getLabel(labelKey)}
                     </span>
                   </button>
                 );
               })}
-
-              {/* Menu button for settings */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="flex flex-col items-center justify-center px-2 py-2 min-h-[56px] active:scale-95 transition-transform"
-              >
-                <div
-                  style={{
-                    transform: isMobileMenuOpen ? 'rotate(90deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.25s'
-                  }}
-                >
-                  {isMobileMenuOpen ? (
-                    <X className="w-6 h-6 text-gray-600 dark:text-gray-300" />
-                  ) : (
-                    <Menu className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-                  )}
-                </div>
-                <span className="text-[10px] mt-1 font-medium text-gray-500 dark:text-gray-400 leading-tight">
-                  Thêm
-                </span>
-              </button>
             </div>
           </div>
         </div>
       </nav>
-
-      {/* Mobile Menu Overlay - IMPROVED */}
-      {isMobileMenuOpen && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm md:hidden z-40 overlay-enter"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div className="fixed bottom-0 left-0 right-0 md:hidden z-50 nav-enter">
-            <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 rounded-t-3xl shadow-2xl">
-              {/* Handle Bar */}
-              <div className="flex justify-center pt-3 pb-2">
-                <div className="w-10 h-1 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
-              </div>
-
-              <div className="px-6 py-4 space-y-6 max-h-[60vh] overflow-y-auto">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-gray-200 dark:border-gray-700">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                    Cài đặt
-                  </h3>
-                  <button
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
-                  >
-                    <X className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  </button>
-                </div>
-                {/* Bottom spacing */}
-                <div className="h-4"></div>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
     </>
   );
 }

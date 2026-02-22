@@ -25,7 +25,7 @@ export default function FestivalManager({ onBack }) {
   const { t } = useTranslation();
   const [festivals, setFestivals] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFestival, setSelectedFestival] = useState(null);
+  const [, setSelectedFestival] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [formData, setFormData] = useState({});
@@ -39,7 +39,7 @@ export default function FestivalManager({ onBack }) {
     if (stored) {
       try {
         setFestivals(JSON.parse(stored));
-      } catch (e) {
+      } catch {
         setFestivals(initialFestivalsData || []);
       }
     } else {

@@ -31,17 +31,16 @@
   }
 
   html {
-    /* font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; */
     font-family: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.01em;
   }
 
   body {
-    @apply text-gray-800;
+    @apply text-gray-800 bg-[#FAF9F7];
     @apply dark:text-gray-100 dark:bg-gray-900;
-    background-color: #FAF9F7;
     font-size: 15px;
     line-height: 1.6;
   }

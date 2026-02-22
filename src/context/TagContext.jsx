@@ -14,7 +14,7 @@ export function TagProvider({ children }) {
     if (storedTags) {
       try {
         setTags(JSON.parse(storedTags));
-      } catch (e) {
+      } catch {
         setTags(TAGS_DATA);
       }
     } else {
