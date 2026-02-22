@@ -9,12 +9,34 @@
     background: #0a0e1a;
 }
 
+.map-container-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .map-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+.map-error-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 14, 26, 0.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+    z-index: 50;
 }
 
 /* Custom Markers */

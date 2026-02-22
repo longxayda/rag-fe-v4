@@ -39,7 +39,7 @@ export default function PeopleManager({ onBack }) {
     if (stored) {
       try {
         setPeople(JSON.parse(stored));
-      } catch (e) {
+      } catch {
         setPeople(initialPeopleData || []);
       }
     } else {

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Share2, Facebook, Twitter, Link2, Check, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 export default function SocialShare({
   url = window.location.href,
   title = 'Di sản văn hóa Cà Mau',
-  description = '',
+  description: _description = '',
   compact = false
 }) {
   const { t } = useTranslation();
@@ -33,8 +33,7 @@ export default function SocialShare({
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      // Production: consider using proper error logging
+    } catch {
       // Failed to copy URL to clipboard
     }
   };

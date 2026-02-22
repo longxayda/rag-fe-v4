@@ -13,7 +13,8 @@ import {
   Calendar,
   Music,
   Pencil,
-  Tag
+  Tag,
+  MapPin
 } from 'lucide-react';
 
 export default function AdminDashboard({ onNavigate, currentPage }) {
@@ -25,12 +26,12 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
     { id: 'heritages', icon: Landmark, label: t('admin.heritageManagement') },
     { id: 'music', icon: Music, label: t('admin.musicManagement') },
     { id: 'fineart', icon: Pencil, label: t('admin.fineArtManagement') },
-
+    { id: 'mapplaces', icon: MapPin, label: t('admin.mapPlacesTitle') },
     { id: 'people', icon: Users, label: t('admin.peopleManagement') },
     { id: 'festivals', icon: PartyPopper, label: t('admin.festivalManagement') },
     { id: 'quizzes', icon: Brain, label: t('admin.quizManagement') },
     { id: 'audio', icon: Volume2, label: t('admin.audioManagement') },
-    { id: 'tags', icon: Tag, label: 'Quản lý Tags' },
+    { id: 'tags', icon: Tag, label: t('admin.tagManagement') },
     { id: 'settings', icon: Settings, label: t('admin.settings') },
   ];
 
@@ -102,7 +103,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-elegant border border-heritage-earth-200 dark:border-gray-700 p-6 mb-8">
               <h2 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100 mb-4 flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-heritage-gold-600" />
-                Hành động nhanh
+                {t('admin.quickActions')}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <button
@@ -111,7 +112,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <Landmark className="w-8 h-8 text-heritage-red-600 dark:text-heritage-red-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Di sản
+                    {t('admin.addHeritage')}
                   </span>
                 </button>
                 <button
@@ -120,7 +121,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <Music className="w-8 h-8 text-heritage-red-600 dark:text-heritage-red-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Âm nhạc
+                    {t('admin.addMusic')}
                   </span>
                 </button>
                 <button
@@ -129,7 +130,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <Pencil className="w-8 h-8 text-heritage-red-600 dark:text-heritage-red-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Mỹ thuật
+                    {t('admin.addFineArt')}
                   </span>
                 </button>
                 {/* <button
@@ -138,7 +139,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <Users className="w-8 h-8 text-heritage-gold-600 dark:text-heritage-gold-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Nhân vật
+                    {t('admin.addPeople')}
                   </span>
                 </button>
                 <button
@@ -147,7 +148,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <PartyPopper className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Lễ hội
+                    {t('admin.addFestival')}
                   </span>
                 </button> */}
                 <button
@@ -156,7 +157,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <Brain className="w-8 h-8 text-amber-600 dark:text-amber-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Câu hỏi
+                    {t('admin.addQuiz')}
                   </span>
                 </button>
                 <button
@@ -165,7 +166,7 @@ export default function AdminDashboard({ onNavigate, currentPage }) {
                 >
                   <Tag className="w-8 h-8 text-pink-600 dark:text-pink-400" />
                   <span className="text-sm font-medium text-heritage-earth-700 dark:text-gray-300">
-                    {t('admin.addNew')} Tag
+                    {t('admin.addTag')}
                   </span>
                 </button>
               </div>

@@ -33,7 +33,7 @@ export default function SettingsPage({ onBack }) {
   const { t } = useTranslation();
   const {
     isDarkMode,
-    toggleDarkMode,
+    setDarkMode,
     fontSize,
     changeFontSize,
     getCurrentFontSize,
@@ -47,8 +47,7 @@ export default function SettingsPage({ onBack }) {
     isPWASupported,
     installApp,
     clearCache,
-    getStorageEstimate,
-    requestPersistentStorage
+    getStorageEstimate
   } = usePWA();
 
   const [storageInfo, setStorageInfo] = useState(null);
@@ -112,61 +111,73 @@ export default function SettingsPage({ onBack }) {
               {t('admin.settings')}
             </h1>
             <p className="text-sm text-heritage-earth-600 dark:text-gray-400">
-              Cấu hình hệ thống và tùy chọn cá nhân
+              {t('settings.subtitle')}
             </p>
           </div>
         </div>
 
         {/* Appearance Settings */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-elegant border border-heritage-earth-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 border-b border-heritage-earth-100 dark:border-gray-700 bg-gradient-to-r from-heritage-cream-50 to-heritage-cream-100 dark:from-gray-800 dark:to-gray-700">
+          <div className="p-4 border-b border-heritage-earth-100 dark:border-gray-700 bg-gradient-to-r from-amber-50/80 to-heritage-cream-100 dark:from-gray-800 dark:to-gray-700/90">
             <div className="flex items-center gap-3">
-              <Eye className="w-5 h-5 text-heritage-gold-600" />
+              <Eye className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               <h2 className="font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-                Giao diện
+                {t('settings.appearance')}
               </h2>
             </div>
           </div>
 
           <div className="p-4 space-y-6">
-            {/* Dark Mode Toggle */}
-            <div className="flex items-center justify-between">
+            {/* Dark Mode */}
+            <div className="space-y-3">
               <div className="flex items-center gap-3">
                 {isDarkMode ? (
-                  <Moon className="w-5 h-5 text-indigo-500" />
+                  <Moon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 ) : (
-                  <Sun className="w-5 h-5 text-amber-500" />
+                  <Sun className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 )}
                 <div>
                   <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                    Chế độ tối
+                    {t('settings.appearance')}
                   </h3>
                   <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                    {isDarkMode ? 'Đang bật' : 'Đang tắt'}
+                    {isDarkMode ? t('settings.usingDark') : t('settings.usingLight')}
                   </p>
                 </div>
               </div>
-              <button
-                onClick={toggleDarkMode}
-                className={`relative w-14 h-8 rounded-full transition-colors ${
-                  isDarkMode ? 'bg-indigo-600' : 'bg-gray-300 dark:bg-gray-600'
-                }`}
-              >
-                <div
-                  className={`absolute top-1 w-6 h-6 bg-white rounded-full shadow transition-transform ${
-                    isDarkMode ? 'translate-x-7' : 'translate-x-1'
+              <div className="flex items-center gap-3 flex-wrap">
+                <button
+                  onClick={() => setDarkMode(false)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                    !isDarkMode
+                      ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 border-2 border-amber-400 dark:border-amber-600'
+                      : 'bg-heritage-cream-50 dark:bg-gray-700 text-heritage-earth-600 dark:text-gray-300 border border-heritage-earth-200 dark:border-gray-600 hover:bg-heritage-cream-100 dark:hover:bg-gray-600'
                   }`}
-                />
-              </button>
+                >
+                  <Sun className="w-4 h-4" />
+                  {t('settings.lightMode')}
+                </button>
+                <button
+                  onClick={() => setDarkMode(true)}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                    isDarkMode
+                      ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 border-2 border-amber-400 dark:border-amber-600'
+                      : 'bg-heritage-cream-50 dark:bg-gray-700 text-heritage-earth-600 dark:text-gray-300 border border-heritage-earth-200 dark:border-gray-600 hover:bg-heritage-cream-100 dark:hover:bg-gray-600'
+                  }`}
+                >
+                  <Moon className="w-4 h-4" />
+                  {t('settings.darkMode')}
+                </button>
+              </div>
             </div>
 
             {/* Font Size */}
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <Type className="w-5 h-5 text-heritage-gold-600" />
+                <Type className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 <div>
                   <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                    Cỡ chữ
+                    {t('settings.fontSize')}
                   </h3>
                   <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
                     {currentFontInfo.label}
@@ -181,7 +192,7 @@ export default function SettingsPage({ onBack }) {
                     onClick={() => changeFontSize(size.id)}
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                       fontSize === size.id
-                        ? 'bg-heritage-red-100 dark:bg-heritage-red-900/50 text-heritage-red-700 dark:text-heritage-red-300 border-2 border-heritage-red-300 dark:border-heritage-red-700'
+                        ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 border-2 border-amber-400 dark:border-amber-600'
                         : 'bg-heritage-cream-50 dark:bg-gray-700 text-heritage-earth-600 dark:text-gray-300 border border-heritage-earth-200 dark:border-gray-600 hover:bg-heritage-cream-100 dark:hover:bg-gray-600'
                     }`}
                   >
@@ -196,11 +207,11 @@ export default function SettingsPage({ onBack }) {
 
         {/* Language Settings */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-elegant border border-heritage-earth-200 dark:border-gray-700 overflow-hidden">
-          <div className="p-4 border-b border-heritage-earth-100 dark:border-gray-700 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-700">
+          <div className="p-4 border-b border-heritage-earth-100 dark:border-gray-700 bg-gradient-to-r from-amber-50/80 to-heritage-cream-100 dark:from-gray-800 dark:to-gray-700/90">
             <div className="flex items-center gap-3">
-              <Globe className="w-5 h-5 text-blue-600" />
+              <Globe className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               <h2 className="font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-                Ngôn ngữ
+                {t('settings.language')}
               </h2>
             </div>
           </div>
@@ -213,7 +224,7 @@ export default function SettingsPage({ onBack }) {
                   onClick={() => changeLanguage(lang.code)}
                   className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
                     currentLanguage === lang.code
-                      ? 'bg-blue-100 dark:bg-blue-900/50 border-2 border-blue-300 dark:border-blue-700'
+                      ? 'bg-amber-100 dark:bg-amber-900/40 border-2 border-amber-400 dark:border-amber-600'
                       : 'bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600 hover:bg-heritage-cream-100 dark:hover:bg-gray-600'
                   }`}
                 >
@@ -221,14 +232,14 @@ export default function SettingsPage({ onBack }) {
                   <div className="text-left">
                     <div className={`font-medium text-sm ${
                       currentLanguage === lang.code
-                        ? 'text-blue-700 dark:text-blue-300'
+                        ? 'text-amber-800 dark:text-amber-200'
                         : 'text-heritage-earth-700 dark:text-gray-300'
                     }`}>
                       {lang.name}
                     </div>
                   </div>
                   {currentLanguage === lang.code && (
-                    <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 ml-auto" />
+                    <Check className="w-4 h-4 text-amber-600 dark:text-amber-400 ml-auto" />
                   )}
                 </button>
               ))}
@@ -258,10 +269,10 @@ export default function SettingsPage({ onBack }) {
                 )}
                 <div>
                   <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                    Trạng thái kết nối
+                    {t('settings.connectionStatus')}
                   </h3>
                   <p className={`text-sm ${isOnline ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'}`}>
-                    {isOnline ? 'Đang trực tuyến' : 'Đang ngoại tuyến'}
+                    {isOnline ? t('common.online') : t('common.offline')}
                   </p>
                 </div>
               </div>
@@ -275,28 +286,28 @@ export default function SettingsPage({ onBack }) {
                   <Download className="w-5 h-5 text-purple-600" />
                   <div>
                     <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                      Cài đặt ứng dụng
+                      {t('settings.installAppTitle')}
                     </h3>
                     <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                      {isInstalled ? 'Đã cài đặt' : 'Thêm vào màn hình chính'}
+                      {isInstalled ? t('common.installed') : t('common.addToHomeScreen')}
                     </p>
                   </div>
                 </div>
                 {isInstalled ? (
                   <span className="flex items-center gap-1 text-sm text-emerald-600 dark:text-emerald-400">
                     <Check className="w-4 h-4" />
-                    Đã cài
+                    {t('settings.installedShort')}
                   </span>
                 ) : isInstallable ? (
                   <button
                     onClick={handleInstall}
                     className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
                   >
-                    Cài đặt
+                    {t('pwa.install')}
                   </button>
                 ) : (
                   <span className="text-sm text-heritage-earth-400 dark:text-gray-500">
-                    Không khả dụng
+                    {t('settings.notAvailable')}
                   </span>
                 )}
               </div>
@@ -309,10 +320,10 @@ export default function SettingsPage({ onBack }) {
                   <HardDrive className="w-5 h-5 text-heritage-gold-600" />
                   <div>
                     <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                      Bộ nhớ đệm
+                      {t('settings.storage')}
                     </h3>
                     <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                      Đang sử dụng {storageInfo.usageInMB} MB / {storageInfo.quotaInMB} MB
+                      {t('settings.storageUsed', { used: storageInfo.usageInMB, quota: storageInfo.quotaInMB })}
                     </p>
                   </div>
                 </div>
@@ -331,10 +342,10 @@ export default function SettingsPage({ onBack }) {
                 <Trash2 className="w-5 h-5 text-red-500" />
                 <div>
                   <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                    Xóa bộ nhớ đệm
+                    {t('settings.clearCache')}
                   </h3>
                   <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                    Xóa dữ liệu đã lưu trữ offline
+                    {t('settings.clearCacheDesc')}
                   </p>
                 </div>
               </div>
@@ -342,7 +353,7 @@ export default function SettingsPage({ onBack }) {
                 onClick={() => setShowClearCacheConfirm(true)}
                 className="px-4 py-2 bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400 text-sm font-medium rounded-lg hover:bg-red-200 dark:hover:bg-red-900/70 transition-colors"
               >
-                Xóa
+                {t('common.delete')}
               </button>
             </div>
           </div>
@@ -354,24 +365,24 @@ export default function SettingsPage({ onBack }) {
             <div className="flex items-center gap-3">
               <Bell className="w-5 h-5 text-amber-600" />
               <h2 className="font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-                Thông báo
+                {t('settings.notifications')}
               </h2>
             </div>
           </div>
 
           <div className="p-4 space-y-4">
             {[
-              { key: 'newHeritage', label: 'Di sản mới', desc: 'Thông báo khi có di sản mới được thêm' },
-              { key: 'updates', label: 'Cập nhật', desc: 'Thông báo về cập nhật ứng dụng' },
-              { key: 'reminders', label: 'Nhắc nhở', desc: 'Nhắc nhở khám phá di sản định kỳ' }
+              { key: 'newHeritage', labelKey: 'settings.newHeritage', descKey: 'settings.newHeritageNotif' },
+              { key: 'updates', labelKey: 'settings.updates', descKey: 'settings.updatesDesc' },
+              { key: 'reminders', labelKey: 'settings.reminders', descKey: 'settings.remindersDesc' }
             ].map((item) => (
               <div key={item.key} className="flex items-center justify-between">
                 <div>
                   <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                    {item.label}
+                    {t(item.labelKey)}
                   </h3>
                   <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                    {item.desc}
+                    {t(item.descKey)}
                   </p>
                 </div>
                 <button
@@ -395,13 +406,13 @@ export default function SettingsPage({ onBack }) {
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-elegant border border-heritage-earth-200 dark:border-gray-700 overflow-hidden">
           <div className="p-4 border-b border-heritage-earth-100 dark:border-gray-700">
             <h3 className="font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-              Thông tin hệ thống
+              {t('settings.systemInfo')}
             </h3>
           </div>
           <div className="p-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
               <div className="p-3 bg-heritage-cream-50 dark:bg-gray-700 rounded-xl">
-                <div className="text-heritage-earth-500 dark:text-gray-400 mb-1">Phiên bản</div>
+                <div className="text-heritage-earth-500 dark:text-gray-400 mb-1">{t('settings.version')}</div>
                 <div className="font-medium text-heritage-earth-900 dark:text-gray-100">1.0.0</div>
               </div>
               <div className="p-3 bg-heritage-cream-50 dark:bg-gray-700 rounded-xl">
@@ -409,8 +420,8 @@ export default function SettingsPage({ onBack }) {
                 <div className="font-medium text-heritage-earth-900 dark:text-gray-100">React + Vite</div>
               </div>
               <div className="p-3 bg-heritage-cream-50 dark:bg-gray-700 rounded-xl">
-                <div className="text-heritage-earth-500 dark:text-gray-400 mb-1">Ngôn ngữ hỗ trợ</div>
-                <div className="font-medium text-heritage-earth-900 dark:text-gray-100">4 ngôn ngữ</div>
+                <div className="text-heritage-earth-500 dark:text-gray-400 mb-1">{t('settings.languageSupport')}</div>
+                <div className="font-medium text-heritage-earth-900 dark:text-gray-100">{t('settings.fourLanguages')}</div>
               </div>
               <div className="p-3 bg-heritage-cream-50 dark:bg-gray-700 rounded-xl">
                 <div className="text-heritage-earth-500 dark:text-gray-400 mb-1">AI Backend</div>
@@ -427,10 +438,10 @@ export default function SettingsPage({ onBack }) {
               <RefreshCw className="w-5 h-5 text-red-500" />
               <div>
                 <h3 className="font-medium text-heritage-earth-900 dark:text-gray-100">
-                  Đặt lại cài đặt
+                  {t('settings.resetSettings')}
                 </h3>
                 <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                  Khôi phục tất cả cài đặt về mặc định
+                  {t('settings.resetDesc')}
                 </p>
               </div>
             </div>
@@ -438,7 +449,7 @@ export default function SettingsPage({ onBack }) {
               onClick={() => setShowResetConfirm(true)}
               className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors"
             >
-              Đặt lại
+              {t('settings.reset')}
             </button>
           </div>
         </div>
@@ -453,28 +464,28 @@ export default function SettingsPage({ onBack }) {
                 </div>
                 <div>
                   <h3 className="font-bold text-heritage-earth-900 dark:text-gray-100">
-                    Xóa bộ nhớ đệm?
+                    {t('settings.clearCacheConfirmTitle')}
                   </h3>
                   <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                    Thao tác này không thể hoàn tác
+                    {t('settings.cannotUndo')}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-heritage-earth-600 dark:text-gray-300 mb-6">
-                Tất cả dữ liệu đã lưu trữ offline sẽ bị xóa. Bạn sẽ cần kết nối mạng để tải lại dữ liệu.
+                {t('settings.clearCacheConfirmDesc')}
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowClearCacheConfirm(false)}
                   className="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-heritage-earth-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
-                  Hủy
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleClearCache}
                   className="flex-1 px-4 py-2.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors"
                 >
-                  Xóa
+                  {t('common.delete')}
                 </button>
               </div>
             </div>
@@ -490,28 +501,28 @@ export default function SettingsPage({ onBack }) {
                 </div>
                 <div>
                   <h3 className="font-bold text-heritage-earth-900 dark:text-gray-100">
-                    Đặt lại cài đặt?
+                    {t('settings.resetConfirmTitle')}
                   </h3>
                   <p className="text-sm text-heritage-earth-500 dark:text-gray-400">
-                    Khôi phục về mặc định
+                    {t('settings.resetToDefault')}
                   </p>
                 </div>
               </div>
               <p className="text-sm text-heritage-earth-600 dark:text-gray-300 mb-6">
-                Tất cả cài đặt giao diện, ngôn ngữ và thông báo sẽ được đặt lại về giá trị mặc định.
+                {t('settings.resetConfirmDesc')}
               </p>
               <div className="flex gap-3">
                 <button
                   onClick={() => setShowResetConfirm(false)}
                   className="flex-1 px-4 py-2.5 bg-gray-100 dark:bg-gray-700 text-heritage-earth-700 dark:text-gray-300 font-medium rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                 >
-                  Hủy
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleResetSettings}
                   className="flex-1 px-4 py-2.5 bg-red-600 text-white font-medium rounded-xl hover:bg-red-700 transition-colors"
                 >
-                  Đặt lại
+                  {t('settings.reset')}
                 </button>
               </div>
             </div>

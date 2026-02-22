@@ -113,24 +113,28 @@ function HeritagePopup({ heritage }) {
   );
 }
 
-export default function InteractiveMap({ 
-  heritages = [], 
-  center = [9.1766, 105.1500], 
+export default function InteractiveMap({
+  heritages = [],
+  center = [9.1766, 105.1500],
   zoom = 10,
-  selectedHeritage = null,
   onMarkerClick = null,
   height = '100%'
 }) {
-  const [mapCenter, setMapCenter] = useState(center);
-  const [mapZoom, setMapZoom] = useState(zoom);
+  const [mapCenter] = useState(center);
+  const [mapZoom] = useState(zoom);
 
-  // Generate random coordinates near Ca Mau for demo (since real coords not in data)
+  // Deterministic fallback coordinates near Ca Mau when lat/lng missing (seed from id)
   const heritagesWithCoords = useMemo(() => {
-    return heritages.map((h, index) => ({
-      ...h,
-      lat: h.lat || 9.1766 + (Math.random() - 0.5) * 0.8,
-      lng: h.lng || 105.1500 + (Math.random() - 0.5) * 0.8,
-    }));
+    return heritages.map((h) => {
+      const id = h.id || 0;
+      const seedLat = ((id % 100) / 100 - 0.5) * 0.8;
+      const seedLng = (((id * 7) % 100) / 100 - 0.5) * 0.8;
+      return {
+        ...h,
+        lat: h.lat || 9.1766 + seedLat,
+        lng: h.lng || 105.1500 + seedLng,
+      };
+    });
   }, [heritages]);
 
   return (

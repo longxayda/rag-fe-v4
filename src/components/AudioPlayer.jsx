@@ -53,9 +53,7 @@ export function AudioPlayer({ audioSrc, title, onLanguageChange, currentLanguage
     if (isPlaying) {
       audioRef.current.pause();
     } else {
-      audioRef.current.play().catch((err) => {
-        // Production: consider using proper error logging
-        // Audio play error
+      audioRef.current.play().catch(() => {
         setError(t('audio.error'));
       });
     }
@@ -112,7 +110,7 @@ export function AudioPlayer({ audioSrc, title, onLanguageChange, currentLanguage
     }
   };
 
-  const handleTouchEnd = (e) => {
+  const handleTouchEnd = () => {
     if (!isDraggingRef.current) return;
 
     isDraggingRef.current = false;
@@ -176,6 +174,7 @@ export function AudioPlayer({ audioSrc, title, onLanguageChange, currentLanguage
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- calculateTimeFromPosition is stable
   }, [isDragging, duration]);
 
   // Handle skip forward/backward

@@ -17,7 +17,7 @@ export function PostReadingQuiz({
   onComplete,
 }) {
   const { i18n } = useTranslation();
-  const { addPoints, progress } = useGamification();
+  const { addPoints } = useGamification();
   const isVietnamese = i18n.language === 'vi';
 
   const [questions, setQuestions] = useState([]);

@@ -23,15 +23,13 @@ import {
 import { useContribution, CONTRIBUTION_TYPES } from '../context/ContributionContext';
 import { COMMUNES } from '../data/communes';
 
-// Contribution type options
+// Contribution type options (labels via i18n)
 const contributionTypeOptions = [
   {
     id: CONTRIBUTION_TYPES.NEW_HERITAGE,
     icon: Plus,
-    titleVi: 'Đề xuất Di sản mới',
-    titleEn: 'Suggest New Heritage',
-    descVi: 'Đề xuất thêm một di sản văn hóa mới vào hệ thống',
-    descEn: 'Suggest adding a new cultural heritage to the system',
+    titleKey: 'contribute.newHeritage',
+    descKey: 'contribute.newHeritageDesc',
     color: 'bg-heritage-red-100 dark:bg-heritage-red-900/30 text-heritage-red-700 dark:text-heritage-red-300',
     borderColor: 'border-heritage-red-300 dark:border-heritage-red-700',
     iconBg: 'bg-heritage-red-600',
@@ -39,10 +37,8 @@ const contributionTypeOptions = [
   {
     id: CONTRIBUTION_TYPES.CORRECTION,
     icon: PenLine,
-    titleVi: 'Yêu cầu Sửa đổi',
-    titleEn: 'Request Correction',
-    descVi: 'Báo cáo thông tin sai hoặc cần cập nhật',
-    descEn: 'Report incorrect or outdated information',
+    titleKey: 'contribute.correction',
+    descKey: 'contribute.correctionDesc',
     color: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
     borderColor: 'border-blue-300 dark:border-blue-700',
     iconBg: 'bg-blue-600',
@@ -50,10 +46,8 @@ const contributionTypeOptions = [
   {
     id: CONTRIBUTION_TYPES.ADDITIONAL_INFO,
     icon: FileText,
-    titleVi: 'Bổ sung Thông tin',
-    titleEn: 'Add Information',
-    descVi: 'Thêm thông tin chi tiết cho di sản hiện có',
-    descEn: 'Add detailed information to existing heritage',
+    titleKey: 'contribute.additionalInfo',
+    descKey: 'contribute.additionalInfoDesc',
     color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
     borderColor: 'border-emerald-300 dark:border-emerald-700',
     iconBg: 'bg-emerald-600',
@@ -61,10 +55,8 @@ const contributionTypeOptions = [
   {
     id: CONTRIBUTION_TYPES.PHOTO,
     icon: Camera,
-    titleVi: 'Đóng góp Hình ảnh',
-    titleEn: 'Contribute Photos',
-    descVi: 'Chia sẻ hình ảnh về di sản văn hóa',
-    descEn: 'Share photos of cultural heritage',
+    titleKey: 'contribute.photo',
+    descKey: 'contribute.photoDesc',
     color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
     borderColor: 'border-purple-300 dark:border-purple-700',
     iconBg: 'bg-purple-600',
@@ -74,7 +66,6 @@ const contributionTypeOptions = [
 export default function ContributePage() {
   const { t } = useTranslation();
   const { submitContribution } = useContribution();
-  const isVietnamese = t('common.all') !== 'All';
 
   const [step, setStep] = useState(1); // 1: select type, 2: fill form, 3: success
   const [selectedType, setSelectedType] = useState(null);
@@ -128,7 +119,7 @@ export default function ContributePage() {
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length + formData.photos.length > 5) {
-      setErrors((prev) => ({ ...prev, photos: isVietnamese ? 'Tối đa 5 ảnh' : 'Maximum 5 photos' }));
+      setErrors((prev) => ({ ...prev, photos: t('contribute.maxPhotos') }));
       return;
     }
 
@@ -158,43 +149,43 @@ export default function ContributePage() {
     // Validate based on contribution type
     if (selectedType === CONTRIBUTION_TYPES.NEW_HERITAGE) {
       if (!formData.heritageName.trim()) {
-        newErrors.heritageName = isVietnamese ? 'Vui lòng nhập tên di sản' : 'Please enter heritage name';
+        newErrors.heritageName = t('contribute.pleaseHeritageName');
       }
       if (!formData.heritageAddress.trim()) {
-        newErrors.heritageAddress = isVietnamese ? 'Vui lòng nhập địa chỉ' : 'Please enter address';
+        newErrors.heritageAddress = t('contribute.pleaseAddress');
       }
       if (!formData.heritageDescription.trim()) {
-        newErrors.heritageDescription = isVietnamese ? 'Vui lòng nhập mô tả' : 'Please enter description';
+        newErrors.heritageDescription = t('contribute.pleaseDescription');
       }
     }
 
     if (selectedType === CONTRIBUTION_TYPES.CORRECTION) {
       if (!formData.existingHeritageName.trim()) {
-        newErrors.existingHeritageName = isVietnamese ? 'Vui lòng nhập tên di sản' : 'Please enter heritage name';
+        newErrors.existingHeritageName = t('contribute.pleaseHeritageName');
       }
       if (!formData.fieldToCorrect.trim()) {
-        newErrors.fieldToCorrect = isVietnamese ? 'Vui lòng chọn trường cần sửa' : 'Please select field to correct';
+        newErrors.fieldToCorrect = t('contribute.pleaseSelectField');
       }
       if (!formData.suggestedValue.trim()) {
-        newErrors.suggestedValue = isVietnamese ? 'Vui lòng nhập giá trị đề xuất' : 'Please enter suggested value';
+        newErrors.suggestedValue = t('contribute.pleaseSuggestedValue');
       }
     }
 
     if (selectedType === CONTRIBUTION_TYPES.ADDITIONAL_INFO) {
       if (!formData.existingHeritageName.trim()) {
-        newErrors.existingHeritageName = isVietnamese ? 'Vui lòng nhập tên di sản' : 'Please enter heritage name';
+        newErrors.existingHeritageName = t('contribute.pleaseHeritageName');
       }
       if (!formData.additionalContent.trim()) {
-        newErrors.additionalContent = isVietnamese ? 'Vui lòng nhập nội dung' : 'Please enter content';
+        newErrors.additionalContent = t('contribute.pleaseDescription');
       }
     }
 
     if (selectedType === CONTRIBUTION_TYPES.PHOTO) {
       if (formData.photos.length === 0) {
-        newErrors.photos = isVietnamese ? 'Vui lòng tải lên ít nhất 1 ảnh' : 'Please upload at least 1 photo';
+        newErrors.photos = t('contribute.pleaseUploadOne');
       }
       if (!formData.copyrightConfirmed) {
-        newErrors.copyrightConfirmed = isVietnamese ? 'Vui lòng xác nhận bản quyền' : 'Please confirm copyright';
+        newErrors.copyrightConfirmed = t('contribute.pleaseConfirmCopyright');
       }
     }
 
@@ -305,12 +296,10 @@ export default function ContributePage() {
           <Sparkles className="w-8 h-8 text-heritage-gold-600 dark:text-heritage-gold-400" />
         </div>
         <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100">
-          {isVietnamese ? 'Chọn loại đóng góp' : 'Select Contribution Type'}
+          {t('contribute.selectType')}
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mt-2">
-          {isVietnamese
-            ? 'Bạn muốn đóng góp gì cho di sản văn hóa Cà Mau?'
-            : 'How would you like to contribute to Ca Mau cultural heritage?'}
+          {t('contribute.selectTypeDesc')}
         </p>
       </div>
 
@@ -330,10 +319,10 @@ export default function ContributePage() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-bold text-lg mb-1">
-                  {isVietnamese ? option.titleVi : option.titleEn}
+                  {t(option.titleKey)}
                 </h3>
                 <p className="text-sm opacity-80">
-                  {isVietnamese ? option.descVi : option.descEn}
+                  {t(option.descKey)}
                 </p>
               </div>
               <ChevronRight className="w-5 h-5 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all flex-shrink-0 mt-1" />
@@ -409,10 +398,10 @@ export default function ContributePage() {
           </div>
           <div>
             <h2 className="text-xl font-display font-bold text-gray-900 dark:text-gray-100">
-              {isVietnamese ? selectedOption.titleVi : selectedOption.titleEn}
+              {t(selectedOption.titleKey)}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              {isVietnamese ? 'Điền thông tin bên dưới' : 'Fill in the information below'}
+              {t('contribute.fillInfoBelow')}
             </p>
           </div>
         </div>
@@ -422,29 +411,29 @@ export default function ContributePage() {
           <div className="flex items-center gap-2 mb-4">
             <User className="w-5 h-5 text-heritage-gold-600" />
             <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-              {isVietnamese ? 'Thông tin người đóng góp' : 'Contributor Information'}
+              {t('contribute.contributorInfo')}
             </h3>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              ({isVietnamese ? 'tùy chọn' : 'optional'})
+              ({t('contribute.optional')})
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {renderInput(
               'contributorName',
-              isVietnamese ? 'Họ và tên' : 'Full Name',
-              isVietnamese ? 'Nguyễn Văn A' : 'John Doe'
+              t('contribute.fullName'),
+              t('contribute.fullNamePlaceholder'),
             )}
             {renderInput(
               'contributorEmail',
               'Email',
-              'email@example.com',
+              t('contribute.emailPlaceholder'),
               'email'
             )}
             {renderInput(
               'contributorPhone',
-              isVietnamese ? 'Số điện thoại' : 'Phone',
-              '0912 345 678',
+              t('contribute.phone'),
+              t('contribute.phonePlaceholder'),
               'tel'
             )}
           </div>
@@ -458,29 +447,29 @@ export default function ContributePage() {
               <div className="flex items-center gap-2 mb-4">
                 <Landmark className="w-5 h-5 text-heritage-red-600" />
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                  {isVietnamese ? 'Thông tin Di sản' : 'Heritage Information'}
+                  {t('contribute.heritageInfo')}
                 </h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {renderInput(
                   'heritageName',
-                  isVietnamese ? 'Tên di sản' : 'Heritage Name',
-                  isVietnamese ? 'Ví dụ: Đình làng XYZ' : 'E.g., XYZ Temple',
+                  t('contribute.heritageName'),
+                  t('contribute.heritageNamePlaceholder'),
                   'text',
                   true
                 )}
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    {isVietnamese ? 'Xã/Phường' : 'Commune/Ward'}
+                    {t('contribute.commune')}
                   </label>
                   <select
                     value={formData.heritageCommune}
                     onChange={(e) => handleInputChange('heritageCommune', e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-heritage-gold-500 focus:ring-2 focus:ring-heritage-gold-100 dark:focus:ring-heritage-gold-900/50 transition-all"
                   >
-                    <option value="">{isVietnamese ? '-- Chọn xã/phường --' : '-- Select commune --'}</option>
+                    <option value="">-- {t('contribute.selectCommune')} --</option>
                     {COMMUNES.map((commune) => (
                       <option key={commune} value={commune}>{commune}</option>
                     ))}
@@ -490,44 +479,44 @@ export default function ContributePage() {
 
               {renderInput(
                 'heritageAddress',
-                isVietnamese ? 'Địa chỉ chi tiết' : 'Detailed Address',
-                isVietnamese ? 'Số nhà, tên đường, ấp/khóm...' : 'House number, street name...',
+                t('contribute.heritageAddress'),
+                t('contribute.addressPlaceholder'),
                 'text',
                 true
               )}
 
               {renderTextarea(
                 'heritageDescription',
-                isVietnamese ? 'Mô tả di sản' : 'Heritage Description',
-                isVietnamese ? 'Mô tả về di sản, đặc điểm kiến trúc, ý nghĩa...' : 'Describe the heritage, architecture, significance...',
+                t('contribute.heritageDescription'),
+                t('contribute.heritageDescriptionPlaceholder'),
                 4,
                 true
               )}
 
               {renderTextarea(
                 'heritageHistory',
-                isVietnamese ? 'Lịch sử và giá trị văn hóa' : 'History and Cultural Value',
-                isVietnamese ? 'Lịch sử hình thành, các sự kiện quan trọng...' : 'Formation history, important events...',
+                t('contribute.heritageHistory'),
+                t('contribute.heritageHistoryPlaceholder'),
                 4
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {renderInput(
                   'heritageYearBuilt',
-                  isVietnamese ? 'Năm xây dựng (nếu biết)' : 'Year Built (if known)',
-                  isVietnamese ? 'Ví dụ: 1920' : 'E.g., 1920'
+                  t('contribute.yearBuilt'),
+                  t('contribute.yearBuiltPlaceholder')
                 )}
                 {renderInput(
                   'heritageCondition',
-                  isVietnamese ? 'Tình trạng hiện tại' : 'Current Condition',
-                  isVietnamese ? 'Ví dụ: Đã được trùng tu' : 'E.g., Recently restored'
+                  t('contribute.currentCondition'),
+                  t('contribute.currentConditionPlaceholder')
                 )}
               </div>
 
               {renderInput(
                 'heritageSource',
-                isVietnamese ? 'Nguồn thông tin/Tham khảo' : 'Source/Reference',
-                isVietnamese ? 'Sách, tài liệu, người cung cấp thông tin...' : 'Books, documents, informants...'
+                t('contribute.source'),
+                t('contribute.sourcePlaceholderDesc')
               )}
             </>
           )}
@@ -538,21 +527,21 @@ export default function ContributePage() {
               <div className="flex items-center gap-2 mb-4">
                 <PenLine className="w-5 h-5 text-blue-600" />
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                  {isVietnamese ? 'Thông tin Sửa đổi' : 'Correction Information'}
+                  {t('contribute.correctionInfo')}
                 </h3>
               </div>
 
               {renderInput(
                 'existingHeritageName',
-                isVietnamese ? 'Tên di sản cần sửa' : 'Heritage Name to Correct',
-                isVietnamese ? 'Nhập tên di sản' : 'Enter heritage name',
+                t('contribute.heritageToCorrect'),
+                t('contribute.heritageNameToCorrectPlaceholder'),
                 'text',
                 true
               )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {isVietnamese ? 'Trường cần sửa' : 'Field to Correct'} <span className="text-heritage-red-500">*</span>
+                  {t('contribute.fieldToCorrect')} <span className="text-heritage-red-500">*</span>
                 </label>
                 <select
                   value={formData.fieldToCorrect}
@@ -561,14 +550,14 @@ export default function ContributePage() {
                     errors.fieldToCorrect ? 'border-red-400' : 'border-gray-300 dark:border-gray-600'
                   } bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-heritage-gold-500 focus:ring-2 focus:ring-heritage-gold-100 dark:focus:ring-heritage-gold-900/50 transition-all`}
                 >
-                  <option value="">{isVietnamese ? '-- Chọn trường --' : '-- Select field --'}</option>
-                  <option value="name">{isVietnamese ? 'Tên' : 'Name'}</option>
-                  <option value="address">{isVietnamese ? 'Địa chỉ' : 'Address'}</option>
-                  <option value="yearBuilt">{isVietnamese ? 'Năm xây dựng' : 'Year Built'}</option>
-                  <option value="yearRanked">{isVietnamese ? 'Năm xếp hạng' : 'Year Ranked'}</option>
-                  <option value="rankingType">{isVietnamese ? 'Loại xếp hạng' : 'Ranking Type'}</option>
-                  <option value="description">{isVietnamese ? 'Mô tả' : 'Description'}</option>
-                  <option value="other">{isVietnamese ? 'Khác' : 'Other'}</option>
+                  <option value="">-- {t('contribute.selectField')} --</option>
+                  <option value="name">{t('contribute.name')}</option>
+                  <option value="address">{t('contribute.address')}</option>
+                  <option value="yearBuilt">{t('contribute.yearBuiltLabel')}</option>
+                  <option value="yearRanked">{t('contribute.yearRanked')}</option>
+                  <option value="rankingType">{t('contribute.rankingType')}</option>
+                  <option value="description">{t('contribute.description')}</option>
+                  <option value="other">{t('contribute.other')}</option>
                 </select>
                 {errors.fieldToCorrect && (
                   <p className="mt-1 text-sm text-red-500">{errors.fieldToCorrect}</p>
@@ -577,22 +566,22 @@ export default function ContributePage() {
 
               {renderInput(
                 'currentValue',
-                isVietnamese ? 'Giá trị hiện tại (sai)' : 'Current Value (incorrect)',
-                isVietnamese ? 'Thông tin hiện đang hiển thị sai' : 'Currently displayed incorrect information'
+                t('contribute.currentValue'),
+                t('contribute.currentValuePlaceholder')
               )}
 
               {renderTextarea(
                 'suggestedValue',
-                isVietnamese ? 'Giá trị đề xuất (đúng)' : 'Suggested Value (correct)',
-                isVietnamese ? 'Thông tin đúng theo bạn biết' : 'Correct information as you know',
+                t('contribute.suggestedValue'),
+                t('contribute.suggestedValuePlaceholder'),
                 3,
                 true
               )}
 
               {renderTextarea(
                 'correctionReason',
-                isVietnamese ? 'Lý do/Bằng chứng' : 'Reason/Evidence',
-                isVietnamese ? 'Giải thích tại sao bạn cho rằng thông tin này sai và nguồn tham khảo' : 'Explain why you think this is incorrect and your references',
+                t('contribute.reason'),
+                t('contribute.reasonPlaceholder'),
                 3
               )}
             </>
@@ -604,49 +593,49 @@ export default function ContributePage() {
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="w-5 h-5 text-emerald-600" />
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                  {isVietnamese ? 'Thông tin Bổ sung' : 'Additional Information'}
+                  {t('contribute.additionalInfoSection')}
                 </h3>
               </div>
 
               {renderInput(
                 'existingHeritageName',
-                isVietnamese ? 'Tên di sản' : 'Heritage Name',
-                isVietnamese ? 'Nhập tên di sản cần bổ sung thông tin' : 'Enter heritage name',
+                t('contribute.heritageName'),
+                t('contribute.enterHeritageName'),
                 'text',
                 true
               )}
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {isVietnamese ? 'Loại thông tin' : 'Information Type'}
+                  {t('contribute.infoType')}
                 </label>
                 <select
                   value={formData.additionalInfoType}
                   onChange={(e) => handleInputChange('additionalInfoType', e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:border-heritage-gold-500 focus:ring-2 focus:ring-heritage-gold-100 dark:focus:ring-heritage-gold-900/50 transition-all"
                 >
-                  <option value="">{isVietnamese ? '-- Chọn loại --' : '-- Select type --'}</option>
-                  <option value="history">{isVietnamese ? 'Lịch sử' : 'History'}</option>
-                  <option value="architecture">{isVietnamese ? 'Kiến trúc' : 'Architecture'}</option>
-                  <option value="culture">{isVietnamese ? 'Văn hóa' : 'Culture'}</option>
-                  <option value="events">{isVietnamese ? 'Sự kiện' : 'Events'}</option>
-                  <option value="stories">{isVietnamese ? 'Truyền thuyết/Câu chuyện' : 'Legends/Stories'}</option>
-                  <option value="other">{isVietnamese ? 'Khác' : 'Other'}</option>
+                  <option value="">-- {t('contribute.selectTypeOption')} --</option>
+                  <option value="history">{t('contribute.history')}</option>
+                  <option value="architecture">{t('contribute.architecture')}</option>
+                  <option value="culture">{t('contribute.culture')}</option>
+                  <option value="events">{t('contribute.events')}</option>
+                  <option value="stories">{t('contribute.stories')}</option>
+                  <option value="other">{t('contribute.other')}</option>
                 </select>
               </div>
 
               {renderTextarea(
                 'additionalContent',
-                isVietnamese ? 'Nội dung bổ sung' : 'Additional Content',
-                isVietnamese ? 'Nhập thông tin chi tiết bạn muốn bổ sung...' : 'Enter detailed information you want to add...',
+                t('contribute.additionalContent'),
+                t('contribute.additionalContentPlaceholder'),
                 5,
                 true
               )}
 
               {renderInput(
                 'heritageSource',
-                isVietnamese ? 'Nguồn thông tin' : 'Source',
-                isVietnamese ? 'Sách, tài liệu, người cung cấp...' : 'Books, documents, informants...'
+                t('contribute.sourceLabel'),
+                t('contribute.sourcePlaceholder')
               )}
             </>
           )}
@@ -657,21 +646,21 @@ export default function ContributePage() {
               <div className="flex items-center gap-2 mb-4">
                 <Camera className="w-5 h-5 text-purple-600" />
                 <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                  {isVietnamese ? 'Đóng góp Hình ảnh' : 'Photo Contribution'}
+                  {t('contribute.photoSection')}
                 </h3>
               </div>
 
               {renderInput(
                 'existingHeritageName',
-                isVietnamese ? 'Tên di sản (nếu có)' : 'Heritage Name (if applicable)',
-                isVietnamese ? 'Di sản mà ảnh này thuộc về' : 'Heritage this photo belongs to'
+                t('contribute.heritageNameOptional'),
+                t('contribute.heritagePhotoBelongsTo')
               )}
 
               {/* Photo upload area */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {isVietnamese ? 'Tải ảnh lên' : 'Upload Photos'} <span className="text-heritage-red-500">*</span>
-                  <span className="text-xs text-gray-500 ml-2">({isVietnamese ? 'Tối đa 5 ảnh' : 'Max 5 photos'})</span>
+                  {t('contribute.uploadPhotos')} <span className="text-heritage-red-500">*</span>
+                  <span className="text-xs text-gray-500 ml-2">({t('contribute.maxPhotos')})</span>
                 </label>
 
                 <div className={`border-2 border-dashed ${errors.photos ? 'border-red-400' : 'border-gray-300 dark:border-gray-600'} rounded-xl p-6 text-center`}>
@@ -692,9 +681,9 @@ export default function ContributePage() {
                     </div>
                     <div>
                       <span className="text-purple-600 dark:text-purple-400 font-medium">
-                        {isVietnamese ? 'Nhấp để tải ảnh' : 'Click to upload'}
+                        {t('contribute.clickToUpload')}
                       </span>
-                      <span className="text-gray-500 dark:text-gray-400"> {isVietnamese ? 'hoặc kéo thả' : 'or drag and drop'}</span>
+                      <span className="text-gray-500 dark:text-gray-400"> {t('contribute.orDragDrop')}</span>
                     </div>
                     <p className="text-xs text-gray-400">PNG, JPG, WEBP (max 10MB each)</p>
                   </label>
@@ -728,8 +717,8 @@ export default function ContributePage() {
 
               {renderTextarea(
                 'photoDescriptions',
-                isVietnamese ? 'Mô tả ảnh' : 'Photo Descriptions',
-                isVietnamese ? 'Mô tả ngắn về các ảnh bạn đăng tải...' : 'Brief description of the photos you upload...',
+                t('contribute.photoDescriptions'),
+                t('contribute.photoDescriptionsPlaceholder'),
                 3
               )}
 
@@ -743,9 +732,7 @@ export default function ContributePage() {
                     className="mt-1 w-4 h-4 text-heritage-red-600 border-gray-300 rounded focus:ring-heritage-gold-500"
                   />
                   <span className="text-sm text-gray-700 dark:text-gray-300">
-                    {isVietnamese
-                      ? 'Tôi xác nhận rằng tôi là chủ sở hữu hoặc có quyền chia sẻ các hình ảnh này, và cho phép sử dụng chúng trong dự án Di sản Văn hóa Cà Mau.'
-                      : 'I confirm that I own or have the right to share these images, and allow their use in the Ca Mau Cultural Heritage project.'}
+                    {t('contribute.copyrightConfirm')}
                   </span>
                 </label>
                 {errors.copyrightConfirmed && (
@@ -762,7 +749,7 @@ export default function ContributePage() {
             onClick={() => setStep(1)}
             className="px-6 py-3 rounded-xl border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
-            {isVietnamese ? 'Quay lại' : 'Back'}
+            {t('contribute.back')}
           </button>
           <button
             onClick={handleSubmit}
@@ -772,12 +759,12 @@ export default function ContributePage() {
             {isSubmitting ? (
               <>
                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                {isVietnamese ? 'Đang gửi...' : 'Submitting...'}
+                {t('contribute.submitting')}
               </>
             ) : (
               <>
                 <Send className="w-5 h-5" />
-                {isVietnamese ? 'Gửi đóng góp' : 'Submit Contribution'}
+                {t('contribute.submit')}
               </>
             )}
           </button>
@@ -794,19 +781,17 @@ export default function ContributePage() {
       </div>
 
       <h2 className="text-2xl font-display font-bold text-gray-900 dark:text-gray-100 mb-4">
-        {isVietnamese ? 'Cảm ơn bạn đã đóng góp!' : 'Thank you for your contribution!'}
+        {t('contribute.thankYou')}
       </h2>
 
       <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6">
-        {isVietnamese
-          ? 'Đóng góp của bạn đã được ghi nhận và sẽ được xem xét bởi đội ngũ quản trị. Chúng tôi sẽ liên hệ nếu cần thêm thông tin.'
-          : 'Your contribution has been recorded and will be reviewed by our admin team. We will contact you if we need more information.'}
+        {t('contribute.successMessage')}
       </p>
 
       {submittedContribution && (
         <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 max-w-sm mx-auto mb-8">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {isVietnamese ? 'Mã đóng góp:' : 'Contribution ID:'}
+            {t('contribute.contributionId')}
           </p>
           <p className="font-mono text-sm text-gray-700 dark:text-gray-300">
             {submittedContribution.id}
@@ -819,7 +804,7 @@ export default function ContributePage() {
           onClick={resetForm}
           className="px-6 py-3 bg-heritage-red-700 text-white rounded-xl font-medium hover:bg-heritage-red-800 transition-colors"
         >
-          {isVietnamese ? 'Đóng góp thêm' : 'Contribute More'}
+          {t('contribute.contributeMore')}
         </button>
       </div>
     </div>
@@ -839,12 +824,10 @@ export default function ContributePage() {
             </div>
             <div>
               <h1 className="text-2xl sm:text-3xl font-display font-bold">
-                {isVietnamese ? 'Đóng góp Di sản' : 'Contribute Heritage'}
+                {t('contribute.contributeHeritage')}
               </h1>
               <p className="text-heritage-gold-300">
-                {isVietnamese
-                  ? 'Cùng nhau bảo tồn và phát huy di sản văn hóa Cà Mau'
-                  : 'Together we preserve and promote Ca Mau cultural heritage'}
+                {t('contribute.subtitle')}
               </p>
             </div>
           </div>
@@ -878,9 +861,7 @@ export default function ContributePage() {
         <div className="mt-6 flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
           <Info className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-blue-700 dark:text-blue-300">
-            {isVietnamese
-              ? 'Tất cả đóng góp sẽ được xem xét và xác minh trước khi được thêm vào hệ thống. Thông tin cá nhân của bạn (nếu cung cấp) sẽ được bảo mật.'
-              : 'All contributions will be reviewed and verified before being added to the system. Your personal information (if provided) will be kept confidential.'}
+            {t('contribute.infoNote')}
           </p>
         </div>
       </div>

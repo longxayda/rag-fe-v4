@@ -4,7 +4,6 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export default function MarkdownEditor({ value, onChange, label, placeholder }) {
-  const [showPreview, setShowPreview] = useState(false);
   const [activeTab, setActiveTab] = useState('edit'); // 'edit' or 'preview' or 'split'
 
   const insertMarkdown = (before, after = '') => {

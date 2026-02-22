@@ -147,7 +147,6 @@ export function useStreamingChat() {
       }
 
     } catch (err) {
-      // Production: consider using proper error logging
       setError(err.message);
 
       // Update the last message with error
