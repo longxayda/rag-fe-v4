@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImageOff } from 'lucide-react';
 
 /**
@@ -23,6 +24,7 @@ export function LazyImage({
   blur = true,
   ...props
 }) {
+  const { t } = useTranslation();
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -91,7 +93,7 @@ export function LazyImage({
       >
         <div className="text-center p-4">
           <ImageOff className="w-8 h-8 text-gray-400 dark:text-gray-500 mx-auto mb-2" />
-          <span className="text-sm text-gray-500 dark:text-gray-400">Không thể tải ảnh</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">{t('common.imageLoadError')}</span>
         </div>
       </div>
     );

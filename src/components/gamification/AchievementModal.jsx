@@ -77,7 +77,7 @@ export function AchievementModal({ achievement, isOpen, onClose, points = 100 })
           text: text,
           url: window.location.href,
         });
-      } catch (err) {
+      } catch {
         // Share cancelled or failed - silent catch
       }
     } else {

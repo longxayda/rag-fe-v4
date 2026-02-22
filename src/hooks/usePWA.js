@@ -156,8 +156,7 @@ export function usePWA() {
       setIsInstallable(false);
 
       return outcome === 'accepted';
-    } catch (error) {
-      // Production: consider using proper error logging
+    } catch {
       // Install failed
       return false;
     }

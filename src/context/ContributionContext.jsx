@@ -42,9 +42,8 @@ export function ContributionProvider({ children }) {
       if (stored) {
         setContributions(JSON.parse(stored));
       }
-    } catch (error) {
-      // Production: consider using proper error logging
-      // Failed to load contributions from localStorage
+    } catch {
+      // ignore localStorage read error
     }
     setIsLoading(false);
   }, []);
@@ -54,9 +53,8 @@ export function ContributionProvider({ children }) {
     if (!isLoading) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(contributions));
-      } catch (error) {
-        // Production: consider using proper error logging
-        // Failed to save contributions to localStorage
+      } catch {
+        // ignore localStorage write error
       }
     }
   }, [contributions, isLoading]);

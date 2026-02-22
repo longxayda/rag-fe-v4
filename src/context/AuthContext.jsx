@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
           setIsAuthenticated(true);
           setUser(authData.user);
         }
-      } catch (e) {
+      } catch {
         localStorage.removeItem('heritage_admin_auth');
       }
     }

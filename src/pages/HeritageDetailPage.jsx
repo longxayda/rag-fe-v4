@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { 
   ArrowLeft, MapPin, Award, Calendar, Volume2, Video, 
   Heart, Share2, Printer, ExternalLink, ChevronRight
@@ -8,16 +9,12 @@ import {
 import { useFavorites } from '../context/FavoritesContext';
 import heritages from '../data/heritages.json';
 import ReactMarkdown from 'react-markdown';
-
-const rankingColors = {
-  'Quốc gia đặc biệt': 'bg-heritage-red-600 text-white',
-  'Quốc gia': 'bg-heritage-gold-500 text-heritage-red-900',
-  'Cấp tỉnh': 'bg-green-600 text-white',
-};
+import { getRankingStyle, normalizeRankingCode } from '../utils/ranking';
 
 function SocialShareButtons({ heritage }) {
+  const { t } = useTranslation();
   const shareUrl = window.location.href;
-  const shareText = `Khám phá ${heritage.name} - Di sản văn hóa Cà Mau`;
+  const shareText = t('heritageDetail.shareText', { name: heritage.name });
   
   const shareLinks = [
     {
@@ -34,7 +31,7 @@ function SocialShareButtons({ heritage }) {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shareUrl);
-    alert('Đã sao chép liên kết!');
+    alert(t('common.copied'));
   };
 
   return (
@@ -54,13 +51,14 @@ function SocialShareButtons({ heritage }) {
         onClick={copyToClipboard}
         className="px-3 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
       >
-        Sao chép
+        {t('common.copy')}
       </button>
     </div>
   );
 }
 
 function RelatedHeritages({ currentId, commune }) {
+  const { t } = useTranslation();
   const related = heritages
     .filter(h => h.id !== currentId && h.commune === commune)
     .slice(0, 4);
@@ -70,7 +68,7 @@ function RelatedHeritages({ currentId, commune }) {
   return (
     <div className="mt-12">
       <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-        Di sản cùng khu vực
+        {t('heritageDetail.heritageInArea')}
       </h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {related.map(heritage => (
@@ -94,6 +92,7 @@ function RelatedHeritages({ currentId, commune }) {
 }
 
 export default function HeritageDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -106,14 +105,14 @@ export default function HeritageDetailPage() {
       <div className="min-h-screen flex items-center justify-center bg-heritage-cream-50 dark:bg-gray-900">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            Không tìm thấy di sản
+            {t('heritageDetail.notFound')}
           </h2>
           <Link
             to="/heritage"
             className="inline-flex items-center gap-2 text-heritage-red-600 hover:text-heritage-red-700"
           >
             <ArrowLeft className="w-4 h-4" />
-            Quay lại danh sách
+            {t('heritageDetail.backToList')}
           </Link>
         </div>
       </div>
@@ -180,10 +179,18 @@ export default function HeritageDetailPage() {
           className="glass-card p-6 md:p-8"
         >
           {/* Ranking Badge */}
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-4 ${rankingColors[heritage.ranking] || 'bg-gray-600 text-white'}`}>
-            <Award className="w-4 h-4" />
-            {heritage.ranking || 'Di sản văn hóa'}
-          </div>
+          {(() => {
+            const raw = heritage.ranking || heritage.rankingType;
+            const style = getRankingStyle(raw);
+            const code = normalizeRankingCode(raw);
+            const rankingLabel = code ? t(`ranking.${code}`) : (raw || t('heritageDetail.culturalHeritage'));
+            return (
+              <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-4 ${style.badgeCompact}`}>
+                <Award className="w-4 h-4" />
+                {rankingLabel}
+              </div>
+            );
+          })()}
 
           {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -212,7 +219,7 @@ export default function HeritageDetailPage() {
               className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
             >
               <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                Chia sẻ di sản này
+                {t('heritageDetail.shareThisHeritage')}
               </p>
               <SocialShareButtons heritage={heritage} />
             </motion.div>
@@ -221,7 +228,7 @@ export default function HeritageDetailPage() {
           {/* Description */}
           <div className="prose prose-gray dark:prose-invert max-w-none mb-8">
             <ReactMarkdown>
-              {heritage.information || 'Chưa có thông tin chi tiết.'}
+              {heritage.information || t('heritageDetail.noDetailInfo')}
             </ReactMarkdown>
           </div>
 
@@ -229,13 +236,13 @@ export default function HeritageDetailPage() {
           {(heritage.audioUrl || heritage.youtubeUrl) && (
             <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-                Tài liệu đa phương tiện
+                {t('heritageDetail.multimedia')}
               </h3>
               <div className="space-y-4">
                 {heritage.audioUrl && (
                   <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl">
                     <Volume2 className="w-5 h-5 text-heritage-red-600" />
-                    <span className="text-gray-700 dark:text-gray-300">Audio giới thiệu</span>
+                    <span className="text-gray-700 dark:text-gray-300">{t('heritageDetail.audioIntro')}</span>
                     <audio controls className="ml-auto">
                       <source src={heritage.audioUrl} type="audio/mpeg" />
                     </audio>
@@ -267,13 +274,13 @@ export default function HeritageDetailPage() {
             className="inline-flex items-center gap-2 text-heritage-red-600 dark:text-heritage-gold-400 hover:gap-3 transition-all"
           >
             <ArrowLeft className="w-4 h-4" />
-            Quay lại danh sách
+            {t('heritageDetail.backToList')}
           </Link>
           <Link
             to="/map"
             className="inline-flex items-center gap-2 text-heritage-red-600 dark:text-heritage-gold-400 hover:gap-3 transition-all"
           >
-            Xem trên bản đồ
+            {t('heritageDetail.viewOnMap')}
             <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
