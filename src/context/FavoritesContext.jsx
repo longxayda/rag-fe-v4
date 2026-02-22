@@ -9,8 +9,7 @@ export function FavoritesProvider({ children }) {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       return stored ? JSON.parse(stored) : [];
-    } catch (error) {
-      // Production: consider using proper error logging
+    } catch {
       // Failed to load favorites from localStorage
       return [];
     }
@@ -20,8 +19,7 @@ export function FavoritesProvider({ children }) {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
-    } catch (error) {
-      // Production: consider using proper error logging
+    } catch {
       // Failed to save favorites to localStorage
     }
   }, [favorites]);

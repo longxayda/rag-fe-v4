@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare, Gamepad2, Map, ChevronDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 

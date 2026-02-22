@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './MapPage.css';
@@ -8,12 +9,13 @@ import { heritageApi } from '../services/api';
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_PK;
 
 const MapPage = () => {
+  const { t } = useTranslation();
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [activeLocation, setActiveLocation] = useState(null);
   const [is360Open, setIs360Open] = useState(false);
   const [locations, setLocations] = useState([]);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [, setIsAudioPlaying] = useState(false);
   const open360Timeout = useRef(null);
   const panoramaContainer = useRef(null);
   const pannellumViewer = useRef(null);
@@ -29,9 +31,86 @@ const MapPage = () => {
   }
 
   useEffect(() => {
-    getAllLocations()
-  }, [])
+    getAllLocations();
+  }, []);
 
+  const isValidLngLat = (coordinates) => {
+    if (!coordinates) return false;
+    if (Array.isArray(coordinates)) {
+      if (coordinates.length !== 2) return false;
+      const [lng, lat] = coordinates;
+      return (
+        typeof lng === 'number' &&
+        typeof lat === 'number' &&
+        lng >= -180 && lng <= 180 &&
+        lat >= -90 && lat <= 90
+      );
+    }
+    if (
+      typeof coordinates === 'object' &&
+      typeof coordinates.lng === 'number' &&
+      typeof coordinates.lat === 'number'
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  const open360Viewer = (location) => {
+    setIs360Open(true);
+    setTimeout(() => {
+      if (window.pannellum) {
+        pannellumViewer.current = window.pannellum.viewer(panoramaContainer.current, {
+          type: 'equirectangular',
+          panorama: location.image360,
+          autoLoad: true,
+          showControls: true,
+          compass: true,
+          northOffset: 0,
+          hfov: 100,
+          pitch: 0,
+          yaw: 0,
+          mouseZoom: true,
+          autoRotate: -2
+        });
+      }
+    }, 100);
+  };
+
+  const playAudio = (location) => {
+    if (!location?.audio_url) return;
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    const audio = new Audio(location.audio_url);
+    audioRef.current = audio;
+    audio.play();
+    setIsAudioPlaying(true);
+    audio.onended = () => setIsAudioPlaying(false);
+  };
+
+  const flyToLocation = (location) => {
+    if (!isValidLngLat(location.coordinates)) {
+      alert('Địa điểm này chưa có dữ liệu vị trí trên bản đồ');
+      return;
+    }
+    if (open360Timeout.current) {
+      clearTimeout(open360Timeout.current);
+    }
+    setActiveLocation(location);
+    playAudio(location);
+    map.current.flyTo({
+      center: location.coordinates,
+      zoom: 17,
+      pitch: 60,
+      bearing: 0,
+      duration: 2500,
+      essential: true
+    });
+    open360Timeout.current = setTimeout(() => {
+      open360Viewer(location);
+    }, 2600);
+  };
 
   useEffect(() => {
     if (map.current) return;
@@ -62,12 +141,14 @@ const MapPage = () => {
 
     locations.forEach(location => {
       if (!isValidLngLat(location.coordinates)) {
-        console.warn(
-          '⚠️ Location skipped (invalid coordinates):',
-          location.id,
-          location.name,
-          location.coordinates
-        );
+        if (import.meta.env.DEV) {
+          console.warn(
+            '⚠️ Location skipped (invalid coordinates):',
+            location.id,
+            location.name,
+            location.coordinates
+          );
+        }
         return; // ⬅️ SKIP location này
       }
 
@@ -86,86 +167,8 @@ const MapPage = () => {
 
       markersRef.current.push(marker);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- flyToLocation stable
   }, [locations]);
-
-
-
-  const isValidLngLat = (coordinates) => {
-    if (!coordinates) return false;
-
-    // Case: [lng, lat]
-    if (Array.isArray(coordinates)) {
-      if (coordinates.length !== 2) return false;
-
-      const [lng, lat] = coordinates;
-      return (
-        typeof lng === 'number' &&
-        typeof lat === 'number' &&
-        lng >= -180 && lng <= 180 &&
-        lat >= -90 && lat <= 90
-      );
-    }
-
-    // Case: { lng, lat }
-    if (
-      typeof coordinates === 'object' &&
-      typeof coordinates.lng === 'number' &&
-      typeof coordinates.lat === 'number'
-    ) {
-      return true;
-    }
-
-    return false;
-  };
-
-
-  const flyToLocation = (location) => {
-    if (!isValidLngLat(location.coordinates)) {
-      alert('Địa điểm này chưa có dữ liệu vị trí trên bản đồ');
-      return;
-    }
-    if (open360Timeout.current) {
-      clearTimeout(open360Timeout.current)
-    }
-    setActiveLocation(location);
-
-    playAudio(location)
-
-    map.current.flyTo({
-      center: location.coordinates,
-      zoom: 17,
-      pitch: 60,
-      bearing: 0,
-      duration: 2500,
-      essential: true
-    });
-
-    open360Timeout.current = setTimeout(() => {
-      open360Viewer(location);
-    }, 2600);
-  };
-
-  const open360Viewer = (location) => {
-    setIs360Open(true);
-
-    setTimeout(() => {
-      if (window.pannellum) {
-        pannellumViewer.current = window.pannellum.viewer(panoramaContainer.current, {
-          type: 'equirectangular',
-          panorama: location.image360,
-          autoLoad: true,
-          showControls: true,
-          compass: true,
-          northOffset: 0,
-          hfov: 100,
-          pitch: 0,
-          yaw: 0,
-          mouseZoom: true,
-          autoRotate: -2
-        });
-      }
-    }, 100);
-  };
 
   const close360Viewer = () => {
     if (open360Timeout.current) {
@@ -193,24 +196,6 @@ const MapPage = () => {
       duration: 2000
     });
   };
-
-  const playAudio = (location) => {
-    if (!location?.audio_url) return;
-
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-
-    const audio = new Audio(location.audio_url);
-    audioRef.current = audio;
-
-    audio.play();
-    setIsAudioPlaying(true);
-
-    audio.onended = () => setIsAudioPlaying(false);
-  };
-
-
 
   return (
     <div className="ca-mau-explorer">
@@ -264,8 +249,8 @@ const MapPage = () => {
 
       <div className="locations-sidebar">
         <div className="sidebar-header">
-          <h1>Khám Phá Cà Mau</h1>
-          <p>Chọn một địa điểm để bắt đầu</p>
+          <h1>{t('map.exploreTitle')}</h1>
+          <p>{t('map.selectLocationToStart')}</p>
         </div>
 
         <div className="locations-list">

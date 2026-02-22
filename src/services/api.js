@@ -33,7 +33,7 @@ async function parseJsonResponse(res) {
   }
   try {
     return text ? JSON.parse(text) : null;
-  } catch (e) {
+  } catch {
     throw new Error('Invalid JSON from API.');
   }
 }

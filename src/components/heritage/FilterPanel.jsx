@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { X, Filter, RotateCcw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { COMMUNES } from '../../data/communes';
@@ -37,7 +37,7 @@ export default function FilterPanel({
   filters,
   onFilterChange,
   onReset,
-  communes = [],
+  communes: _communes = [],
 }) {
   const { t } = useTranslation();
 

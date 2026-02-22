@@ -86,8 +86,7 @@ export default function HeritageManagement() {
         setHeritages([]);
         setPagination({ total: 0, totalPages: 1 });
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
       showNotification(t('admin.loadError'), 'error');
       setHeritages([]);
     } finally {
@@ -97,6 +96,7 @@ export default function HeritageManagement() {
 
   useEffect(() => {
     fetchHeritages(currentPage);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchHeritages is stable
   }, [currentPage]);
 
   const showNotification = (message, type = 'success') => {
@@ -199,7 +199,7 @@ export default function HeritageManagement() {
       setSelectedHeritage(fullHeritage);
       setIsEditing(true);
       setIsCreating(false);
-    } catch (error) {
+    } catch {
       showNotification(t('admin.loadError'), 'error');
       // Fallback to basic data if API call fails
       setFormData({
@@ -242,7 +242,7 @@ export default function HeritageManagement() {
       setSelectedHeritage(fullHeritage);
       setIsEditing(false);
       setIsCreating(false);
-    } catch (error) {
+    } catch {
       showNotification(t('admin.loadError'), 'error');
       // Fallback to basic data
       setSelectedHeritage(heritage);
@@ -415,7 +415,7 @@ export default function HeritageManagement() {
       setIsEditing(false);
       setSelectedHeritage(null);
       fetchHeritages(currentPage);
-    } catch (error) {
+    } catch {
       showNotification(t('admin.errGeneric'), 'error');
     } finally {
       setLoading(false);
@@ -436,7 +436,7 @@ export default function HeritageManagement() {
       setSelectedHeritage(null);
       setIsEditing(false);
       fetchHeritages(currentPage);
-    } catch (error) {
+    } catch {
       showNotification(t('admin.errGeneric'), 'error');
     } finally {
       setLoading(false);

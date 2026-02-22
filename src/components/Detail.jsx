@@ -26,12 +26,11 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                 // Luôn fetch bản full từ API chi tiết
                 if (itemId) {
                     const data = await heritageApi.getById(itemId, language);
-                    console.log("FULL DATA:", data);
                     setItem(data); // ghi đè lại bằng bản đầy đủ
                 }
 
-            } catch (error) {
-                console.error('Error fetching heritage details:', error);
+            } catch {
+                // Error fetching heritage details
             } finally {
                 setLoading(false);
             }
@@ -51,11 +50,12 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
     useEffect(() => {
         // Prevent body scroll when modal is open
         document.body.style.overflow = 'hidden';
+        const audioEl = audioRef.current;
         return () => {
             document.body.style.overflow = 'unset';
-            if (audioRef.current) {
-                audioRef.current.pause();
-                audioRef.current.currentTime = 0;
+            if (audioEl) {
+                audioEl.pause();
+                audioEl.currentTime = 0;
             }
         };
     }, []);
@@ -92,8 +92,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
             setIsLoadingAudio(false);
             audioRef.current.play()
                 .then(() => setIsPlaying(true))
-                .catch((err) => {
-                    console.error("Play error:", err);
+                .catch(() => {
                     setAudioError(true);
                     setIsLoadingAudio(false);
                 });
@@ -104,7 +103,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
         };
 
         audioRef.current.onerror = () => {
-            console.error("Audio load error");
+            if (import.meta.env.DEV) console.error("Audio load error");
             setAudioError(true);
             setIsPlaying(false);
             setIsLoadingAudio(false);

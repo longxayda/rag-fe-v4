@@ -11,10 +11,10 @@ import {
 
 export default function FloatingNavbar() {
   const { t } = useTranslation();
-  const { currentLanguage, changeLanguage } = useLanguage();
+  const { currentLanguage: _currentLanguage, changeLanguage: _changeLanguage } = useLanguage();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isLangOpen, setIsLangOpen] = useState(false);
-  const { isDarkMode, toggleDarkMode } = useTheme();
+  const [_isLangOpen, _setIsLangOpen] = useState(false);
+  useTheme(); // theme applied via class on document
   const langRef = useRef(null);
 
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function FloatingNavbar() {
     { path: '/settings', icon: Settings, labelKey: 'nav.settings' },
   ];
 
-  const languages = [
+  const _languages = [
     { code: 'vi', nameKey: 'language.vi', flag: '🇻🇳' },
     { code: 'en', nameKey: 'language.en', flag: '🇺🇸' },
     { code: 'zh', nameKey: 'language.zh', flag: '🇨🇳' },
@@ -47,21 +47,20 @@ export default function FloatingNavbar() {
     if (currentIndex !== -1) {
       setActiveIndex(currentIndex);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- navItems is stable
   }, [location.pathname]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (langRef.current && !langRef.current.contains(event.target)) {
-        setIsLangOpen(false);
+        _setIsLangOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const itemWidth = 100 / navItems.length;
-  const currentLang = languages.find(l => l.code === currentLanguage) || languages[0];
   const getLabel = (labelKey) => t(labelKey) || labelKey;
 
   const handleNavClick = (index) => {
@@ -69,11 +68,6 @@ export default function FloatingNavbar() {
     navigate(navItems[index].path); // Actually navigate!
   };
 
-
-  const handleLanguageChange = (code) => {
-    changeLanguage(code);
-    setIsLangOpen(false);
-  };
 
   return (
     <>
@@ -152,6 +146,7 @@ export default function FloatingNavbar() {
 
           {/* Nav Items */}
           <div className="flex items-center gap-0.5 flex-wrap justify-center">
+            {/* eslint-disable-next-line no-unused-vars -- Icon used in JSX */}
             {navItems.map(({ icon: Icon, labelKey }, index) => {
               const isActive = activeIndex === index;
               return (
@@ -198,7 +193,7 @@ export default function FloatingNavbar() {
                 {languages.map((lang) => (
                   <button
                     key={lang.code}
-                    onClick={() => handleLanguageChange(lang.code)}
+                    onClick={() => { changeLanguage(lang.code); setIsLangOpen(false); }}
                     className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors flex items-center gap-2 ${
                       currentLanguage === lang.code ? 'text-red-600 dark:text-yellow-400 font-medium' : 'text-gray-700 dark:text-gray-300'
                     }`}
@@ -219,6 +214,7 @@ export default function FloatingNavbar() {
           <div className="flex items-center bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg border border-gray-200 dark:border-gray-700 rounded-2xl sm:rounded-3xl shadow-[0_-4px_24px_rgba(0,0,0,0.12)] dark:shadow-[0_-4px_24px_rgba(0,0,0,0.5)] relative overflow-hidden">
             {/* Navigation items */}
             <div className="flex items-center justify-around relative z-10 w-full py-2.5 px-0.5">
+              {/* eslint-disable-next-line no-unused-vars -- Icon used in JSX */}
               {navItems.map(({ icon: Icon, labelKey }, index) => {
                 const isActive = activeIndex === index;
                 return (

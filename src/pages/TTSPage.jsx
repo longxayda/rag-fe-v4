@@ -11,7 +11,7 @@ export default function TextToSpeechPage() {
     ];
     const [text, setText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [audioUrl, setAudioUrl] = useState(null);
+    const [, setAudioUrl] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [error, setError] = useState('');
     const [apiKey, setApiKey] = useState('');
@@ -65,13 +65,13 @@ export default function TextToSpeechPage() {
                 throw new Error('API request failed');
             }
 
-            const data = await response.json();
+            await response.json();
 
             // Since Gemini doesn't directly support TTS, we'll use Web Speech API as fallback
             // This is for demo purposes - in production you'd use a proper TTS service
             handleWebSpeechTTS();
 
-        } catch (err) {
+        } catch {
             setError(t('tts.errApiFallback'));
             handleWebSpeechTTS();
         }

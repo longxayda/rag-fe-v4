@@ -5,7 +5,7 @@ import MainLayout from '../layouts/MainLayout';
 import SkeletonLoader from '../components/ui/SkeletonLoader';
 
 function RouteErrorFallback() {
-  const error = useRouteError();
+  useRouteError(); // consume error for error boundary
   const navigate = useNavigate();
   const { t } = useTranslation();
   return (

@@ -64,8 +64,8 @@
   "tts": {
     "sample1Title": "关于金瓯角",
     "sample1Text": "金瓯角是越南大陆最南端，东海与泰国湾交汇处。这里是沼泽海角，拥有丰富多样的红树林生态系统。",
-    "sample2Title": "关于薄寮公子",
-    "sample2Text": "薄寮公子本名陈征辉，1900年生于薄寮。他以奢华生活方式闻名，是法属时期财富的象征。",
+    "sample2Title": "关于南方公子",
+    "sample2Text": "南方公子本名陈征辉，1900年生于金瓯地区。他以奢华生活方式闻名，是法属时期财富的象征。",
     "sample3Title": "关于高棉新年节",
     "sample3Text": "高棉新年是高棉族的传统节日，在农历四月举行。这是高棉社区团聚、祈愿新年平安吉祥的时刻。",
     "errEnterText": "请输入要转换的文本",
@@ -173,7 +173,7 @@
   },
   "header": {
     "heritage": "地方教育教学支持系统",
-    "location": "金瓯省福隆社隆和村10B号"
+    "location": "金瓯省"
   },
   "search": {
     "placeholder": "搜索遗产..."
@@ -197,10 +197,10 @@
   },
   "home": {
     "hero": {
-      "badge": "金瓯 - 薄辽文化遗产",
+      "badge": "金瓯文化遗产",
       "title1": "探索",
       "title2": "越南遗产",
-      "subtitle": "通过现代AI技术探索金瓯 - 薄辽地区独特的文化和历史价值之旅",
+      "subtitle": "通过现代AI技术探索金瓯地区独特的文化和历史价值之旅",
       "exploreButton": "探索遗产",
       "chatButton": "与AI对话",
       "mapLink": "遗产地图",
@@ -217,7 +217,7 @@
       "viewDetails": "查看详情"
     },
     "stats": {
-      "title": "金瓯 - 薄辽遗产",
+      "title": "金瓯遗产",
       "subtitle": "拥有众多珍贵遗产的丰富文化宝库",
       "heritage": "文化遗产",
       "locations": "地点",
@@ -239,6 +239,10 @@
       "ttsDesc": "聆听语音内容",
       "favorites": "收藏",
       "favoritesDesc": "查看您收藏的遗产列表"
+    },
+    "popularDestinations": {
+      "title": "热门景点",
+      "description": "探索金瓯省著名当地景点"
     },
     "cta": {
       "title1": "共同保护",
@@ -282,7 +286,7 @@
   },
   "heritage": {
     "title": "探索遗产",
-    "subtitle": "越南芹苴省",
+    "subtitle": "越南金瓯",
     "searchPlaceholder": "搜索遗产、人物、节日或地区...",
     "filterSection": "搜索筛选",
     "typeFilter": "类型",
@@ -335,13 +339,13 @@
   },
   "chat": {
     "title": "地方教育AI助手",
-    "subtitle": "向我咨询芹苴省地方教育和文化遗产",
+    "subtitle": "向我咨询金瓯省地方教育和文化遗产",
     "placeholder": "输入关于地方教育的问题...",
     "charCount": "{{count}}/500",
     "typing": "正在回复...",
     "suggestedQuestions": "推荐问题",
     "welcome": "欢迎使用教育助手",
-    "welcomeDesc": "请询问关于芹苴省地方教育、文化遗产、历史和遗迹的问题",
+    "welcomeDesc": "请询问关于金瓯省地方教育、文化遗产、历史和遗迹的问题",
     "send": "发送",
     "clear": "清除对话",
     "thinking": "思考中..."
@@ -653,7 +657,7 @@
   },
   "pwa": {
     "installTitle": "安装应用",
-    "installDescription": "安装芹苴省地方教育应用，享受更快的访问速度和离线使用。",
+    "installDescription": "安装金瓯省地方教育应用，享受更快的访问速度和离线使用。",
     "install": "安装",
     "benefit1": "从主屏幕快速访问",
     "benefit2": "无需网络即可使用",
@@ -668,9 +672,9 @@
   },
   "contribute": {
     "title": "贡献内容",
-    "subtitle": "共同建设芹苴地方教育资源",
+    "subtitle": "共同建设金瓯地方教育资源",
     "selectType": "选择贡献类型",
-    "selectTypeDesc": "您想为芹苴地方教育系统贡献什么？",
+    "selectTypeDesc": "您想为金瓯地方教育系统贡献什么？",
     "newHeritage": "建议新内容",
     "newHeritageDesc": "建议向系统添加新的教育内容",
     "correction": "请求更正",
@@ -678,7 +682,7 @@
     "additionalInfo": "补充信息",
     "additionalInfoDesc": "为现有内容添加详细信息",
     "photo": "贡献图片",
-    "photoDesc": "分享关于芹苴地区的图片",
+    "photoDesc": "分享关于金瓯地区的图片",
     "contributorInfo": "贡献者信息",
     "optional": "可选",
     "fullName": "姓名",
@@ -701,7 +705,7 @@
     "clickToUpload": "点击上传",
     "orDragDrop": "或拖拽上传",
     "photoDescriptions": "图片描述",
-    "copyrightConfirm": "我确认我拥有或有权分享这些图片，并允许在芹苴地方教育项目中使用。",
+    "copyrightConfirm": "我确认我拥有或有权分享这些图片，并允许在金瓯地方教育项目中使用。",
     "back": "返回",
     "submitting": "提交中...",
     "submit": "提交贡献",
@@ -815,7 +819,7 @@
   "about": {
     "badge": "关于我们",
     "title": "文化遗产",
-    "region": "金瓯 - 薄辽",
+    "region": "金瓯",
     "subtitle": "数字化和保护越南最南端土地的文化遗产项目，结合现代AI技术让遗产更贴近每个人",
     "team": {
       "name": "开发团队",
@@ -824,7 +828,7 @@
     "features": {
       "heritage": {
         "title": "85+ 遗产",
-        "description": "金瓯 - 薄辽文化遗产丰富数据库"
+        "description": "金瓯文化遗产丰富数据库"
       },
       "aiSupport": {
         "title": "AI支持",
@@ -843,7 +847,7 @@
       "title": "我们的",
       "titleHighlight": "使命",
       "paragraph1": "我们相信保护文化遗产不仅是责任，也是每个越南公民的骄傲。",
-      "paragraph2": "遗产网络项目旨在数字化金瓯和薄辽的整个文化遗产宝库，帮助人们和游客轻松访问和了解这些独特的文化价值。",
+      "paragraph2": "遗产网络项目旨在数字化金瓯的整个文化遗产宝库，帮助人们和游客轻松访问和了解这些独特的文化价值。",
       "paragraph3": "在AI技术的支持下，用户可以以全新的方式互动、提问和探索遗产。"
     },
     "contact": {

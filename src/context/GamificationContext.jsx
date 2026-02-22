@@ -269,8 +269,7 @@ export function GamificationProvider({ children }) {
         const parsed = JSON.parse(stored);
         setProgress({ ...initialProgress, ...parsed });
       }
-    } catch (error) {
-      // Production: consider using proper error logging
+    } catch {
       // Failed to load gamification data from localStorage
     }
     setIsLoading(false);
@@ -281,82 +280,11 @@ export function GamificationProvider({ children }) {
     if (!isLoading) {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-      } catch (error) {
-        // Production: consider using proper error logging
+      } catch {
         // Failed to save gamification data to localStorage
       }
     }
   }, [progress, isLoading]);
-
-  // Check and update streak on load
-  useEffect(() => {
-    if (!isLoading && progress.lastVisit) {
-      const lastVisit = new Date(progress.lastVisit);
-      const today = new Date();
-      const diffTime = Math.abs(today - lastVisit);
-      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-      if (diffDays === 1) {
-        // Continue streak
-        updateProgress({
-          streakDays: progress.streakDays + 1,
-          maxStreak: Math.max(progress.maxStreak, progress.streakDays + 1),
-          lastVisit: today.toISOString(),
-        });
-        addPoints(POINTS.DAILY_STREAK);
-      } else if (diffDays > 1) {
-        // Break streak
-        updateProgress({
-          streakDays: 1,
-          lastVisit: today.toISOString(),
-        });
-      }
-    } else if (!isLoading && !progress.lastVisit) {
-      // First visit
-      updateProgress({
-        streakDays: 1,
-        maxStreak: 1,
-        lastVisit: new Date().toISOString(),
-      });
-    }
-  }, [isLoading]);
-
-  // Check for night owl achievement
-  useEffect(() => {
-    if (!isLoading && !progress.usedAtNight) {
-      const hour = new Date().getHours();
-      if (hour >= 0 && hour < 5) {
-        updateProgress({ usedAtNight: true });
-      }
-    }
-  }, [isLoading, progress.usedAtNight]);
-
-  /**
-   * Update progress
-   */
-  const updateProgress = useCallback((updates) => {
-    setProgress((prev) => {
-      const newProgress = { ...prev, ...updates };
-      // Check for new achievements
-      checkAchievements(newProgress);
-      return newProgress;
-    });
-  }, []);
-
-  /**
-   * Add points
-   */
-  const addPoints = useCallback((amount) => {
-    setProgress((prev) => {
-      const newPoints = prev.points + amount;
-      const newLevel = calculateLevel(newPoints);
-      return {
-        ...prev,
-        points: newPoints,
-        level: newLevel.level,
-      };
-    });
-  }, []);
 
   /**
    * Check and unlock achievements
@@ -378,6 +306,72 @@ export function GamificationProvider({ children }) {
       }
     });
   }, []);
+
+  /**
+   * Update progress
+   */
+  const updateProgress = useCallback((updates) => {
+    setProgress((prev) => {
+      const newProgress = { ...prev, ...updates };
+      checkAchievements(newProgress);
+      return newProgress;
+    });
+  }, [checkAchievements]);
+
+  /**
+   * Add points
+   */
+  const addPoints = useCallback((amount) => {
+    setProgress((prev) => {
+      const newPoints = prev.points + amount;
+      const newLevel = calculateLevel(newPoints);
+      return {
+        ...prev,
+        points: newPoints,
+        level: newLevel.level,
+      };
+    });
+  }, []);
+
+  // Check and update streak on load
+  useEffect(() => {
+    if (!isLoading && progress.lastVisit) {
+      const lastVisit = new Date(progress.lastVisit);
+      const today = new Date();
+      const diffTime = Math.abs(today - lastVisit);
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        updateProgress({
+          streakDays: progress.streakDays + 1,
+          maxStreak: Math.max(progress.maxStreak, progress.streakDays + 1),
+          lastVisit: today.toISOString(),
+        });
+        addPoints(POINTS.DAILY_STREAK);
+      } else if (diffDays > 1) {
+        updateProgress({
+          streakDays: 1,
+          lastVisit: today.toISOString(),
+        });
+      }
+    } else if (!isLoading && !progress.lastVisit) {
+      updateProgress({
+        streakDays: 1,
+        maxStreak: 1,
+        lastVisit: new Date().toISOString(),
+      });
+    }
+  }, [isLoading, progress.lastVisit, progress.streakDays, progress.maxStreak, updateProgress, addPoints]);
+
+  // Check for night owl achievement
+  useEffect(() => {
+    if (!isLoading && !progress.usedAtNight) {
+      const hour = new Date().getHours();
+      if (hour >= 0 && hour < 5) {
+        updateProgress({ usedAtNight: true });
+      }
+    }
+  }, [isLoading, progress.usedAtNight, updateProgress]);
 
   /**
    * Record heritage view

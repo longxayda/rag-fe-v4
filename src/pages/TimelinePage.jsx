@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Clock, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { HeritageTimeline } from '../components/timeline';

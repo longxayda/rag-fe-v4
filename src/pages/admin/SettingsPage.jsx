@@ -33,7 +33,6 @@ export default function SettingsPage({ onBack }) {
   const { t } = useTranslation();
   const {
     isDarkMode,
-    toggleDarkMode,
     setDarkMode,
     fontSize,
     changeFontSize,
@@ -48,8 +47,7 @@ export default function SettingsPage({ onBack }) {
     isPWASupported,
     installApp,
     clearCache,
-    getStorageEstimate,
-    requestPersistentStorage
+    getStorageEstimate
   } = usePWA();
 
   const [storageInfo, setStorageInfo] = useState(null);

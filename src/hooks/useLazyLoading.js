@@ -77,7 +77,7 @@ export function useLazyLoadingBatch(imageUrls, options = {}) {
   const {
     threshold = 0.1,
     rootMargin = '100px',
-    batchSize = 5,
+    batchSize: _batchSize = 5,
   } = options;
 
   const [loadedImages, setLoadedImages] = useState(new Set());

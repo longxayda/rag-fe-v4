@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { Footer } from '../components/Footer';
 import FloatingNavbar from '../components/navigation/FloatingNavbar';
 import Breadcrumb from '../components/navigation/Breadcrumb';

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useInView } from 'framer-motion';
 import { Landmark, MapPin, Calendar, Users, BookOpen, Mic } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import heritages from '../../data/heritages.json';

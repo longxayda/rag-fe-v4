@@ -65,8 +65,8 @@
   "tts": {
     "sample1Title": "Về Mũi Cà Mau",
     "sample1Text": "Mũi Cà Mau là điểm cực Nam của đất liền Việt Nam, nơi giao thoa giữa biển Đông và vịnh Thái Lan. Đây là vùng đất mũi đầm lầy, có hệ sinh thái rừng ngập mặn phong phú và đa dạng.",
-    "sample2Title": "Về Công tử Bạc Liêu",
-    "sample2Text": "Công tử Bạc Liêu tên thật là Trần Trinh Huy, sinh năm 1900 tại Bạc Liêu. Ông nổi tiếng với lối sống xa hoa, phóng khoáng và là biểu tượng của sự giàu có thời Pháp thuộc.",
+    "sample2Title": "Về Công tử vùng Nam Bộ",
+    "sample2Text": "Công tử vùng Nam Bộ tên thật là Trần Trinh Huy, sinh năm 1900 trong vùng Cà Mau. Ông nổi tiếng với lối sống xa hoa, phóng khoáng và là biểu tượng của sự giàu có thời Pháp thuộc.",
     "sample3Title": "Về Lễ hội Chol Chnam Thmay",
     "sample3Text": "Chol Chnam Thmay là Tết truyền thống của người Khmer, diễn ra vào tháng 4 âm lịch. Đây là dịp để cộng đồng người Khmer sum họp, cầu mong một năm mới bình an, phát tài phát lộc.",
     "errEnterText": "Vui lòng nhập văn bản cần chuyển đổi",
@@ -310,6 +310,10 @@
         "title": "Danh Nhân",
         "description": "Anh hùng, học giả và những người đóng góp văn hóa."
       }
+    },
+    "popularDestinations": {
+      "title": "Địa Điểm Nổi Bật",
+      "description": "Khám phá các địa điểm địa phương nổi tiếng thuộc tỉnh Cà Mau"
     },
     "cta": {
       "title1": "Cùng Bảo Tồn",
@@ -925,7 +929,7 @@
       "title": "Sứ Mệnh",
       "titleHighlight": "Của Chúng Tôi",
       "paragraph1": "Chúng tôi tin rằng việc bảo tồn di sản văn hóa không chỉ là trách nhiệm mà còn là niềm tự hào của mỗi người dân Việt Nam.",
-      "paragraph2": "Dự án Heritage Web được xây dựng với mục tiêu số hóa toàn bộ kho tàng di sản văn hóa của Cà Mau và Bạc Liêu, giúp người dân và du khách dễ dàng tiếp cận và tìm hiểu về những giá trị văn hóa độc đáo này.",
+      "paragraph2": "Dự án Heritage Web được xây dựng với mục tiêu số hóa toàn bộ kho tàng di sản văn hóa của Cà Mau, giúp người dân và du khách dễ dàng tiếp cận và tìm hiểu về những giá trị văn hóa độc đáo này.",
       "paragraph3": "Với sự hỗ trợ của công nghệ AI, người dùng có thể tương tác, đặt câu hỏi và khám phá di sản theo cách hoàn toàn mới."
     },
     "contact": {

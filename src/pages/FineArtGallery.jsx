@@ -18,7 +18,7 @@ export const FineArtsGallery = () => {
       setLoading(true);
       const result = await fineArtApi.getAll(1, 100);
       setImages(result.data || []);
-    } catch (err) {
+    } catch {
       console.error("Failed to load fine art");
     } finally {
       setLoading(false);

@@ -72,4 +72,15 @@ export default defineConfig({
     })
   ],
   base: '/',
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          mapbox: ['mapbox-gl'],
+          vendor: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+  },
 })

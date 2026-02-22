@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
 import { MapPin, Award, ArrowRight } from 'lucide-react';
 import { FavoriteButton } from '../ui';
 import { getRankingStyle, getRankingCode } from '../../utils/ranking';

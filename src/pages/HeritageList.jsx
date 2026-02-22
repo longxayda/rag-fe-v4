@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Search, Grid, List, MapPin, Landmark, RotateCcw, Calendar, ChevronRight, ChevronsRight, Filter, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { HeritageDetailModal } from '../components/Detail';
 import { MusicGallery } from './MusicGallery';
 import { FineArtsGallery } from './FineArtGallery';
@@ -47,7 +47,7 @@ export default function HeritageListPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [heritageData, setHeritageData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [, setError] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0, totalPages: 0 });
 
   const navTabs = [

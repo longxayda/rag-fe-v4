@@ -1,14 +1,11 @@
 import React from 'react';
+/* eslint-disable-next-line no-unused-vars -- used as motion.div in JSX */
 import { motion } from 'framer-motion';
 import { Heart, Users, Target, Award, Mail, Github, Globe, BookOpen, Phone } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 export default function AboutPage() {
   const { t } = useTranslation();
-
-  const teamMembers = [
-    { name: t('about.team.name'), role: t('about.team.role'), icon: Users },
-  ];
 
   const features = [
     {
@@ -92,7 +89,7 @@ export default function AboutPage() {
               viewport={{ once: true }}
               className="grid grid-cols-2 gap-4"
             >
-              {features.map((feature, index) => (
+              {features.map((feature) => (
                 <div
                   key={feature.title}
                   className="glass-card p-6 text-center hover:shadow-xl transition-all duration-300"

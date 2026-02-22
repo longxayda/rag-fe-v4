@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const PopularDestinations = () => {
-  // Sample data
+  const { t } = useTranslation();
+  // Sample data - destinations in Ca Mau region
   const destinationsData = [
   {
     id: 1,
@@ -48,10 +50,10 @@ const PopularDestinations = () => {
         {/* Header Section */}
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-4">
-            Địa Điểm Nổi Bật
+            {t('home.popularDestinations.title')}
           </h2>
           <p className="text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Khám phá các địa điểm địa phương nổi tiếng thuộc tỉnh Cà Mau và Bạc Liêu
+            {t('home.popularDestinations.description')}
           </p>
         </div>
 

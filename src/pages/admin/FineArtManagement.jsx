@@ -12,6 +12,7 @@ export default function FineArtManagement() {
 
   useEffect(() => {
     fetchFineArt();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
   }, []);
 
   const fetchFineArt = async () => {
@@ -19,7 +20,7 @@ export default function FineArtManagement() {
       setLoading(true);
       const result = await fineArtApi.adminGetAll(1, 100);
       setFineArtList(result.data || []);
-    } catch (err) {
+    } catch {
       alert(t('admin.loadError'));
     } finally {
       setLoading(false);
@@ -32,7 +33,7 @@ export default function FineArtManagement() {
     try {
       await fineArtApi.delete(id);
       fetchFineArt();
-    } catch (err) {
+    } catch {
       alert(t('admin.errGeneric'));
     }
   };
@@ -60,7 +61,7 @@ export default function FineArtManagement() {
       setShowModal(false);
       setSelectedFiles([]);
       fetchFineArt();
-    } catch (err) {
+    } catch {
       alert(t('admin.errGeneric'));
     } finally {
       setSubmitting(false);

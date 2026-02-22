@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { Heart, Trash2, MapPin, Award, ArrowRight } from 'lucide-react';
 import { useFavorites } from '../context/FavoritesContext';
 import heritages from '../data/heritages.json';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Heart } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { useFavorites } from '../../context/FavoritesContext';
 
 export default function FavoriteButton({ 

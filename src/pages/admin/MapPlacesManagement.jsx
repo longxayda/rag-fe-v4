@@ -74,7 +74,7 @@ export default function MapPlacesManagement({ onBack }) {
       }
       resetForm();
       fetchPlaces();
-    } catch (err) {
+    } catch {
       alert(t('admin.errGeneric'));
     } finally {
       setSubmitting(false);
@@ -97,7 +97,7 @@ export default function MapPlacesManagement({ onBack }) {
     try {
       await mapPlacesApi.delete(id);
       fetchPlaces();
-    } catch (err) {
+    } catch {
       alert(t('admin.errGeneric'));
     }
   };

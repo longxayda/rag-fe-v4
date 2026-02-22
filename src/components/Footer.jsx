@@ -40,7 +40,7 @@ export function Footer() {
             <div className="space-y-4 text-sm text-slate-500 dark:text-gray-400">
               <div className="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-4">
                 <p className="text-brand-dark dark:text-gray-100 font-semibold">GVHD: Lê Nguyễn Thế Bảo</p>
-                <p className="text-xs text-slate-600 dark:text-gray-400">THPT Chuyên Lý Tự Trọng</p>
+                <p className="text-xs text-slate-600 dark:text-gray-400">{t('footer.school')}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-slate-50 dark:bg-gray-800 border border-slate-200 dark:border-gray-700 rounded-xl p-3">

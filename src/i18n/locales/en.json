@@ -65,8 +65,8 @@
   "tts": {
     "sample1Title": "About Ca Mau Cape",
     "sample1Text": "Ca Mau Cape is the southernmost point of mainland Vietnam, where the East Sea meets the Gulf of Thailand. It is a wetland cape with a rich and diverse mangrove ecosystem.",
-    "sample2Title": "About Bac Lieu's Playboy",
-    "sample2Text": "Bac Lieu's Playboy, real name Tran Trinh Huy, was born in 1900 in Bac Lieu. He was famous for his lavish lifestyle and is an icon of wealth during the French colonial period.",
+    "sample2Title": "About the Playboy of the South",
+    "sample2Text": "The Playboy of the South, real name Tran Trinh Huy, was born in 1900 in the Ca Mau region. He was famous for his lavish lifestyle and is an icon of wealth during the French colonial period.",
     "sample3Title": "About Chol Chnam Thmay Festival",
     "sample3Text": "Chol Chnam Thmay is the traditional New Year of the Khmer people, held in April of the lunar calendar. It is a time for the Khmer community to gather and wish for a peaceful, prosperous new year.",
     "errEnterText": "Please enter text to convert",
@@ -198,10 +198,10 @@
   },
   "home": {
     "hero": {
-      "badge": "Ca Mau & Bac Lieu Cultural Heritage",
+      "badge": "Ca Mau Cultural Heritage",
       "title1": "Discover",
       "title2": "Vietnam Heritage",
-      "subtitle": "A journey to explore the unique cultural and historical values of Ca Mau - Bac Lieu region through modern AI technology",
+      "subtitle": "A journey to explore the unique cultural and historical values of Ca Mau through modern AI technology",
       "exploreButton": "Explore Heritage",
       "chatButton": "Chat with AI",
       "mapLink": "Heritage Map",
@@ -288,7 +288,7 @@
       "viewDetails": "View details"
     },
     "stats": {
-      "title": "Ca Mau - Bac Lieu Heritage",
+      "title": "Ca Mau Heritage",
       "subtitle": "Rich cultural treasury with many precious heritage sites",
       "heritage": "Cultural Heritage",
       "locations": "Locations",
@@ -310,6 +310,10 @@
       "ttsDesc": "Listen to content with voice",
       "favorites": "Favorites",
       "favoritesDesc": "View your favorite heritage list"
+    },
+    "popularDestinations": {
+      "title": "Popular Destinations",
+      "description": "Explore famous local destinations in Ca Mau province"
     },
     "cta": {
       "title1": "Together Preserve",
@@ -890,7 +894,7 @@
   "about": {
     "badge": "About Us",
     "title": "Cultural Heritage",
-    "region": "Ca Mau - Bac Lieu",
+    "region": "Ca Mau",
     "subtitle": "A project to digitize and preserve the cultural heritage of the southernmost land of Vietnam, combining modern AI technology to bring heritage closer to everyone",
     "team": {
       "name": "Development Team",
@@ -899,7 +903,7 @@
     "features": {
       "heritage": {
         "title": "85+ Heritage Sites",
-        "description": "Rich database of cultural heritage from Ca Mau - Bac Lieu"
+        "description": "Rich database of cultural heritage from Ca Mau"
       },
       "aiSupport": {
         "title": "AI Support",
@@ -918,7 +922,7 @@
       "title": "Our",
       "titleHighlight": "Mission",
       "paragraph1": "We believe that preserving cultural heritage is not only a responsibility but also a source of pride for every Vietnamese citizen.",
-      "paragraph2": "The Heritage Web project is built with the goal of digitizing the entire cultural heritage treasure of Ca Mau and Bac Lieu, helping people and tourists easily access and learn about these unique cultural values.",
+      "paragraph2": "The Heritage Web project is built with the goal of digitizing the entire cultural heritage treasure of Ca Mau, helping people and tourists easily access and learn about these unique cultural values.",
       "paragraph3": "With the support of AI technology, users can interact, ask questions and explore heritage in a completely new way."
     },
     "contact": {

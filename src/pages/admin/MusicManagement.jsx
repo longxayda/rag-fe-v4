@@ -12,6 +12,7 @@ export default function MusicManagement() {
 
   useEffect(() => {
     fetchMusic();
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount only
   }, []);
 
   const fetchMusic = async () => {
@@ -19,7 +20,7 @@ export default function MusicManagement() {
       setLoading(true);
       const result = await musicApi.adminGetAll(1, 100);
       setMusicList(result.data || []);
-    } catch (err) {
+    } catch {
       alert(t('admin.loadError'));
     } finally {
       setLoading(false);
@@ -32,7 +33,7 @@ export default function MusicManagement() {
     try {
       await musicApi.delete(id);
       fetchMusic();
-    } catch (err) {
+    } catch {
       alert("Delete failed");
     }
   };
@@ -68,7 +69,7 @@ export default function MusicManagement() {
       setShowModal(false);
       setNewLinks([""]);
       fetchMusic();
-    } catch (err) {
+    } catch {
       alert(t('admin.errGeneric'));
     } finally {
       setSubmitting(false);

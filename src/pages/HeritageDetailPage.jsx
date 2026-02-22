@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { motion } from 'framer-motion';
 import { 
   ArrowLeft, MapPin, Award, Calendar, Volume2, Video, 
   Heart, Share2, Printer, ExternalLink, ChevronRight
