@@ -7,28 +7,27 @@ import {
   Video, Trash, Link as LinkIcon
 } from 'lucide-react';
 import AnalyticsDashboard from '../../components/admin/AnalyticsDashboard';
-import { heritageApi, constantsApi } from '../../services/api';
-import { getRankingStyle, normalizeRankingCode } from '../../utils/ranking';
+import { heritageApi } from '../../services/api';
 
-const isBlobUrl = (url) => typeof url === 'string' && url.startsWith('blob:');
-
-const DEFAULT_RANKING_TYPES = [
-  { value: 'Quốc gia đặc biệt', labelKey: 'ranking.nationalSpecial' },
-  { value: 'Quốc gia', labelKey: 'ranking.national' },
-  { value: 'Cấp tỉnh', labelKey: 'ranking.provincial' },
+const rankingTypes = [
+  { value: 'Quốc gia đặc biệt', label: 'Quốc gia đặc biệt' },
+  { value: 'Quốc gia', label: 'Quốc gia' },
+  { value: 'Cấp tỉnh', label: 'Cấp tỉnh' },
+  { value: 'Không', label: 'Không xếp hạng' },
 ];
 
 const heritageCategories = [
-  { value: 'di_san', labelKey: 'admin.categoryHeritage' },
-  { value: 'di_tich', labelKey: 'admin.categorySite' },
-  { value: 'cong_trinh_nghe_thuat', labelKey: 'admin.categoryArt' },
+  { value: 'di_san', label: 'Di sản' },
+  { value: 'di_tich', label: 'Di tích' },
+  { value: 'cong_trinh_nghe_thuat', label: 'Công trình nghệ thuật' },
 ];
 
+
 const inputLanguages = [
-  { code: 'vi', nameKey: 'language.vi' },
-  { code: 'km', nameKey: 'language.km' },
-  { code: 'en', nameKey: 'language.en' },
-  { code: 'zh', nameKey: 'language.zh' },
+  { code: 'vi', name: 'Tiếng Việt' },
+  { code: 'km', name: 'ភាសាខ្មែរ (Khmer)' },
+  { code: 'en', name: 'English' },
+  { code: 'zh', name: '中文 (Hoa)' },
 ];
 
 export default function HeritageManagement() {
@@ -48,8 +47,6 @@ export default function HeritageManagement() {
   const [activeTab, setActiveTab] = useState('list');
   const [audioFile, setAudioFile] = useState(null);
   const [audioPreview, setAudioPreview] = useState(null);
-  const [musicAudioFile, setMusicAudioFile] = useState(null);
-  const [musicAudioPreview, setMusicAudioPreview] = useState(null);
 
   // NEW: Gallery and YouTube states
   const [galleryFiles, setGalleryFiles] = useState([]);
@@ -60,20 +57,8 @@ export default function HeritageManagement() {
 
   const [image360File, setImage360File] = useState(null);
   const [image360Preview, setImage360Preview] = useState(null);
-  const [rankingTypes, setRankingTypes] = useState(DEFAULT_RANKING_TYPES);
 
   const itemsPerPage = 10;
-
-  useEffect(() => {
-    constantsApi.getRankingTypes().then((res) => {
-      if (res.success && Array.isArray(res.data) && res.data.length > 0) {
-        setRankingTypes(res.data.map((s) => {
-          const code = normalizeRankingCode(s);
-          return { value: s, label: s, labelKey: code ? `ranking.${code}` : null };
-        }));
-      }
-    });
-  }, []);
 
   // Fetch heritages from API
   const fetchHeritages = async (page = 1) => {
@@ -88,8 +73,9 @@ export default function HeritageManagement() {
         setHeritages([]);
         setPagination({ total: 0, totalPages: 1 });
       }
-    } catch {
-      showNotification(t('admin.loadError'), 'error');
+    } catch (error) {
+      console.log(error);
+      showNotification('Lỗi khi tải dữ liệu: ' + error.message, 'error');
       setHeritages([]);
     } finally {
       setLoading(false);
@@ -98,7 +84,6 @@ export default function HeritageManagement() {
 
   useEffect(() => {
     fetchHeritages(currentPage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetchHeritages is stable
   }, [currentPage]);
 
   const showNotification = (message, type = 'success') => {
@@ -134,8 +119,6 @@ export default function HeritageManagement() {
     setImageFile(null);
     setAudioFile(null);
     setAudioPreview(null);
-    setMusicAudioFile(null);
-    setMusicAudioPreview(null);
     setImagePreview(null);
 
     // NEW: Reset gallery and YouTube
@@ -184,8 +167,6 @@ export default function HeritageManagement() {
       setImage360File(null);
       setAudioPreview(fullHeritage.audio_url || null);
       setAudioFile(null);
-      setMusicAudioPreview(fullHeritage.music_audio_url || null);
-      setMusicAudioFile(null);
 
       // NEW: Set existing gallery and YouTube links
       setExistingGallery(fullHeritage.gallery || []);
@@ -201,8 +182,8 @@ export default function HeritageManagement() {
       setSelectedHeritage(fullHeritage);
       setIsEditing(true);
       setIsCreating(false);
-    } catch {
-      showNotification(t('admin.loadError'), 'error');
+    } catch (error) {
+      showNotification('Lỗi khi tải chi tiết: ' + error.message, 'error');
       // Fallback to basic data if API call fails
       setFormData({
         id: heritage.id,
@@ -221,9 +202,8 @@ export default function HeritageManagement() {
 
       });
       setImagePreview(heritage.image_url || null);
-      setImage360Preview(heritage.image360 || null);
+      setImage360Preview(fullHeritage.image360 || null);
       setAudioPreview(heritage.audio_url || null);
-      setMusicAudioPreview(heritage.music_audio_url || null);
       setExistingGallery([]);
       setYoutubeLinks(['']);
       setSelectedHeritage(heritage);
@@ -244,8 +224,8 @@ export default function HeritageManagement() {
       setSelectedHeritage(fullHeritage);
       setIsEditing(false);
       setIsCreating(false);
-    } catch {
-      showNotification(t('admin.loadError'), 'error');
+    } catch (error) {
+      showNotification('Lỗi khi tải chi tiết: ' + error.message, 'error');
       // Fallback to basic data
       setSelectedHeritage(heritage);
       setIsEditing(false);
@@ -266,27 +246,9 @@ export default function HeritageManagement() {
 
   const handleAudioChange = (e) => {
     const file = e.target.files[0];
-    if (!file) return;
-
-    // ✅ chỉ revoke nếu là blob
-    if (isBlobUrl(audioPreview)) {
-      URL.revokeObjectURL(audioPreview);
-    }
-
-    const previewUrl = URL.createObjectURL(file);
-
-    setAudioFile(file);
-    setAudioPreview(previewUrl);
-
-    // reset input để chọn lại cùng file vẫn trigger
-    e.target.value = null;
-  };
-
-  const handleMusicAudioChange = (e) => {
-    const file = e.target.files[0];
     if (file) {
-      setMusicAudioFile(file);
-      setMusicAudioPreview(URL.createObjectURL(file));
+      setAudioFile(file);
+      setAudioPreview(URL.createObjectURL(file));
     }
   };
 
@@ -350,7 +312,7 @@ export default function HeritageManagement() {
   // Handle save
   const handleSave = async () => {
     if (!formData.name || !formData.address) {
-      showNotification(t('admin.requiredFields'), 'error');
+      showNotification('Vui lòng điền đầy đủ tên và địa chỉ!', 'error');
       return;
     }
 
@@ -387,10 +349,6 @@ export default function HeritageManagement() {
       if (audioFile) {
         data.append('audio', audioFile);
       }
-      // Music audio (âm nhạc di sản)
-      if (musicAudioFile) {
-        data.append('music_audio', musicAudioFile);
-      }
 
       // NEW: Gallery images (multiple files with same key name)
       galleryFiles.forEach(file => {
@@ -412,13 +370,13 @@ export default function HeritageManagement() {
       if (isCreating) {
         result = await heritageApi.create(data);
         showNotification(
-          result.message || t('admin.successAddHeritage'),
+          result.message || 'Đã thêm di sản mới! Đang dịch và tạo audio...',
           'success'
         );
       } else {
         result = await heritageApi.update(formData.id, data);
         showNotification(
-          result.message || t('admin.successUpdateHeritage'),
+          result.message || 'Đã cập nhật di sản!',
           'success'
         );
       }
@@ -427,8 +385,8 @@ export default function HeritageManagement() {
       setIsEditing(false);
       setSelectedHeritage(null);
       fetchHeritages(currentPage);
-    } catch {
-      showNotification(t('admin.errGeneric'), 'error');
+    } catch (error) {
+      showNotification('Lỗi: ' + error.message, 'error');
     } finally {
       setLoading(false);
     }
@@ -436,20 +394,20 @@ export default function HeritageManagement() {
 
   // Handle delete
   const handleDelete = async (heritage) => {
-    if (!window.confirm(t('admin.confirmDeleteHeritage', { name: heritage.name }))) return;
+    if (!window.confirm(`Bạn có chắc muốn xóa "${heritage.name}"?`)) return;
 
     setLoading(true);
     try {
       const result = await heritageApi.delete(heritage.id);
       showNotification(
-        result.message || t('admin.successDeleteHeritage'),
+        result.message || 'Đã xóa di sản thành công!',
         'success'
       );
       setSelectedHeritage(null);
       setIsEditing(false);
       fetchHeritages(currentPage);
-    } catch {
-      showNotification(t('admin.errGeneric'), 'error');
+    } catch (error) {
+      showNotification('Lỗi khi xóa: ' + error.message, 'error');
     } finally {
       setLoading(false);
     }
@@ -463,16 +421,8 @@ export default function HeritageManagement() {
     setFormData({});
     setImageFile(null);
     setImagePreview(null);
-    if (isBlobUrl(audioPreview)) {
-      URL.revokeObjectURL(audioPreview);
-    }
-    if (isBlobUrl(musicAudioPreview)) {
-      URL.revokeObjectURL(musicAudioPreview);
-    }
     setAudioFile(null);
     setAudioPreview(null);
-    setMusicAudioFile(null);
-    setMusicAudioPreview(null);
     setImage360File(null);
     setImage360Preview(null);
 
@@ -566,7 +516,7 @@ export default function HeritageManagement() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
-                    placeholder={t('admin.searchHeritage')}
+                    placeholder="Tìm kiếm theo tên, địa chỉ..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
@@ -588,13 +538,14 @@ export default function HeritageManagement() {
                       <table className="w-full">
                         <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
                           <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.id')}</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.heritageName')}</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.address')}</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.rankingType')}</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">{t('admin.category')}</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.media')}</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">{t('admin.actions')}</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Tên Di Sản</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Địa Chỉ</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Xếp Hạng</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phân loại</th>
+
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Media</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Thao Tác</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -604,27 +555,24 @@ export default function HeritageManagement() {
                               <td className="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">
                                 <div className="flex items-center gap-2">
                                   {heritage.name}
-                                  {heritage.audio_url && <span title={t('admin.hasAudio')}>🔊</span>}
+                                  {heritage.audio_url && <span title="Có audio">🔊</span>}
                                 </div>
                               </td>
                               <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
                                 {heritage.address?.substring(0, 50)}...
                               </td>
                               <td className="px-6 py-4">
-                                {(() => {
-                                  const code = normalizeRankingCode(heritage.ranking_type);
-                                  const style = getRankingStyle(heritage.ranking_type);
-                                  const label = code ? t(`ranking.${code}`) : t('admin.notRanked');
-                                  return (
-                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${style.badge}`}>
-                                      {label}
-                                    </span>
-                                  );
-                                })()}
+                                <span className={`px-3 py-1 rounded-full text-xs font-medium ${heritage.ranking_type?.includes('đặc biệt') ? 'bg-red-100 text-red-800' :
+                                  heritage.ranking_type?.includes('Quốc gia') ? 'bg-yellow-100 text-yellow-800' :
+                                    heritage.ranking_type?.includes('tỉnh') ? 'bg-green-100 text-green-800' :
+                                      'bg-gray-100 text-gray-800'
+                                  }`}>
+                                  {heritage.ranking_type || 'Chưa xếp hạng'}
+                                </span>
                               </td>
                               <td className="px-6 py-4 text-sm">
                                 <span className="px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                  {(() => { const c = heritageCategories.find(cat => cat.value === heritage.category); return c ? (c.labelKey ? t(c.labelKey) : c.label) : t('admin.categoryHeritage'); })()}
+                                  {heritageCategories.find(c => c.value === heritage.category)?.label || 'Di sản'}
                                 </span>
                               </td>
 
@@ -711,24 +659,24 @@ export default function HeritageManagement() {
 
 
                 <div className="space-y-4">
-                  <div><strong>{t('admin.address')}:</strong> {selectedHeritage.address}</div>
+                  <div><strong>Địa chỉ:</strong> {selectedHeritage.address}</div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div><strong>{t('admin.yearBuilt')}:</strong> {selectedHeritage.year_built || 'N/A'}</div>
-                    <div><strong>{t('admin.yearRanked')}:</strong> {selectedHeritage.year_ranked || 'N/A'}</div>
+                    <div><strong>Năm xây dựng:</strong> {selectedHeritage.year_built || 'N/A'}</div>
+                    <div><strong>Năm xếp hạng:</strong> {selectedHeritage.year_ranked || 'N/A'}</div>
                   </div>
-                  <div><strong>{t('admin.rankingType')}:</strong> {(() => { const c = normalizeRankingCode(selectedHeritage.ranking_type); return c ? t(`ranking.${c}`) : (selectedHeritage.ranking_type || 'N/A'); })()}</div>
+                  <div><strong>Loại xếp hạng:</strong> {selectedHeritage.ranking_type}</div>
                   <div>
-                    <strong>{t('admin.category')}:</strong> {
-                      (() => { const c = heritageCategories.find(cat => cat.value === selectedHeritage.category); return c ? (c.labelKey ? t(c.labelKey) : c.label) : t('admin.categoryHeritage'); })()
+                    <strong>Phân loại:</strong> {
+                      heritageCategories.find(c => c.value === selectedHeritage.category)?.label || 'Di sản'
                     }
                   </div>
                   <div>
-                    <strong>{t('admin.detailInfo')}:</strong>
-                    <p className="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">{selectedHeritage.information || t('admin.noData')}</p>
+                    <strong>Thông tin:</strong>
+                    <p className="mt-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">{selectedHeritage.information || 'Chưa có'}</p>
                   </div>
                   {selectedHeritage.audio_url && (
                     <div>
-                      <strong>{t('audio.audioDescription')}:</strong>
+                      <strong>Audio:</strong>
                       <audio controls className="mt-2 w-full">
                         <source src={selectedHeritage.audio_url} type="audio/wav" />
                       </audio>
@@ -796,7 +744,7 @@ export default function HeritageManagement() {
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                    {isCreating ? t('admin.addHeritageNew') : t('admin.editHeritage')}
+                    {isCreating ? 'Thêm Di Sản Mới' : 'Chỉnh Sửa Di Sản'}
                   </h2>
                   <button onClick={handleCancel} className="text-gray-500 hover:text-gray-700">
                     <X className="w-6 h-6" />
@@ -813,7 +761,7 @@ export default function HeritageManagement() {
                       className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
                     >
                       {inputLanguages.map(lang => (
-                        <option key={lang.code} value={lang.code}>{lang.nameKey ? t(lang.nameKey) : lang.name}</option>
+                        <option key={lang.code} value={lang.code}>{lang.name}</option>
                       ))}
                     </select>
                     <p className="text-xs text-gray-500 mt-1">Hệ thống sẽ tự động dịch sang 3 ngôn ngữ còn lại</p>
@@ -869,20 +817,20 @@ export default function HeritageManagement() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2">{t('admin.rankingType')}</label>
+                      <label className="block text-sm font-medium mb-2">Loại Xếp Hạng</label>
                       <select
                         value={formData.ranking_type || ''}
                         onChange={(e) => setFormData({ ...formData, ranking_type: e.target.value })}
                         className="w-full px-4 py-2 border rounded-lg dark:bg-gray-700 dark:text-white"
                       >
                         {rankingTypes.map(type => (
-                          <option key={type.value} value={type.value}>{type.labelKey ? t(type.labelKey) : type.label}</option>
+                          <option key={type.value} value={type.value}>{type.label}</option>
                         ))}
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium mb-2">
-                        {t('admin.category')}
+                        Phân loại
                       </label>
                       <select
                         value={formData.category || 'di_san'}
@@ -893,7 +841,7 @@ export default function HeritageManagement() {
                       >
                         {heritageCategories.map(cat => (
                           <option key={cat.value} value={cat.value}>
-                            {cat.labelKey ? t(cat.labelKey) : cat.label}
+                            {cat.label}
                           </option>
                         ))}
                       </select>
@@ -954,6 +902,7 @@ export default function HeritageManagement() {
                         <input
                           type="file"
                           accept="image/*"
+                          onClick={(e) => { e.target.value = ''; }}
                           onChange={handleImageChange}
                           className="hidden"
                         />
@@ -976,6 +925,7 @@ export default function HeritageManagement() {
                         <input
                           type="file"
                           accept="image/*"
+                          onClick={(e) => { e.target.value = ''; }}
                           onChange={handleImage360Change}
                           className="hidden"
                         />
@@ -1024,62 +974,23 @@ export default function HeritageManagement() {
                         <input
                           type="file"
                           accept="audio/*"
+                          onClick={(e) => { e.target.value = ''; }}
                           onChange={handleAudioChange}
                           className="hidden"
                         />
                       </label>
 
                       {audioPreview && (
-                        <div className="flex items-center gap-2">
-                          <audio controls className="h-10">
-                            <source src={audioPreview} />
-                          </audio>
-
-                          <button
-                            type="button"
-                            onClick={() => {
-                              if (isBlobUrl(audioPreview)) {
-                                URL.revokeObjectURL(audioPreview);
-                              }
-                              setAudioFile(null);
-                              setAudioPreview(null);
-                            }}
-                            className="p-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-                            title="Xóa audio"
-                          >
-                            <Trash className="w-4 h-4" />
-                          </button>
-                        </div>
+                        <audio
+                          key={audioPreview}   // 👈 cực quan trọng
+                          controls
+                          src={audioPreview}
+                          className="h-10"
+                        />
                       )}
                     </div>
                     <p className="text-xs text-gray-500 mt-1">
                       Có thể upload file .mp3, .wav, .m4a...
-                    </p>
-                  </div>
-
-                  {/* Music audio (âm nhạc di sản) */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2">File âm thanh âm nhạc</label>
-                    <div className="flex items-center gap-4">
-                      <label className="px-4 py-2 bg-emerald-600 text-white rounded-lg cursor-pointer hover:bg-emerald-700 flex items-center gap-2">
-                        <Upload className="w-4 h-4" />
-                        Chọn file âm nhạc
-                        <input
-                          type="file"
-                          accept="audio/*"
-                          onChange={handleMusicAudioChange}
-                          className="hidden"
-                        />
-                      </label>
-                      {musicAudioPreview && (
-                        <audio controls className="h-10">
-                          <source src={musicAudioPreview} />
-                          Trình duyệt không hỗ trợ audio
-                        </audio>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Upload file âm thanh cho phần âm nhạc tại mục di sản (tùy chọn)
                     </p>
                   </div>
 
@@ -1107,7 +1018,7 @@ export default function HeritageManagement() {
                                 onClick={() => toggleExistingGallery(img.id)}
                               />
                               <div
-                                className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full p-1 cursor-pointer shadow-md"
+                                className="absolute top-2 right-2 bg-white rounded-full p-1 cursor-pointer"
                                 onClick={() => toggleExistingGallery(img.id)}
                               >
                                 {keepMediaIds.includes(img.id) ? (
@@ -1134,6 +1045,7 @@ export default function HeritageManagement() {
                           type="file"
                           accept="image/*"
                           multiple
+                          onClick={(e) => { e.target.value = ''; }}
                           onChange={handleGalleryChange}
                           className="hidden"
                         />
