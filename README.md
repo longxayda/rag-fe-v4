@@ -6,6 +6,7 @@ Frontend ứng dụng Di sản. React + Vite, đa ngôn ngữ (vi/en/km/zh), b�
 
 1. Copy `.env.example` thành `.env`, đặt `VITE_BACKEND_URL=http://localhost:5000/api` (trỏ tới backend).
 2. `npm install` rồi `npm run dev`. Mở URL (thường http://localhost:5173).
+3. Tùy chọn: thêm `VITE_MAPBOX_PK` trong `.env` để dùng bản đồ Mapbox.
 
 ## Test toàn bộ sản phẩm (A–Z)
 
