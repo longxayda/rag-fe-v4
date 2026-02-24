@@ -68,7 +68,7 @@ export default function HeritageListPage() {
     { key: 'van_hoc', labelKey: 'heritageList.tabVanHoc' },
   ];
 
-  const isHeritageTab = ['heritage', 'kinh_te', 'dia_ly', 'van_hoc'].includes(activeTab);
+  const isHeritageTab = ['heritage'].includes(activeTab);
 
   const handleCloseModal = () => setSelectedItem(null);
 

@@ -13,15 +13,22 @@ export const GeographyGallery = () => {
   const [detail, setDetail] = useState(null);
   const [detailLoading, setDetailLoading] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [limit] = useState(9);
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
     fetchList();
-  }, []);
+  }, [page]);
 
   const fetchList = async () => {
     try {
       setIsLoading(true);
-      const res = await geographyApi.getAll(1, 10);
+
+      const res = await geographyApi.getAll(page, limit); // ✅ FIXED
+
       setItems(res.data || []);
+      setTotalPages(res.pagination?.totalPages || 1);
     } catch (e) {
       console.error(e);
     } finally {
@@ -62,6 +69,48 @@ export const GeographyGallery = () => {
     );
   }
 
+  const Pagination = () => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center items-center gap-2 mt-8">
+        {/* PREV */}
+        <button
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="px-3 py-1 text-sm rounded border disabled:opacity-40"
+        >
+          Prev
+        </button>
+
+        {/* PAGE NUMBERS */}
+        {Array.from({ length: totalPages }).map((_, i) => {
+          const p = i + 1;
+          return (
+            <button
+              key={p}
+              onClick={() => setPage(p)}
+              className={`w-8 h-8 rounded-full text-sm transition ${p === page
+                ? "bg-blue-600 text-white"
+                : "border hover:bg-gray-100 dark:hover:bg-gray-800"
+                }`}
+            >
+              {p}
+            </button>
+          );
+        })}
+
+        {/* NEXT */}
+        <button
+          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+          className="px-3 py-1 text-sm rounded border disabled:opacity-40"
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
   /* =====================
      LIST
   ====================== */
@@ -93,6 +142,8 @@ export const GeographyGallery = () => {
           </div>
         ))}
       </div>
+
+      <Pagination />
 
       {/* =====================
           DETAIL MODAL
