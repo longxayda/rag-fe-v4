@@ -147,7 +147,7 @@ export const LiteratureGallery = () => {
                   </div>
                 </div>
 
-                <p className="mb-4 text-gray-700 dark:text-gray-300">
+                <p className="mb-4 text-gray-700 dark:text-gray-300 whitespace-pre-line">
                   {detail.content}
                 </p>
 
