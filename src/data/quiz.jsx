@@ -8,10 +8,10 @@ export const questions = [
       "Điểm cực Bắc của Việt Nam"
     ],
     correct: 1,
-    explanation: "Mũi Cà Mau là cực Nam của đất liền Việt Nam, nơi giao thoa giữa biển Đông và vịnh Thái Lan."
+    explanation: "Mũi Cà Mau là điểm cực Nam trên đất liền của Tổ quốc, nơi có cột mốc tọa độ quốc gia GPS 0001."
   },
   {
-    question: "Nhà thờ nào ở Bạc Liêu được coi là biểu tượng kiến trúc nổi tiếng?",
+    question: "Công trình kiến trúc tâm linh nổi tiếng nào ở Bạc Liêu gắn liền với tên tuổi Linh mục Trương Bửu Diệp?",
     options: [
       "Nhà thờ Đức Bà",
       "Nhà thờ Tắc Sậy",
@@ -19,10 +19,10 @@ export const questions = [
       "Nhà thờ Tân An"
     ],
     correct: 1,
-    explanation: "Nhà thờ Tắc Sậy (1896) là công trình kiến trúc Gothic độc đáo, là di tích quốc gia đặc biệt."
+    explanation: "Nhà thờ Tắc Sậy là điểm hành hương nổi tiếng tại Bạc Liêu, nơi đặt phần mộ của Linh mục Trương Bửu Diệp."
   },
   {
-    question: "Bạc Liêu nổi tiếng với nhân vật lịch sử nào?",
+    question: "Bạc Liêu nổi tiếng với nhân vật lịch sử nào gắn với lối sống hào phóng thời xưa?",
     options: [
       "Trạng Quỳnh",
       "Công tử Bạc Liêu",
@@ -30,21 +30,21 @@ export const questions = [
       "Sơn Tinh"
     ],
     correct: 1,
-    explanation: "Công tử Bạc Liêu (Trần Trinh Huy) nổi tiếng với lối sống phóng khoáng, xa hoa thời Pháp thuộc."
+    explanation: "Công tử Bạc Liêu (Trần Trinh Huy) là nhân vật nổi tiếng trong văn hóa đại chúng Nam Bộ đầu thế kỷ 20 với sự giàu có và phóng khoáng."
   },
   {
-    question: "Cà Mau nổi tiếng với loại hải sản đặc sản nào?",
+    question: "Nhắc đến hải sản đặc sản số 1 của Cà Mau, người ta nhớ đến loại nào?",
     options: [
       "Ghẹ",
       "Tôm hùm",
       "Cua biển",
       "Cá thu"
     ],
-    correct: 0,
-    explanation: "Ghẹ Cà Mau, đặc biệt là ghẹ xanh, nổi tiếng ngon và là đặc sản được xuất khẩu."
+    correct: 2, // Sửa từ 0 thành 2
+    explanation: "Cua Cà Mau (đặc biệt là cua Năm Căn) nổi tiếng khắp cả nước về độ chắc thịt và thơm ngon nhờ môi trường nước ngập mặn đặc thù."
   },
   {
-    question: "Lễ hội nào là lễ hội truyền thống của đồng bào Khmer ở Bạc Liêu?",
+    question: "Lễ hội nào là lễ hội truyền thống mừng năm mới của đồng bào Khmer ở Bạc Liêu?",
     options: [
       "Lễ hội Tết Nguyên Đán",
       "Lễ hội Chol Chnam Thmay",
@@ -52,61 +52,61 @@ export const questions = [
       "Lễ hội Đoan Ngọ"
     ],
     correct: 1,
-    explanation: "Chol Chnam Thmay là Tết truyền thống của người Khmer, thường vào tháng 4 âm lịch, rất sôi động ở Bạc Liêu."
+    explanation: "Chol Chnam Thmay là Tết cổ truyền của người Khmer, diễn ra vào giữa tháng 4 dương lịch với các nghi lễ tắm Phật và cầu an."
   },
   {
-    question: "Rừng U Minh Hạ thuộc địa phận nào?",
+    question: "Rừng U Minh Hạ nằm ở địa phận tỉnh nào?",
     options: [
-      "Chỉ ở Cà Mau",
-      "Chỉ ở Bạc Liêu",
-      "Cà Mau và Kiên Giang",
-      "Bạc Liêu và Sóc Trăng"
+      "Tỉnh Cà Mau",
+      "Tỉnh Bạc Liêu",
+      "Tỉnh Kiên Giang",
+      "Tỉnh Sóc Trăng"
     ],
-    correct: 2,
-    explanation: "Rừng U Minh Hạ nằm trên địa phận Cà Mau và Kiên Giang, là vườn quốc gia quan trọng."
+    correct: 0, // Sửa từ 2 thành 0
+    explanation: "Hệ thống rừng U Minh được chia làm hai: U Minh Hạ thuộc tỉnh Cà Mau và U Minh Thượng thuộc tỉnh Kiên Giang."
   },
   {
-    question: "Khu di tích nào ở Cà Mau gắn với lịch sử kháng chiến?",
+    question: "Địa danh nào ở Cà Mau gắn với cuộc khởi nghĩa ngày 13/12/1940 do thầy giáo Phan Ngọc Hiển chỉ huy?",
     options: [
       "Rạch Gốc",
       "Hòn Khoai",
       "Năm Căn",
-      "Cả 3 đáp án"
+      "Đầm Dơi"
     ],
-    correct: 3,
-    explanation: "Cà Mau có nhiều địa danh lịch sử như Rạch Gốc, Hòn Khoai, Năm Căn gắn với kháng chiến chống Pháp và Mỹ."
+    correct: 1,
+    explanation: "Cuộc khởi nghĩa Hòn Khoai là một mốc son chói lọi trong lịch sử kháng chiến của quân và dân Cà Mau."
   },
   {
-    question: "Bạc Liêu có loại hình văn hóa dân gian nào đặc sắc?",
+    question: "Bạc Liêu được coi là một trong những cái nôi của loại hình nghệ thuật di sản nào?",
     options: [
       "Đờn ca tài tử",
       "Ca Huế",
-      "Quan họ",
-      "Hát Xẩm"
+      "Quan họ Bắc Ninh",
+      "Hát Xoan"
     ],
     correct: 0,
-    explanation: "Đờn ca tài tử Nam Bộ là di sản văn hóa phi vật thể được UNESCO công nhận, phát triển mạnh ở Bạc Liêu."
+    explanation: "Bạc Liêu là vùng đất sản sinh ra bản 'Dạ cổ hoài lang' của cố nhạc sĩ Cao Văn Lầu, nền tảng của nghệ thuật Đờn ca tài tử."
   },
   {
-    question: "Cà Mau nổi tiếng với mô hình nuôi trồng nào?",
+    question: "Cà Mau có mô hình canh tác đặc thù nào giúp bảo vệ hệ sinh thái rừng ngập mặn?",
     options: [
-      "Nuôi lợn",
-      "Nuôi tôm rừng",
-      "Nuôi bò sữa",
-      "Nuôi gà"
+      "Nuôi lợn rừng",
+      "Nuôi tôm dưới tán rừng",
+      "Nuôi bò sữa trên đê",
+      "Trồng lúa trên đất phèn"
     ],
     correct: 1,
-    explanation: "Mô hình nuôi tôm - rừng (tôm rừng) ở Cà Mau vừa bảo vệ môi trường vừa phát triển kinh tế bền vững."
+    explanation: "Mô hình tôm - rừng là phương thức canh tác bền vững, giúp giữ diện tích rừng đước, mắm trong khi vẫn đạt hiệu quả kinh tế."
   },
   {
-    question: "Tượng đài nào là biểu tượng tại Mũi Cà Mau?",
+    question: "Biểu tượng hình con tàu vươn mình ra biển khơi nằm ở đâu?",
     options: [
-      "Tượng đài Đất Mũi",
-      "Tượng đài Bác Hồ",
-      "Tượng đài Chiến thắng",
-      "Tượng đài Hùng Vương"
+      "Công viên Văn hóa Đất Mũi",
+      "Quảng trường Bạc Liêu",
+      "Cảng Năm Căn",
+      "Hòn Đá Bạc"
     ],
     correct: 0,
-    explanation: "Tượng đài Đất Mũi hình cờ đỏ sao vàng cao 30m là biểu tượng của điểm cực Nam Tổ quốc."
+    explanation: "Biểu tượng chiếc tàu (mũi tàu) tại Công viên Văn hóa Du lịch Mũi Cà Mau là điểm check-in biểu tượng nhất của vùng đất này."
   }
 ];
