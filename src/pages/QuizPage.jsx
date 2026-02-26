@@ -3,10 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Trophy, RotateCcw, ArrowRight, Sparkles, CheckCircle, XCircle, Landmark, Award, Brain, Share2, Twitter, Facebook, Link2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { questions } from '../data/quiz';
+import { getRandomQuestions } from '../data/quiz';
 
 export default function QuizPage() {
   const { t } = useTranslation();
+  const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [score, setScore] = useState(0);
@@ -15,6 +16,11 @@ export default function QuizPage() {
   const [, setSpinning] = useState(false);
   const [animatedScore, setAnimatedScore] = useState(0);
   const [showShareMenu, setShowShareMenu] = useState(false);
+
+  // Khởi tạo bộ 10 câu hỏi ngẫu nhiên
+  useEffect(() => {
+    setQuestions(getRandomQuestions(10));
+  }, []);
 
   // Confetti effect for good scores
   const triggerConfetti = () => {
@@ -132,7 +138,17 @@ export default function QuizPage() {
     setSpinning(false);
     setAnimatedScore(0);
     setShowShareMenu(false);
+    setQuestions(getRandomQuestions(10));
   };
+
+  // Loading khi chưa có bộ câu hỏi
+  if (!questions.length) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <p className="text-gray-600 dark:text-gray-300">{t('common.loading')}</p>
+      </div>
+    );
+  }
 
   const getScoreMessage = () => {
     const percentage = (score / questions.length) * 100;
