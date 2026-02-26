@@ -297,12 +297,12 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                     ) : isPlaying ? (
                                         <>
                                             <Pause className="w-5 h-5" />
-                                            {t('detail.pause')}
+                                            {t('videoDetail.pause')}
                                         </>
                                     ) : (
                                         <>
                                             <Play className="w-5 h-5" />
-                                            {t('detail.playAudio')}
+                                            {t('videoDetail.playAudio')}
                                         </>
                                     )}
                                 </button>
@@ -354,9 +354,9 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-display font-bold text-heritage-earth-900 dark:text-gray-100">
-                                        {t('detail.videoIntro', { count: item.youtube_links.length })}
+                                        {t('videoDetail.videoIntro', { count: item.youtube_links.length })}
                                     </h3>
-                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">{t('detail.learnMoreVideo')}</p>
+                                    <p className="text-xs text-heritage-earth-500 dark:text-gray-400">{t('videoDetail.learnMoreVideo')}</p>
                                 </div>
                             </div>
 
@@ -384,7 +384,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                                     className="flex items-center justify-center h-32 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
                                                 >
                                                     <Video className="w-8 h-8 text-gray-400 mr-2" />
-                                                    <span className="text-gray-600 dark:text-gray-300">{t('detail.watchVideo')}</span>
+                                                    <span className="text-gray-600 dark:text-gray-300">{t('videoDetail.watchVideo')}</span>
                                                 </a>
                                             )}
                                         </div>
@@ -500,7 +500,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                         <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1.5 text-sm text-heritage-earth-500 dark:text-gray-400">
                                 <Landmark className="w-4 h-4 text-heritage-gold-500" />
-                                <span>{t('detail.codeNumber')}: <span className="font-semibold text-heritage-earth-700 dark:text-gray-200">#{item.id}</span></span>
+                                <span>{t('videoDetail.codeNumber')}: <span className="font-semibold text-heritage-earth-700 dark:text-gray-200">#{item.id}</span></span>
                             </div>
                         </div>
                         <button
