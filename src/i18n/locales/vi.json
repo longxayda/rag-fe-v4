@@ -137,7 +137,7 @@
     "chat": "Trò chuyện",
     "quiz": "Đố vui",
     "admin": "Quản trị",
-    "heritage": "Di sản",
+    "heritage": "Kho tư liệu",
     "map": "Bản đồ",
     "timeline": "Dòng thời gian",
     "about": "Giới thiệu",
@@ -667,7 +667,7 @@
     "exploreLabel": "Khám phá di sản"
   },
   "heritageList": {
-    "title": "Di Sản Văn Hóa",
+    "title": "Khám phá kho tư liệu tỉnh Cà Mau",
     "tabHeritage": "Di sản",
     "tabMusic": "Âm Nhạc",
     "tabFineArts": "Mỹ thuật",
