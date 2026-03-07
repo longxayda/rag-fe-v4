@@ -4,6 +4,7 @@ import { X, MapPin, Calendar, Info, Volume2, Pause, Play, Loader, Landmark, Awar
 import { heritageApi } from '../services/api';
 import { formatCategoryLabel } from '../pages/HeritageList';
 import { getRankingStyle, normalizeRankingCode, RANKING_CODES } from '../utils/ranking';
+import { ADMIN_LEGAL_BASIS } from '../data/adminCrosswalk';
 export function HeritageDetailModal({ itemId, initialItem, onClose, language = 'vi' }) {
     const { t } = useTranslation();
     const [item, setItem] = useState(initialItem);
@@ -491,6 +492,28 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                 <div className="font-semibold text-heritage-earth-900 dark:text-gray-100">{rankingLabel || item.ranking_type}</div>
                             </div>
                         )}
+                    </div>
+
+                    {/* Legal Basis */}
+                    <div className="mt-6 p-4 rounded-xl bg-heritage-cream-50 dark:bg-gray-700 border border-heritage-earth-200 dark:border-gray-600">
+                        <div className="flex items-center gap-2 text-sm text-heritage-earth-500 dark:text-gray-400 mb-2">
+                            <Landmark className="w-4 h-4 text-heritage-gold-500" />
+                            <span>Căn cứ pháp lý cập nhật hành chính</span>
+                        </div>
+                        <ul className="space-y-1.5">
+                            {ADMIN_LEGAL_BASIS.map((doc) => (
+                                <li key={doc.id}>
+                                    <a
+                                        href={doc.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-sm text-heritage-red-700 dark:text-heritage-gold-300 hover:underline"
+                                    >
+                                        {doc.title}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
 

@@ -32,24 +32,34 @@ export default function QuizManager({ onBack }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const normalizeQuiz = (quiz) => {
+    const correct = Number.isInteger(quiz?.correct)
+      ? quiz.correct
+      : Number.isInteger(quiz?.correctAnswer)
+      ? quiz.correctAnswer
+      : 0;
+    return { ...quiz, correct };
+  };
+
   // Load quizzes from localStorage or use initial data
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       try {
-        setQuizzes(JSON.parse(stored));
+        setQuizzes((JSON.parse(stored) || []).map(normalizeQuiz));
       } catch {
-        setQuizzes(initialQuizData || []);
+        setQuizzes((initialQuizData || []).map(normalizeQuiz));
       }
     } else {
-      setQuizzes(initialQuizData || []);
+      setQuizzes((initialQuizData || []).map(normalizeQuiz));
     }
   }, []);
 
   // Save to localStorage whenever quizzes change
   const saveQuizzes = (newQuizzes) => {
-    setQuizzes(newQuizzes);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newQuizzes));
+    const normalized = (newQuizzes || []).map(normalizeQuiz);
+    setQuizzes(normalized);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
   };
 
   // Show notification
@@ -80,7 +90,7 @@ export default function QuizManager({ onBack }) {
       id: Date.now(),
       question: '',
       options: ['', '', '', ''],
-      correctAnswer: 0,
+      correct: 0,
       explanation: ''
     });
     setIsCreating(true);
@@ -92,7 +102,7 @@ export default function QuizManager({ onBack }) {
     // Ensure options array has 4 elements
     const options = quiz.options || ['', '', '', ''];
     while (options.length < 4) options.push('');
-    setFormData({ ...quiz, options });
+    setFormData(normalizeQuiz({ ...quiz, options }));
     setIsEditing(true);
     setIsCreating(false);
   };
@@ -123,8 +133,9 @@ export default function QuizManager({ onBack }) {
     const dataToSave = {
       ...formData,
       options: validOptions,
-      correctAnswer: Math.min(formData.correctAnswer, validOptions.length - 1)
+      correct: Math.min(formData.correct ?? 0, validOptions.length - 1)
     };
+    delete dataToSave.correctAnswer;
 
     let newQuizzes;
     if (isCreating) {
@@ -263,15 +274,15 @@ export default function QuizManager({ onBack }) {
                     <div key={index} className="flex items-center gap-3">
                       <button
                         type="button"
-                        onClick={() => handleFormChange('correctAnswer', index)}
+                        onClick={() => handleFormChange('correct', index)}
                         className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${
-                          formData.correctAnswer === index
+                          formData.correct === index
                             ? 'border-emerald-500 bg-emerald-500 text-white'
                             : 'border-heritage-earth-300 hover:border-heritage-earth-400'
                         }`}
-                        title={formData.correctAnswer === index ? 'Đáp án đúng' : 'Đặt làm đáp án đúng'}
+                        title={formData.correct === index ? 'Đáp án đúng' : 'Đặt làm đáp án đúng'}
                       >
-                        {formData.correctAnswer === index ? (
+                        {formData.correct === index ? (
                           <Check className="w-4 h-4" />
                         ) : (
                           <span className="text-sm font-medium text-heritage-earth-500">
@@ -373,7 +384,7 @@ export default function QuizManager({ onBack }) {
                       </td>
                       <td className="px-4 py-3 hidden sm:table-cell">
                         <div className="text-sm text-heritage-earth-600 dark:text-gray-400 line-clamp-1">
-                          {quiz.options?.[quiz.correctAnswer] || '-'}
+                          {quiz.options?.[quiz.correct ?? quiz.correctAnswer] || '-'}
                         </div>
                       </td>
                       <td className="px-4 py-3">
