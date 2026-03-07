@@ -10,6 +10,7 @@ import { useFavorites } from '../context/FavoritesContext';
 import heritages from '../data/heritages.json';
 import ReactMarkdown from 'react-markdown';
 import { getRankingStyle, normalizeRankingCode } from '../utils/ranking';
+import { ADMIN_LEGAL_BASIS } from '../data/adminCrosswalk';
 
 function SocialShareButtons({ heritage }) {
   const { t } = useTranslation();
@@ -230,6 +231,27 @@ export default function HeritageDetailPage() {
             <ReactMarkdown>
               {heritage.information || t('heritageDetail.noDetailInfo')}
             </ReactMarkdown>
+          </div>
+
+          <div className="mb-8 p-4 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+            <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">
+              Căn cứ pháp lý cập nhật hành chính
+            </h3>
+            <ul className="space-y-1.5">
+              {ADMIN_LEGAL_BASIS.map((doc) => (
+                <li key={doc.id}>
+                  <a
+                    href={doc.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-heritage-red-600 hover:text-heritage-red-700 dark:text-heritage-gold-400 dark:hover:text-heritage-gold-300"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    {doc.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* Media Section */}
