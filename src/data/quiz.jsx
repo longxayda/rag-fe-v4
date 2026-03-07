@@ -85,7 +85,7 @@ export const baseQuestions = [
       "Hát Xoan"
     ],
     correct: 0,
-    explanation: "Bạc Liêu là vùng đất sản sinh ra bản 'Dạ cổ hoài lang' của cố nhạc sĩ Cao Văn Lầu, nền tảng của nghệ thuật Đờn ca tài tử."
+    explanation: "Bạc Liêu là vùng đất sản sinh ra bản 'Dạ cổ hoài lang' của cố nhạc sĩ Cao Văn Lầu, tiền đề quan trọng cho vọng cổ Nam Bộ."
   },
   {
     question: "Cà Mau có mô hình canh tác đặc thù nào giúp bảo vệ hệ sinh thái rừng ngập mặn?",
@@ -123,7 +123,7 @@ export const additionalQuestions = [
       "Tỉnh Đất Mũi"
     ],
     correct: 0,
-    explanation: "Ngày 1/1/1976, Bạc Liêu và Cà Mau hợp nhất thành tỉnh Minh Hải, rồi tách ra thành 2 tỉnh vào 1/1/1997."
+    explanation: "Tháng 2/1976, Bạc Liêu và Cà Mau hợp nhất thành tỉnh Minh Hải, rồi tách ra thành 2 tỉnh vào 1/1/1997."
   },
   {
     question: "Tên gọi 'Minh Hải' có ý nghĩa gì?",
@@ -156,18 +156,18 @@ export const additionalQuestions = [
       "Hậu Giang"
     ],
     correct: 1,
-    explanation: "Nghị quyết 202/2025/QH15 quyết định sáp nhập Bạc Liêu vào Cà Mau từ 1/7/2025."
+    explanation: "Nghị quyết 202/2025/QH15 được Quốc hội thông qua ngày 12/6/2025, các đơn vị hành chính cấp tỉnh mới chính thức hoạt động từ 1/7/2025."
   },
   {
     question: "Trung tâm hành chính của tỉnh Cà Mau sau khi sáp nhập đặt tại đâu?",
     options: [
-      "Thành phố Bạc Liêu",
-      "Thành phố Cà Mau",
-      "Thị xã Giá Rai",
-      "Huyện Năm Căn"
+      "Phường Bạc Liêu",
+      "Phường An Xuyên",
+      "Phường Giá Rai",
+      "Xã Năm Căn"
     ],
     correct: 1,
-    explanation: "Theo Nghị quyết 60-NQ/TW, trung tâm hành chính đặt tại TP Cà Mau hiện nay."
+    explanation: "Theo phương án sắp xếp đơn vị hành chính mới, trung tâm hành chính đặt tại phường An Xuyên, tỉnh Cà Mau."
   },
   {
     question: "Năm 1832, vua Minh Mạng chia Nam Bộ thành 6 tỉnh, vùng đất Bạc Liêu thuộc tỉnh nào?",
@@ -222,7 +222,7 @@ export const additionalQuestions = [
       "Tháng 12/1973"
     ],
     correct: 2,
-    explanation: "Tháng 11/1973, Khu ủy Tây Nam Bộ quyết định tái lập tỉnh Bạc Liêu với 4 đơn vị hành chính cấp huyện."
+    explanation: "Tháng 11/1973, Khu ủy Tây Nam Bộ quyết định tái lập tỉnh Bạc Liêu với 4 đơn vị hành chính."
   },
 
   // Phần 2: LỊCH SỬ KHÁNG CHIẾN CHUNG (15 câu)
@@ -284,13 +284,13 @@ export const additionalQuestions = [
   {
     question: "Vùng 200 ngày tập kết ở Cà Mau sau Hiệp định Genève có ranh giới phía Bắc từ đâu?",
     options: [
-      "Từ vàm sông Cái Lớn tới ngã ba Ngang Dừa",
+      "Từ vàm sông Cái Lớn tới ngã ba Ngan Dừa",
       "Từ cửa biển Cà Mau tới Năm Căn",
       "Từ U Minh tới Phước Long",
       "Từ Bạc Liêu tới Cà Mau"
     ],
     correct: 0,
-    explanation: "Ranh giới vùng tập kết từ vàm sông Cái Lớn tới ngã ba Ngang Dừa, từ rạch Nước Trong tới ấp Xẻo Lá."
+    explanation: "Ranh giới vùng tập kết từ vàm sông Cái Lớn tới ngã ba Ngan Dừa, từ rạch Nước Trong tới ấp Xẻo Lá."
   },
   {
     question: "Ai là Bí thư Tỉnh ủy Bạc Liêu trong thời kỳ 200 ngày tập kết?",
@@ -306,7 +306,7 @@ export const additionalQuestions = [
   {
     question: "Lá cờ Đảng đầu tiên tại Bạc Liêu được treo ở đâu?",
     options: [
-      "Trước Toà án",
+      "Trước Tòa án",
       "Trước thành lính trong nội ô",
       "Tại Đình An Trạch",
       "Tại chợ Bạc Liêu"
@@ -359,7 +359,7 @@ export const additionalQuestions = [
     explanation: "Ngày 20/11/1973, hội nghị công bố quyết định tái lập tỉnh Bạc Liêu được tổ chức tại Cái Chanh."
   },
   {
-    question: "Nhà tù nào ở Bạc Liêu từng giam cầm các chiến sỹ cách mạng thời Pháp và Mỹ?",
+    question: "Nhà tù nào ở Bạc Liêu từng giam cầm các chiến sĩ cách mạng thời Pháp và Mỹ?",
     options: [
       "Khám Lớn",
       "Chí Hòa",
@@ -367,7 +367,7 @@ export const additionalQuestions = [
       "Phú Quốc"
     ],
     correct: 0,
-    explanation: "Khám Lớn Bạc Liêu do Pháp xây dựng, sau này Mỹ sử dụng để đàn áp chiến sỹ cách mạng."
+    explanation: "Khám Lớn Bạc Liêu do Pháp xây dựng, sau này Mỹ sử dụng để đàn áp chiến sĩ cách mạng."
   },
   {
     question: "Đình nào ở Cà Mau là nơi treo cờ Đảng Cộng sản Đông Dương đầu tiên năm 1930?",
@@ -378,10 +378,10 @@ export const additionalQuestions = [
       "Đình Cà Mau"
     ],
     correct: 1,
-    explanation: "Đình Tân Hưng tại xã Lý Văn Lâm, TP Cà Mau là nơi treo cờ Đảng đầu tiên tại Cà Mau."
+    explanation: "Đình Tân Hưng tại xã Lý Văn Lâm, nay thuộc phường Lý Văn Lâm, tỉnh Cà Mau, là nơi treo cờ Đảng đầu tiên tại Cà Mau."
   },
   {
-    question: "Di tích nào được UNESCO công nhận liên quan đến đường Hồ Chí Minh trên biển?",
+    question: "Di tích nào được xếp hạng Di tích quốc gia đặc biệt liên quan đến đường Hồ Chí Minh trên biển?",
     options: [
       "Bến Vàm Lũng",
       "Hòn Khoai",
@@ -394,7 +394,7 @@ export const additionalQuestions = [
 
   // Phần 3: NHÂN VẬT LỊCH SỬ (15 câu)
   {
-    question: "Nhạc sĩ nào ở Bạc Liêu sáng tác bản 'Dạ cổ hoài lang' - nền tảng của Đờn ca tài tử?",
+    question: "Nhạc sĩ nào ở Bạc Liêu sáng tác bản 'Dạ cổ hoài lang' - tiền đề của vọng cổ Nam Bộ?",
     options: [
       "Cao Văn Lầu",
       "Trịnh Công Sơn",
@@ -402,18 +402,18 @@ export const additionalQuestions = [
       "Lưu Hữu Phước"
     ],
     correct: 0,
-    explanation: "Cố nhạc sĩ Cao Văn Lầu là tác giả bản 'Dạ cổ hoài lang', biểu tượng của Đờn ca tài tử Nam Bộ."
+    explanation: "Cố nhạc sĩ Cao Văn Lầu là tác giả bản 'Dạ cổ hoài lang', tác phẩm đặt nền cho vọng cổ và ảnh hưởng sâu rộng đến cải lương Nam Bộ."
   },
   {
-    question: "Tên thật của Công tử Bạc Liêu là gì?",
+    question: "Tên gọi được biết đến rộng rãi của Công tử Bạc Liêu là gì?",
     options: [
       "Trần Trinh Huy",
       "Trần Trinh Quy",
       "Trần Văn Huy",
       "Trần Văn Quy"
     ],
-    correct: 1,
-    explanation: "Tên thật của ông là Trần Trinh Quy (1900-1974), sau đổi thành Trần Trinh Huy."
+    correct: 0,
+    explanation: "Công tử Bạc Liêu được biết đến rộng rãi với tên Trần Trinh Huy."
   },
   {
     question: "Công tử Bạc Liêu còn có biệt danh nào khác?",
@@ -515,7 +515,7 @@ export const additionalQuestions = [
     explanation: "Thầy giáo Phan Ngọc Hiển chỉ huy cuộc khởi nghĩa Hòn Khoai ngày 13/12/1940."
   },
   {
-    question: "Anh hùng lực lượng vũ trang nhân dân nào có tên gắn với huyện ở Cà Mau?",
+    question: "Anh hùng lực lượng vũ trang nhân dân nào có tên gắn với một đơn vị hành chính ở Cà Mau?",
     options: [
       "Trần Văn Đại",
       "Trần Văn Thời",
@@ -523,7 +523,7 @@ export const additionalQuestions = [
       "Nguyễn Văn Đáng"
     ],
     correct: 1,
-    explanation: "Trần Văn Thời được truy tặng danh hiệu Anh hùng năm 2011, có huyện mang tên ông."
+    explanation: "Trần Văn Thời được truy tặng danh hiệu Anh hùng năm 2011, có đơn vị hành chính mang tên ông."
   },
   {
     question: "Ai là người đọc lời kêu gọi khởi nghĩa tại Cà Mau tháng 8/1945?",
@@ -537,7 +537,7 @@ export const additionalQuestions = [
     explanation: "Đồng chí Trần Văn Đại và Thái Ngọc Sanh lãnh đạo mít tinh tại Cà Mau ngày 25/8/1945."
   },
   {
-    question: "Bà hộ nào là ngoại của Công tử Bạc Liêu, được mệnh danh 'Vua lúa gạo Nam Kỳ'?",
+    question: "Ông hộ nào là ông ngoại của Công tử Bạc Liêu, được mệnh danh 'Vua lúa gạo Nam Kỳ'?",
     options: [
       "Phan Văn Sỹ",
       "Phan Văn Bì",
@@ -548,23 +548,21 @@ export const additionalQuestions = [
     explanation: "Ông Phan Văn Bì là ngoại của Công tử Bạc Liêu, người có đất ruộng nhiều nhất tỉnh."
   },
   {
-    question: "Câu 'Nhất Sỹ, Nhì Phương, Tam Xường, Tứ Trạch' chỉ 4 đại điền chủ ở đâu?",
+    question: "Câu 'Nhất Sỹ, Nhì Phương, Tam Xường, Tứ Trạch' chỉ 4 đại phú hộ nổi tiếng ở đâu?",
     options: [
-      "Miền Trung",
-      "Miền Bắc",
+      "Sài Gòn",
       "Nam Kỳ",
-      "Tây Nguyên"
+      "Miền Trung",
+      "Miền Bắc"
     ],
-    correct: 2,
-    explanation: "Đây là 4 đại điền chủ giàu có nhất vùng đất Nam Kỳ thời Pháp thuộc."
+    correct: 1,
+    explanation: "Đây là câu nói dân gian chỉ 4 đại phú hộ nổi tiếng ở Nam Kỳ xưa."
   },
-
-  // Phần 4: VĂN HÓA - LỄ HỘI (15 câu)
   {
     question: "Lễ hội nào được tổ chức để tưởng nhớ nhạc sĩ Cao Văn Lầu?",
     options: [
-      "Lễ hội Đờn ca tài tử",
       "Lễ hội Dạ cổ hoài lang",
+      "Lễ Giỗ tổ Cổ nhạc",
       "Lễ hội Cổ nhạc Bạc Liêu",
       "Cả A và B"
     ],
@@ -591,7 +589,7 @@ export const additionalQuestions = [
       "25-27 tháng 3"
     ],
     correct: 2,
-    explanation: "Lễ hội Quán Âm Nam Hải diễn ra từ ngày 22 đến 24 tháng 3 âm lịch tại phường Nhà Mát."
+    explanation: "Lễ hội Quán Âm Nam Hải diễn ra từ ngày 22 đến 24 tháng 3 âm lịch tại phường Hiệp Thành."
   },
   {
     question: "Lễ hội Nghinh Ông Gành Hào tổ chức vào thời gian nào?",
@@ -646,7 +644,7 @@ export const additionalQuestions = [
       "15-17 tháng 10 âm lịch"
     ],
     correct: 0,
-    explanation: "Lễ hội diễn ra từ 15-17/02 âm lịch tại Khu di tích Đồng Nọc Nạng, thị xã Giá Rai."
+    explanation: "Lễ hội diễn ra từ 15-17/02 âm lịch tại Khu di tích Đồng Nọc Nạng, phường Giá Rai."
   },
   {
     question: "Tết truyền thống của người Khmer ở Cà Mau gọi là gì?",
@@ -685,12 +683,12 @@ export const additionalQuestions = [
     question: "Khu lưu niệm nào ở Bạc Liêu gắn với nghệ thuật Đờn ca tài tử?",
     options: [
       "Khu lưu niệm Công tử Bạc Liêu",
-      "Khu lưu niệm Nghệ thuật đờn ca tài tử Nam Bộ và Nhạc sỹ Cao Văn Lầu",
+      "Khu lưu niệm Nghệ thuật đờn ca tài tử Nam Bộ và Nhạc sĩ Cao Văn Lầu",
       "Khu lưu niệm Cổ nhạc",
       "Khu di tích Cái Chanh"
     ],
     correct: 1,
-    explanation: "Khu lưu niệm tại phường 2, TP Bạc Liêu là nơi tổ chức Lễ hội Dạ cổ hoài lang."
+    explanation: "Khu lưu niệm tại phường Bạc Liêu là nơi tổ chức Lễ hội Dạ cổ hoài lang."
   },
   {
     question: "Văn hóa Cà Mau là sự giao thoa của bao nhiêu dòng chảy dân tộc chính?",
@@ -712,7 +710,7 @@ export const additionalQuestions = [
       "15 tháng 8"
     ],
     correct: 1,
-    explanation: "Lễ Giỗ tổ Cổ nhạc tổ chức vào ngày 12 tháng 8 âm lịch hàng năm tại TP Bạc Liêu."
+    explanation: "Lễ Giỗ tổ Cổ nhạc tổ chức vào ngày 12 tháng 8 âm lịch hàng năm tại phường Bạc Liêu."
   },
   {
     question: "Lễ hội nào được tổ chức nhằm bảo tồn nghệ thuật được UNESCO công nhận?",
@@ -736,7 +734,7 @@ export const additionalQuestions = [
       "Lẩu hải sản"
     ],
     correct: 1,
-    explanation: "Lẩu mắm Bạc Liêu nổi tiếng với nước dùng từ mắm cá sặt hoặc mắm cá rô, cá linh."
+    explanation: "Lẩu mắm Bạc Liêu nổi tiếng với nước dùng từ mắm cá sặc hoặc mắm cá rô, cá linh."
   },
   {
     question: "Lẩu mắm Bạc Liêu thường được nấu với nước gì để tăng vị ngọt?",
@@ -783,7 +781,7 @@ export const additionalQuestions = [
     explanation: "Mắm ba khía Bạc Liêu nổi tiếng với cái vị mặn mòi đặc trưng, khác biệt."
   },
   {
-    question: "Món bún nào có nước dùng được nấu từ mắm cá sặt trộn thính?",
+    question: "Món bún nào có nước dùng được nấu từ mắm cá sặc trộn thính?",
     options: [
       "Bún bò Huế",
       "Bún riêu",
@@ -791,7 +789,7 @@ export const additionalQuestions = [
       "Bún chả"
     ],
     correct: 2,
-    explanation: "Bún nước lèo Bạc Liêu ngon bởi nồi nước lèo từ mắm cá sặt trộn thính hầm rất lâu."
+    explanation: "Bún nước lèo Bạc Liêu ngon bởi nồi nước lèo từ mắm cá sặc trộn thính hầm rất lâu."
   },
   {
     question: "Bánh nào ở Bạc Liêu có vẻ ngoài giống há cảo nhưng lớn hơn?",
@@ -842,17 +840,17 @@ export const additionalQuestions = [
     options: [
       "Châu chấu",
       "Dế",
-      "Đuông dừa",
+      "Đuông chà là",
       "Nhộng ong"
     ],
     correct: 2,
-    explanation: "Đuông chà là món tương đối 'kén' người ăn, chế biến từ đuông dừa."
+    explanation: "Đuông chà là là món tương đối 'kén' người ăn, chế biến từ ấu trùng sống trong thân cây chà là."
   },
   {
     question: "Mắm nào ở Bạc Liêu được ướp với thính và rượu đế, ủ 7-10 ngày?",
     options: [
       "Mắm ba khía",
-      "Mắm cá sặt",
+      "Mắm cá sặc",
       "Mắm cá chốt",
       "Mắm tôm"
     ],
@@ -906,7 +904,7 @@ export const additionalQuestions = [
     explanation: "Biểu tượng chiếc tàu tại Công viên Văn hóa Du lịch Mũi Cà Mau là điểm check-in nổi tiếng nhất."
   },
   {
-    question: "Di tích khảo cổ nào ở Bạc Liêu là di tích duy nhất thuộc văn hóa Óc Eo còn lại ở Tây Nam Bộ?",
+    question: "Di tích khảo cổ nào ở Bạc Liêu là kiến trúc dạng tháp thuộc văn hóa Óc Eo còn lại ở Tây Nam Bộ?",
     options: [
       "Tháp Cổ Vĩnh Hưng",
       "Đình An Trạch",
@@ -924,8 +922,8 @@ export const additionalQuestions = [
       "Di tích quốc gia đặc biệt",
       "Di tích thế giới"
     ],
-    correct: 1,
-    explanation: "Tháp Vĩnh Hưng được công nhận di tích kiến trúc nghệ thuật cấp quốc gia năm 1992."
+    correct: 2,
+    explanation: "Tháp Vĩnh Hưng được công nhận di tích kiến trúc nghệ thuật cấp quốc gia đặc biệt vào ngày 18/7/2024."
   },
   {
     question: "Sau hợp nhất, tỉnh Cà Mau có bao nhiêu di tích Quốc gia đặc biệt?",
@@ -985,13 +983,13 @@ export const additionalQuestions = [
   {
     question: "Phật Bà Nam Hải (Quán Âm Nam Hải) tọa lạc ở đâu?",
     options: [
-      "Phường 1, TP Bạc Liêu",
-      "Phường Nhà Mát, TP Bạc Liêu",
-      "Phường 5, TP Bạc Liêu",
-      "Phường 7, TP Bạc Liêu"
+      "Phường Bạc Liêu, tỉnh Cà Mau",
+      "Phường Hiệp Thành, tỉnh Cà Mau",
+      "Phường Vĩnh Trạch, tỉnh Cà Mau",
+      "Phường Giá Rai, tỉnh Cà Mau"
     ],
     correct: 1,
-    explanation: "Quán Âm Nam Hải tọa lạc tại cửa biển Nhà Mát, phường Nhà Mát với diện tích 6ha."
+    explanation: "Quán Âm Nam Hải tọa lạc tại khu vực cửa biển Nhà Mát, nay thuộc phường Hiệp Thành."
   },
   {
     question: "Khu di tích Cái Chanh tọa lạc tại xã nào?",
@@ -1016,18 +1014,18 @@ export const additionalQuestions = [
     explanation: "Đình Tân Hưng là nơi đóng quân của Bộ Chỉ huy Mặt trận Tân Hưng, mặt trận chống Pháp."
   },
   {
-    question: "Khu lưu niệm Nhạc sỹ Cao Văn Lầu tọa lạc ở đâu?",
+    question: "Khu lưu niệm Nhạc sĩ Cao Văn Lầu tọa lạc ở đâu?",
     options: [
-      "Phường 1, TP Bạc Liêu",
-      "Phường 2, TP Bạc Liêu",
-      "Phường 5, TP Bạc Liêu",
-      "Phường 7, TP Bạc Liêu"
+      "Phường Bạc Liêu, tỉnh Cà Mau",
+      "Phường Hiệp Thành, tỉnh Cà Mau",
+      "Phường Vĩnh Trạch, tỉnh Cà Mau",
+      "Phường Giá Rai, tỉnh Cà Mau"
     ],
-    correct: 1,
-    explanation: "Khu lưu niệm Nghệ thuật đờn ca tài tử Nam Bộ và Nhạc sỹ Cao Văn Lầu thuộc phường 2."
+    correct: 0,
+    explanation: "Khu lưu niệm Nghệ thuật đờn ca tài tử Nam Bộ và Nhạc sĩ Cao Văn Lầu nay thuộc phường Bạc Liêu."
   },
   {
-    question: "Lăng Ông thị trấn Gành Hào gắn với lễ hội nào?",
+    question: "Lăng Ông xã Gành Hào gắn với lễ hội nào?",
     options: [
       "Lễ hội Quán Âm",
       "Lễ hội Nghinh Ông",
@@ -1035,7 +1033,7 @@ export const additionalQuestions = [
       "Lễ hội Ok om Bóc"
     ],
     correct: 1,
-    explanation: "Lễ hội Nghinh Ông với nghi thức ra khơi diễn ra tại Lăng Ông thị trấn Gành Hào."
+    explanation: "Lễ hội Nghinh Ông với nghi thức ra khơi diễn ra tại Lăng Ông xã Gành Hào."
   },
   {
     question: "Di tích Lung Lá - Nhà Thể thuộc xã nào hiện nay?",
@@ -1046,7 +1044,7 @@ export const additionalQuestions = [
       "Xã Phong Thạnh"
     ],
     correct: 0,
-    explanation: "Căn cứ Tỉnh uỷ Lung Lá - Nhà Thể tọa lạc tại ấp Trần Độ, xã Lương Thế Trân."
+    explanation: "Căn cứ Tỉnh uỷ Lung Lá - Nhà Thể tọa lạc tại ấp Trần Độ, xã Lương Thế Trân, tỉnh Cà Mau."
   },
   {
     question: "Nhà thờ Tắc Sậy là công trình kiến trúc theo tôn giáo nào?",
@@ -1128,15 +1126,15 @@ export const additionalQuestions = [
     explanation: "Rừng ngập mặn Cà Mau chủ yếu là rừng đước và mắm, đặc trưng vùng cửa sông."
   },
   {
-    question: "Địa danh Gành Hào thuộc huyện nào của tỉnh Bạc Liêu (cũ)?",
+    question: "Địa danh Gành Hào hiện thuộc đơn vị hành chính nào của tỉnh Cà Mau?",
     options: [
-      "Huyện Hồng Dân",
-      "Huyện Giá Rai",
-      "Huyện Vĩnh Lợi",
-      "Huyện Phước Long"
+      "Xã Gành Hào",
+      "Phường Giá Rai",
+      "Xã Ninh Thạnh Lợi",
+      "Xã Hồ Thị Kỷ"
     ],
     correct: 0,
-    explanation: "Thị trấn Gành Hào thuộc huyện Hồng Dân, là vùng ven biển nổi tiếng với nghề cá."
+    explanation: "Theo đơn vị hành chính mới, Gành Hào là xã ven biển của tỉnh Cà Mau, nổi tiếng với nghề cá."
   },
   {
     question: "Đảo nào ở Cà Mau gắn với cuộc khởi nghĩa năm 1940?",
@@ -1319,15 +1317,15 @@ export const additionalQuestions = [
     explanation: "Cả hai đều là tỉnh ven biển đồng bằng, không phải miền núi."
   },
   {
-    question: "Tỉnh Cà Mau sau sáp nhập có bao nhiêu đơn vị hành chính cấp huyện?",
+    question: "Tỉnh Cà Mau sau sáp nhập có bao nhiêu đơn vị hành chính cấp xã/phường?",
     options: [
-      "14 đơn vị",
-      "16 đơn vị",
-      "18 đơn vị",
-      "20 đơn vị"
+      "54 đơn vị",
+      "60 đơn vị",
+      "64 đơn vị",
+      "70 đơn vị"
     ],
-    correct: 1,
-    explanation: "Sau sáp nhập, Bạc Liêu (7 đơn vị) + Cà Mau (9 đơn vị) tạo thành khoảng 16 đơn vị."
+    correct: 2,
+    explanation: "Sau sáp nhập, tỉnh Cà Mau có 64 đơn vị hành chính cấp xã/phường."
   },
   {
     question: "Dân số của tỉnh Cà Mau sau sáp nhập khoảng bao nhiêu?",
@@ -1337,8 +1335,8 @@ export const additionalQuestions = [
       "Khoảng 2,5 triệu người",
       "Khoảng 3 triệu người"
     ],
-    correct: 0,
-    explanation: "Tổng dân số Bạc Liêu (~900k) + Cà Mau (~1,2 triệu) = khoảng 2,1 triệu người."
+    correct: 1,
+    explanation: "Tổng dân số sau sáp nhập khoảng 2,14 triệu người (theo số liệu điều tra dân số giữa kỳ 2024)."
   },
   {
     question: "Ngôn ngữ nào được sử dụng phổ biến nhất ở Cà Mau?",

@@ -8,12 +8,12 @@ export const COMMUNES = [
     'Xã Tam Giang', 'Xã Cái Đôi Vàm', 'Xã Nguyễn Việt Khái', 'Xã Phú Tân', 'Xã Phú Mỹ',
     'Xã Lương Thế Trân', 'Xã Tân Hưng', 'Xã Hưng Mỹ', 'Xã Cái Nước', 'Xã Phong Thạnh',
     'Xã Hồng Dân', 'Xã Vĩnh Lộc', 'Xã Ninh Thạnh Lợi', 'Xã Ninh Quới', 'Xã Gành Hào',
-    'Xã Định Thành', 'Xã An Trạch', 'Xã Long Điền', 'Xã Đông Hải', 'Xã Hoà Bình',
+    'Xã Định Thành', 'Xã An Trạch', 'Xã Long Điền', 'Xã Đông Hải', 'Xã Hòa Bình',
     'Xã Vĩnh Mỹ', 'Xã Vĩnh Hậu', 'Xã Phước Long', 'Xã Vĩnh Phước', 'Xã Phong Hiệp',
     'Xã Vĩnh Thanh', 'Xã Vĩnh Lợi', 'Xã Hưng Hội', 'Xã Châu Thới', 'Xã Hồ Thị Kỷ',
 
     // 9 Phường
     'Phường Bạc Liêu', 'Phường Vĩnh Trạch', 'Phường Hiệp Thành', 'Phường Giá Rai',
     'Phường Láng Tròn', 'Phường An Xuyên', 'Phường Lý Văn Lâm', 'Phường Tân Thành',
-    'Phường Hoà Thành'
+    'Phường Hòa Thành'
 ].sort();
