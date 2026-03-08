@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Landmark, Plus, Search, Edit2, Trash2, X, Save,
   ChevronLeft, ChevronRight, AlertCircle, CheckCircle,
@@ -33,8 +32,9 @@ const inputLanguages = [
   { code: 'zh', name: '中文 (Hoa)' },
 ];
 
+const ITEMS_PER_PAGE = 10;
+
 export default function HeritageManagement() {
-  const { t } = useTranslation();
   const [heritages, setHeritages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -61,13 +61,16 @@ export default function HeritageManagement() {
   const [image360File, setImage360File] = useState(null);
   const [image360Preview, setImage360Preview] = useState(null);
 
-  const itemsPerPage = 10;
+  const showNotification = useCallback((message, type = 'success') => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  }, []);
 
   // Fetch heritages from API
-  const fetchHeritages = async (page = 1) => {
+  const fetchHeritages = useCallback(async (page = 1) => {
     setLoading(true);
     try {
-      const result = await heritageApi.adminGetAll(page, itemsPerPage);
+      const result = await heritageApi.adminGetAll(page, ITEMS_PER_PAGE);
       // Backend returns { success: true, data: [...], pagination: {...} }
       if (result.success && result.data) {
         setHeritages(result.data);
@@ -83,16 +86,11 @@ export default function HeritageManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [showNotification]);
 
   useEffect(() => {
     fetchHeritages(currentPage);
-  }, [currentPage]);
-
-  const showNotification = (message, type = 'success') => {
-    setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
-  };
+  }, [currentPage, fetchHeritages]);
 
   // Filter heritages based on search (client-side)
   const filteredHeritages = heritages.filter(h => {
@@ -205,12 +203,19 @@ export default function HeritageManagement() {
 
       });
       setImagePreview(heritage.image_url || null);
-      setImage360Preview(fullHeritage.image360 || null);
+      setImageFile(null);
+      setImage360Preview(heritage.image360 || null);
+      setImage360File(null);
       setAudioPreview(heritage.audio_url || null);
+      setAudioFile(null);
+      setGalleryFiles([]);
+      setGalleryPreviews([]);
       setExistingGallery([]);
+      setKeepMediaIds([]);
       setYoutubeLinks(['']);
       setSelectedHeritage(heritage);
       setIsEditing(true);
+      setIsCreating(false);
     } finally {
       setLoading(false);
     }
