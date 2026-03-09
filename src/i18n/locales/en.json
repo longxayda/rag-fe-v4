@@ -69,7 +69,8 @@
     "exploreTitle": "Explore Ca Mau",
     "muteAudio": "Mute narration",
     "noLocationData": "This place has no location data on the map",
-    "loadError": "Could not load the list of locations."
+    "loadError": "Could not load the list of locations.",
+    "noValidLocations": "There are currently no locations with coordinates to display on the map."
   },
   "tts": {
     "sample1Title": "About Ca Mau Cape",

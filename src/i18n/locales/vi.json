@@ -69,7 +69,8 @@
     "exploreTitle": "Khám Phá Cà Mau",
     "muteAudio": "Tắt thuyết minh",
     "noLocationData": "Địa điểm này chưa có dữ liệu vị trí trên bản đồ",
-    "loadError": "Không tải được danh sách địa điểm."
+    "loadError": "Không tải được danh sách địa điểm.",
+    "noValidLocations": "Hiện không có địa điểm nào có tọa độ để hiển thị trên bản đồ."
   },
   "tts": {
     "sample1Title": "Về Mũi Cà Mau",

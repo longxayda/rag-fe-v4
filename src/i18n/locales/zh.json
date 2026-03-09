@@ -69,7 +69,8 @@
     "exploreTitle": "探索金瓯",
     "muteAudio": "关闭解说",
     "noLocationData": "该地点暂无地图位置数据",
-    "loadError": "无法加载地点列表。"
+    "loadError": "无法加载地点列表。",
+    "noValidLocations": "There are currently no locations with coordinates to display on the map."
   },
   "tts": {
     "sample1Title": "关于金瓯角",
