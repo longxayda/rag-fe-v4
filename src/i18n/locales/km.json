@@ -69,7 +69,8 @@
     "exploreTitle": "រុករកកាម៉ៅ",
     "muteAudio": "បិទការពន្យល់",
     "noLocationData": "ទីតាំងនេះមិនទាន់មានទិន្នន័យទីតាំងលើផែនទីទេ",
-    "loadError": "ផ្ទុកបញ្ជីទីតាំងមិនបាន។"
+    "loadError": "ផ្ទុកបញ្ជីទីតាំងមិនបាន។",
+    "noValidLocations": "There are currently no locations with coordinates to display on the map."
   },
   "tts": {
     "sample1Title": "អំពីមុខកាម៉ៅ",
