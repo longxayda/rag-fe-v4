@@ -4,6 +4,7 @@ import path from 'node:path';
 const ROOT_DIR = process.cwd();
 const SRC_DIR = path.join(ROOT_DIR, 'src');
 const SOURCE_EXTENSIONS = new Set(['.js', '.jsx', '.ts', '.tsx']);
+const LOCALE_CODES = ['vi', 'en', 'zh', 'km'];
 
 const IGNORED_PATH_SEGMENTS = [
   `${path.sep}i18n${path.sep}locales${path.sep}`,
@@ -46,6 +47,36 @@ const addIssue = (type, filePath, line, detail) => {
 };
 
 const readLines = (filePath) => fs.readFileSync(filePath, 'utf8').split(/\r?\n/);
+const MOJIBAKE_REGEX = /(\u00C3[\u0080-\u00BF]|\u00C2[\u0080-\u00BF]|\u00E1\u00BB|\u00E1\u00BA|\u00E2\u20AC|\u00F0\u0178|\uFFFD)/u;
+const QUESTION_CORRUPTION_REGEX = /(\?{2,}|^\?\p{L}|\p{L}\?\p{L}|\p{L}\?\s+\p{Ll}|\s\?\p{L}|\?\.\s*\d)/u;
+
+const isLikelyCorruptedQuestionText = (value) => {
+  if (typeof value !== 'string' || !value.includes('?')) return false;
+  return QUESTION_CORRUPTION_REGEX.test(value);
+};
+
+const runQuestionCorruptionSelfCheck = () => {
+  const corruptedSamples = ['C? audio', 'M? t?', '{{count}} k? t?', '?. 1890'];
+  const validSamples = [
+    'Bạn có chắc chắn muốn xóa?',
+    'Bạn có ý tưởng đóng góp hoặc muốn hợp tác? Hãy liên hệ với chúng tôi!',
+    'តើអ្នកពិតជាចង់លុបមែនទេ?',
+  ];
+
+  for (const sample of corruptedSamples) {
+    if (!isLikelyCorruptedQuestionText(sample)) {
+      throw new Error(`Question corruption detector missed sample: "${sample}"`);
+    }
+  }
+
+  for (const sample of validSamples) {
+    if (isLikelyCorruptedQuestionText(sample)) {
+      throw new Error(`Question corruption detector falsely flagged sample: "${sample}"`);
+    }
+  }
+};
+
+runQuestionCorruptionSelfCheck();
 
 const lineHasLikelyHumanText = (value) => {
   if (!value) return false;
@@ -149,6 +180,15 @@ const scanHardcodedStrings = (filePath) => {
       if (looksLikeTranslationKey(value)) continue;
       addIssue('hardcoded-dialog', filePath, i + 1, `Hardcoded dialog text: "${value}"`);
     }
+
+    const corruptedFallbackRegex = /(['"`])\?{3,}\1/g;
+    if (corruptedFallbackRegex.test(line)) {
+      addIssue('corrupted-placeholder', filePath, i + 1, 'Found placeholder-like corrupted string (???/????).');
+    }
+
+    if (!/https?:\/\//.test(line) && MOJIBAKE_REGEX.test(line)) {
+      addIssue('source-mojibake', filePath, i + 1, 'Found mojibake-like source text.');
+    }
   }
 };
 
@@ -234,11 +274,42 @@ const scanMissingZhKmCompanions = (filePath) => {
   }
 };
 
+const scanLocaleCorruption = (localeCode) => {
+  const localePath = path.join(SRC_DIR, 'i18n', 'locales', `${localeCode}.json`);
+  const source = fs.readFileSync(localePath, 'utf8');
+  const localeObject = JSON.parse(source);
+
+  const walk = (value, keyPath = '') => {
+    if (typeof value === 'string') {
+      if (isLikelyCorruptedQuestionText(value)) {
+        addIssue('locale-question-corruption', localePath, 1, `Corrupted question-mark text at "${keyPath}": "${value}"`);
+      }
+      if (MOJIBAKE_REGEX.test(value)) {
+        addIssue('locale-mojibake', localePath, 1, `Mojibake text at "${keyPath}": "${value}"`);
+      }
+      return;
+    }
+
+    if (!value || typeof value !== 'object') return;
+
+    for (const [childKey, childValue] of Object.entries(value)) {
+      const nextPath = keyPath ? `${keyPath}.${childKey}` : childKey;
+      walk(childValue, nextPath);
+    }
+  };
+
+  walk(localeObject);
+};
+
 const files = collectSourceFiles(SRC_DIR).filter((filePath) => !shouldIgnoreFile(filePath));
 
 for (const filePath of files) {
   scanHardcodedStrings(filePath);
   scanMissingZhKmCompanions(filePath);
+}
+
+for (const localeCode of LOCALE_CODES) {
+  scanLocaleCorruption(localeCode);
 }
 
 if (issues.length > 0) {

@@ -47,7 +47,7 @@ export function AchievementBadge({
   showLabel = true,
   onClick
 }) {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const languageCode = normalizeLanguageCode(i18n.resolvedLanguage || i18n.language);
 
   const rarity = RARITY_STYLES[achievement.rarity] || RARITY_STYLES.common;
@@ -98,8 +98,8 @@ export function AchievementBadge({
               : 'text-gray-400 dark:text-gray-500'
           }`}>
             {unlocked
-              ? getLocalizedField(achievement, 'name', languageCode, '???')
-              : '???'
+              ? getLocalizedField(achievement, 'name', languageCode, t('gamification.notUnlocked'))
+              : t('gamification.notUnlocked')
             }
           </p>
         </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Music } from "lucide-react";
 import { musicApi } from "../services/api";
@@ -32,7 +32,9 @@ export const MusicGallery = () => {
       const parsed = new URL(url);
       if (parsed.hostname.includes("youtu.be")) return parsed.pathname.slice(1);
       if (parsed.hostname.includes("youtube.com")) return parsed.searchParams.get("v");
-    } catch {}
+    } catch {
+      return null;
+    }
     return null;
   };
 
@@ -83,7 +85,7 @@ export const MusicGallery = () => {
               {music.source_type === "mp3" && music.mp3_url ? (
                 <div className="w-full h-48 flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-700 p-4">
                   <Music className="w-14 h-14 text-gray-400 dark:text-gray-500 mb-2" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{t("music.audio", "Audio")}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">{t("music.audio")}</span>
                 </div>
               ) : (
                 <img
@@ -97,11 +99,11 @@ export const MusicGallery = () => {
               </div>
               <div className="p-3">
                 <h3 className="font-semibold text-gray-800 dark:text-gray-200 truncate">
-                  {music.title || t("music.untitled", "Không có tên")}
+                  {music.title || t("music.untitled")}
                 </h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                  {[music.author, music.performer].filter(Boolean).join(" · ")}
-                  {music.year_signed ? ` · ${music.year_signed}` : ""}
+                  {[music.author, music.performer].filter(Boolean).join(" - ")}
+                  {music.year_signed ? ` - ${music.year_signed}` : ""}
                 </p>
               </div>
             </div>
@@ -116,16 +118,16 @@ export const MusicGallery = () => {
               onClick={() => setSelectedMusic(null)}
               className="absolute top-2 right-2 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white z-10"
             >
-              ✕
+              x
             </button>
 
             <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1 pr-8">
-              {selectedMusic.title || t("music.untitled", "Không có tên")}
+              {selectedMusic.title || t("music.untitled")}
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              {selectedMusic.author && `${t("music.author", "Tác giả")}: ${selectedMusic.author}`}
-              {selectedMusic.performer && ` · ${t("music.performer", "Ca sĩ")}: ${selectedMusic.performer}`}
-              {selectedMusic.year_signed && ` · ${selectedMusic.year_signed}`}
+              {selectedMusic.author && `${t("music.author")}: ${selectedMusic.author}`}
+              {selectedMusic.performer && ` - ${t("music.performer")}: ${selectedMusic.performer}`}
+              {selectedMusic.year_signed && ` - ${selectedMusic.year_signed}`}
             </p>
 
             {selectedMusic.source_type === "mp3" && audioUrl(selectedMusic) ? (
@@ -134,17 +136,17 @@ export const MusicGallery = () => {
                 className="w-full"
                 src={audioUrl(selectedMusic)}
               >
-                {t("literature.audioNotSupported", "Trình duyệt không hỗ trợ phát audio.")}
+                {t("literature.audioNotSupported")}
               </audio>
             ) : getEmbedUrl(selectedMusic.youtube_url) ? (
               <iframe
                 src={getEmbedUrl(selectedMusic.youtube_url)}
-                title="Music Player"
+                title={t("heritageList.musicLibrary")}
                 className="w-full h-[500px] rounded"
                 allowFullScreen
               />
             ) : (
-              <p className="text-gray-500 dark:text-gray-400 py-8 text-center">{t("music.noSource", "Chưa có nguồn phát.")}</p>
+              <p className="text-gray-500 dark:text-gray-400 py-8 text-center">{t("music.noSource")}</p>
             )}
           </div>
         </div>
@@ -152,3 +154,4 @@ export const MusicGallery = () => {
     </>
   );
 };
+
