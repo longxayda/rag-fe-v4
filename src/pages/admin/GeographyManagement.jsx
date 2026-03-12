@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { adminGeographyApi } from "../../services/api";
 
@@ -150,11 +150,11 @@ export default function GeographyManagement({ onBack }) {
   return (
     <div className="p-6 text-gray-900 dark:text-gray-100">
       <div className="flex items-center justify-between gap-4 mb-6">
-        {onBack && (
-          <button onClick={onBack} className="text-heritage-red-600 dark:text-heritage-red-400 hover:underline text-sm">
-            ← {t("common.back")}
-          </button>
-        )}
+          {onBack && (
+            <button onClick={onBack} className="text-heritage-red-600 dark:text-heritage-red-400 hover:underline text-sm">
+              {'<-'} {t("common.back")}
+            </button>
+          )}
         <h2 className="text-xl font-semibold flex-1 text-center">{t("admin.geographyManagement")}</h2>
         <div className="w-24 flex justify-end">
           <button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm">
@@ -169,7 +169,7 @@ export default function GeographyManagement({ onBack }) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {list.map((item) => (
             <div key={item.id} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 bg-white dark:bg-gray-800">
-              <h3 className="font-medium truncate">{item.title || item.name || "—"}</h3>
+              <h3 className="font-medium truncate">{item.title || item.name || "-"}</h3>
               <p className="text-sm text-gray-500">{item.region || item.location_text}</p>
               <div className="flex gap-2 mt-2">
                 <button onClick={() => openEdit(item)} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
@@ -192,63 +192,63 @@ export default function GeographyManagement({ onBack }) {
             </h3>
             <div className="p-4 space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.name", "Tên địa danh")} *</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.name")} *</label>
                 <input type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.location", "Vị trí (text)")}</label>
-                <input type="text" value={form.location_text} onChange={(e) => setForm((f) => ({ ...f, location_text: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" placeholder="Xã/Tỉnh" />
+                <label className="block text-sm font-medium mb-1">{t("geography.location")}</label>
+                <input type="text" value={form.location_text} onChange={(e) => setForm((f) => ({ ...f, location_text: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-sm font-medium mb-1">{t("geography.latitude", "Vĩ độ")}</label>
+                  <label className="block text-sm font-medium mb-1">{t("geography.latitude")}</label>
                   <input type="number" step="any" value={form.latitude} onChange={(e) => setForm((f) => ({ ...f, latitude: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">{t("geography.longitude", "Kinh độ")}</label>
+                  <label className="block text-sm font-medium mb-1">{t("geography.longitude")}</label>
                   <input type="number" step="any" value={form.longitude} onChange={(e) => setForm((f) => ({ ...f, longitude: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.terrainType", "Phân loại địa hình")}</label>
-                <input type="text" value={form.terrain_type} onChange={(e) => setForm((f) => ({ ...f, terrain_type: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" placeholder="Sông/Núi/Biển/..." />
+                <label className="block text-sm font-medium mb-1">{t("geography.terrainType")}</label>
+                <input type="text" value={form.terrain_type} onChange={(e) => setForm((f) => ({ ...f, terrain_type: e.target.value }))} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.naturalFeatures", "Đặc điểm tự nhiên")}</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.naturalFeatures")}</label>
                 <textarea value={form.natural_features} onChange={(e) => setForm((f) => ({ ...f, natural_features: e.target.value }))} rows={2} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.significance", "Ý nghĩa tổng quát")}</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.significance")}</label>
                 <textarea value={form.significance} onChange={(e) => setForm((f) => ({ ...f, significance: e.target.value }))} rows={2} className="w-full border px-3 py-2 rounded dark:bg-gray-700 dark:border-gray-600" />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.measurements", "Thông số đo lường")}</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.measurements")}</label>
                 {form.measurements.map((m, idx) => (
                   <div key={idx} className="flex gap-2 mb-2">
-                    <input placeholder={t("geography.measurementType", "Loại")} value={m.measurement_type} onChange={(e) => updateList("measurements", idx, "measurement_type", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <input type="number" step="any" placeholder="Giá trị" value={m.value} onChange={(e) => updateList("measurements", idx, "value", e.target.value)} className="w-24 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <input placeholder={t("geography.unit", "Đơn vị")} value={m.unit} onChange={(e) => updateList("measurements", idx, "unit", e.target.value)} className="w-20 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <button type="button" onClick={() => removeRow("measurements", idx)} className="text-red-500 text-sm">✕</button>
+                    <input placeholder={t("geography.measurementType")} value={m.measurement_type} onChange={(e) => updateList("measurements", idx, "measurement_type", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <input type="number" step="any" value={m.value} onChange={(e) => updateList("measurements", idx, "value", e.target.value)} className="w-24 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <input placeholder={t("geography.unit")} value={m.unit} onChange={(e) => updateList("measurements", idx, "unit", e.target.value)} className="w-20 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <button type="button" onClick={() => removeRow("measurements", idx)} className="text-red-500 text-sm">x</button>
                   </div>
                 ))}
-                <button type="button" onClick={() => addRow("measurements", emptyMeasurement)} className="text-blue-600 text-sm">+ {t("geography.addMeasurement", "Thêm")}</button>
+                <button type="button" onClick={() => addRow("measurements", emptyMeasurement)} className="text-blue-600 text-sm">+ {t("geography.addMeasurement")}</button>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.significanceCategories", "Ý nghĩa (theo danh mục)")}</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.significanceCategories")}</label>
                 {form.significance_categories.map((s, idx) => (
                   <div key={idx} className="flex gap-2 mb-2">
-                    <input placeholder={t("geography.category", "Danh mục")} value={s.category} onChange={(e) => updateList("significance_categories", idx, "category", e.target.value)} className="w-32 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <input placeholder={t("geography.description", "Mô tả")} value={s.description} onChange={(e) => updateList("significance_categories", idx, "description", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <button type="button" onClick={() => removeRow("significance_categories", idx)} className="text-red-500 text-sm">✕</button>
+                    <input placeholder={t("geography.category")} value={s.category} onChange={(e) => updateList("significance_categories", idx, "category", e.target.value)} className="w-32 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <input placeholder={t("geography.description")} value={s.description} onChange={(e) => updateList("significance_categories", idx, "description", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <button type="button" onClick={() => removeRow("significance_categories", idx)} className="text-red-500 text-sm">x</button>
                   </div>
                 ))}
-                <button type="button" onClick={() => addRow("significance_categories", emptySignificance)} className="text-blue-600 text-sm">+ {t("geography.addSignificance", "Thêm")}</button>
+                <button type="button" onClick={() => addRow("significance_categories", emptySignificance)} className="text-blue-600 text-sm">+ {t("geography.addSignificance")}</button>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.media", "Tài liệu / Ảnh / Bản đồ / Google Maps")}</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.media")}</label>
                 {form.media.map((m, idx) => (
                   <div key={idx} className="flex gap-2 mb-2">
                     <select value={m.media_type} onChange={(e) => updateList("media", idx, "media_type", e.target.value)} className="border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600">
@@ -257,22 +257,22 @@ export default function GeographyManagement({ onBack }) {
                       <option value="google_maps">google_maps</option>
                     </select>
                     <input placeholder="URL" value={m.file_url} onChange={(e) => updateList("media", idx, "file_url", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <button type="button" onClick={() => removeRow("media", idx)} className="text-red-500 text-sm">✕</button>
+                    <button type="button" onClick={() => removeRow("media", idx)} className="text-red-500 text-sm">x</button>
                   </div>
                 ))}
-                <button type="button" onClick={() => addRow("media", emptyMedia)} className="text-blue-600 text-sm">+ {t("geography.addMedia", "Thêm")}</button>
+                <button type="button" onClick={() => addRow("media", emptyMedia)} className="text-blue-600 text-sm">+ {t("geography.addMedia")}</button>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">{t("geography.sources", "Nguồn tham khảo")}</label>
+                <label className="block text-sm font-medium mb-1">{t("geography.sources")}</label>
                 {form.sources.map((s, idx) => (
                   <div key={idx} className="flex gap-2 mb-2">
-                    <input placeholder={t("geography.sourceTitle", "Tiêu đề")} value={s.title} onChange={(e) => updateList("sources", idx, "title", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
+                    <input placeholder={t("geography.sourceTitle")} value={s.title} onChange={(e) => updateList("sources", idx, "title", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
                     <input placeholder="URL" value={s.source_url} onChange={(e) => updateList("sources", idx, "source_url", e.target.value)} className="flex-1 border px-2 py-1 rounded text-sm dark:bg-gray-700 dark:border-gray-600" />
-                    <button type="button" onClick={() => removeRow("sources", idx)} className="text-red-500 text-sm">✕</button>
+                    <button type="button" onClick={() => removeRow("sources", idx)} className="text-red-500 text-sm">x</button>
                   </div>
                 ))}
-                <button type="button" onClick={() => addRow("sources", emptySource)} className="text-blue-600 text-sm">+ {t("geography.addSource", "Thêm")}</button>
+                <button type="button" onClick={() => addRow("sources", emptySource)} className="text-blue-600 text-sm">+ {t("geography.addSource")}</button>
               </div>
             </div>
             <div className="flex justify-end gap-3 p-4 border-t dark:border-gray-600">
@@ -285,3 +285,6 @@ export default function GeographyManagement({ onBack }) {
     </div>
   );
 }
+
+
+

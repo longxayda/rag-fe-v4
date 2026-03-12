@@ -762,8 +762,21 @@ export default function InfoSectionManagement({
                               stacked: chartForm.stacked,
                               data:
                                 chartForm.chartType === "composed"
-                                  ? filtered.map((r) => ({ component_name: r.component_name?.trim(), value1: Number(r.value1) ?? Number(r.value) ?? 0, value2: Number(r.value2) ?? 0 }))
-                                  : filtered.map((r) => ({ component_name: r.component_name?.trim(), value: Number(r.value) ?? Number(r.value1) ?? Number(r.percentage) ?? 0 })),
+                                  ? filtered.map((r) => ({
+                                      component_name: r.component_name?.trim(),
+                                      value1: Number.isFinite(Number(r.value1))
+                                        ? Number(r.value1)
+                                        : (Number.isFinite(Number(r.value)) ? Number(r.value) : 0),
+                                      value2: Number.isFinite(Number(r.value2)) ? Number(r.value2) : 0
+                                    }))
+                                  : filtered.map((r) => ({
+                                      component_name: r.component_name?.trim(),
+                                      value: Number.isFinite(Number(r.value))
+                                        ? Number(r.value)
+                                        : (Number.isFinite(Number(r.value1))
+                                            ? Number(r.value1)
+                                            : (Number.isFinite(Number(r.percentage)) ? Number(r.percentage) : 0))
+                                    })),
                               unit: chartForm.unit ?? "",
                             };
                             if (chartForm.innerRadius !== "") entry.innerRadius = Number(chartForm.innerRadius);

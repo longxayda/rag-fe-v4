@@ -51,7 +51,8 @@
     "document": "Document",
     "relevance": "Relevance",
     "searchAria": "Search",
-    "retry": "Retry"
+    "retry": "Retry",
+    "errorOccurred": "An error has occurred"
   },
   "errors": {
     "network": "Connection error. Please check your network and try again.",
@@ -822,7 +823,7 @@
     "markdownPlaceholder": "Enter markdown content here...\n\n## Heading\n\n**Bold**, *italic*\n\n- List item\n- Item 2",
     "markdownPlaceholderShort": "Enter markdown...",
     "markdownPreviewEmpty": "No content to preview yet...",
-    "markdownQuickGuide": "?? Quick guide:",
+    "markdownQuickGuide": "Quick guide:",
     "markdownSplitPreviewEmpty": "Preview will appear here...",
     "markdownTabEdit": "Edit",
     "markdownTabPreview": "Preview",
@@ -834,7 +835,8 @@
     "sampleHeritage2": "Patriarch Pagoda",
     "sampleHeritage3": "Tan Hung Communal House",
     "timeRangeAll": "All",
-    "unknownCommune": "Unknown"
+    "unknownCommune": "Unknown",
+    "literatureAudioUpload": "Upload literary audio"
   },
   "favoritesPage": {
     "title": "Favorite Heritage",
@@ -1163,16 +1165,64 @@
     }
   },
   "economic": {
-    "noData": "No economics data available"
+    "noData": "No economics data available",
+    "addChart": "Add chart",
+    "chartLayout": "Chart layout",
+    "chartSection": "Chart section",
+    "chartTitle": "Chart title",
+    "chartTitlePlaceholder": "Chart Title placeholder",
+    "chartType": "Chart type",
+    "componentsAndFiguresForChart": "Components and metrics for charts",
+    "layoutHorizontal": "Horizontal layout",
+    "layoutVertical": "Vertical layout",
+    "seriesLabel1": "Label series1",
+    "seriesLabel2": "Label series2",
+    "stacked": "stacked",
+    "unit": "Unit",
+    "unitBillion": "Unit billion",
+    "unitMillion": "Unit Million",
+    "unitTrillion": "Unit trillion"
   },
   "geography": {
     "noData": "No geography data available",
     "area": "Area",
-    "terrain": "Terrain"
+    "terrain": "Terrain",
+    "addMeasurement": "Add measurements",
+    "addMedia": "Add media",
+    "addSignificance": "More meaning",
+    "addSource": "Add source",
+    "category": "Type",
+    "description": "Representation",
+    "latitude": "Latitude",
+    "location": "Location",
+    "longitude": "Longitude",
+    "measurementType": "Measurement type",
+    "measurements": "Measurements",
+    "media": "Media",
+    "name": "Name",
+    "naturalFeatures": "Natural features",
+    "significance": "Meaning",
+    "significanceCategories": "Meaningful list",
+    "sourceTitle": "Source title",
+    "sources": "Source",
+    "terrainType": "Terrain type",
+    "unit": "Unit"
   },
   "literature": {
     "noData": "No literature data available",
     "genre": "Genre",
-    "period": "Period"
+    "period": "Period",
+    "audioNotSupported": "Audio is not supported"
+  },
+  "fineart": {
+    "author": "Author",
+    "createdDate": "Creation date"
+  },
+  "music": {
+    "audio": "Sound",
+    "author": "Author",
+    "noSource": "No source available",
+    "performer": "Performer",
+    "untitled": "No title"
   }
 }

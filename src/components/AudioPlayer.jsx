@@ -13,10 +13,10 @@ import {
 } from 'lucide-react';
 
 const languages = [
-  { code: 'vi', flag: '????' },
-  { code: 'en', flag: '????' },
-  { code: 'zh', flag: '????' },
-  { code: 'km', flag: '????' },
+  { code: 'vi', flag: 'VN' },
+  { code: 'en', flag: 'US' },
+  { code: 'zh', flag: 'CN' },
+  { code: 'km', flag: 'KH' },
 ];
 
 export function AudioPlayer({ audioSrc, title, onLanguageChange, currentLanguage = 'vi' }) {
