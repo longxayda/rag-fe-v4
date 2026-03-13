@@ -51,7 +51,8 @@
     "document": "ឯកសារ",
     "relevance": "ពាក់ព័ន្ធ",
     "searchAria": "ស្វែងរក",
-    "retry": "Retry"
+    "retry": "ព្យាយាមម្តងទៀត",
+    "errorOccurred": "កំហុសមួយបានកើតឡើង"
   },
   "errors": {
     "network": "កំហុសការភ្ជាប់។ សូមពិនិត្យបណ្តាញ និងព្យាយាមម្តងទៀត។",
@@ -69,7 +70,8 @@
     "exploreTitle": "រុករកកាម៉ៅ",
     "muteAudio": "បិទការពន្យល់",
     "noLocationData": "ទីតាំងនេះមិនទាន់មានទិន្នន័យទីតាំងលើផែនទីទេ",
-    "loadError": "ផ្ទុកបញ្ជីទីតាំងមិនបាន។"
+    "loadError": "ផ្ទុកបញ្ជីទីតាំងមិនបាន។",
+    "noValidLocations": "There are currently no locations with coordinates to display on the map."
   },
   "tts": {
     "sample1Title": "អំពីមុខកាម៉ៅ",
@@ -111,7 +113,8 @@
     "pageTitle": "AI អានអត្ថបទ",
     "pageSubtitle": "បំប្លែងអត្ថបទជាសំឡេងធម្មជាតិ",
     "inputLabel": "អត្ថបទចូល",
-    "speedValue": "ល្បឿនអាន៖ {{speed}}x"
+    "speedValue": "ល្បឿនអាន៖ {{speed}}x",
+    "googleAiStudio": "Google AI Studio"
   },
   "videoDetail": {
     "learnMoreVideo": "ស្វែងយល់បន្ថែមតាមវីដេអូ",
@@ -290,7 +293,10 @@
       "tts": "អានអត្ថបទ",
       "ttsDesc": "ស្តាប់មាតិកាដោយសម្លេង",
       "favorites": "សំណព្វ",
-      "favoritesDesc": "មើលបញ្ជីបេតិកភណ្ឌដែលអ្នកចូលចិត្ត"
+      "favoritesDesc": "មើលបញ្ជីបេតិកភណ្ឌដែលអ្នកចូលចិត្ត",
+      "exploreNow": "ស្វែងរកឥឡូវនេះ",
+      "journeyTitleLine1": "ដំណើរស្វែងយល់",
+      "journeyTitleLine2": "បេតិកភណ្ឌដាតមុយ"
     },
     "categories": {
       "badge": "ប្រភេទបេតិកភណ្ឌ",
@@ -450,7 +456,10 @@
     "welcomeDesc": "សួរសំណួរអំពីអប់រំមូលដ្ឋាន បេតិកភណ្ឌវប្បធម៌ ប្រវត្តិសាស្រ្ត និងទីតាំងប្រវត្តិសាស្រ្តរបស់ខេត្តកាម៉ៅ",
     "send": "ផ្ញើ",
     "clear": "សម្អាតការជជែក",
-    "thinking": "កំពុងគិត..."
+    "thinking": "កំពុងគិត...",
+    "scrollToBottom": "រំកិលទៅបាត",
+    "sources": "ប្រភព",
+    "documentDefault": "ឯកសារ"
   },
   "quiz": {
     "title": "ល្បែងសំណួរ",
@@ -495,13 +504,13 @@
     "english": "English",
     "chinese": "中文",
     "khmer": "ភាសាខ្មែរ",
-    "mute": "Mute",
-    "unmute": "Unmute",
-    "restart": "Restart",
-    "seekSlider": "Audio seek slider",
-    "skipBack": "Back 10 seconds",
-    "skipForward": "Forward 10 seconds",
-    "volume": "Volume"
+    "mute": "បិទសំឡេង",
+    "unmute": "ការមិនសប្បាយចិត្ត",
+    "restart": "ចាប់ផ្ដើមឡើងវិញ",
+    "seekSlider": "គ្រាប់រំកិលស្វែងរកសំឡេង",
+    "skipBack": "ត្រឡប់មកវិញ 10 វិនាទី",
+    "skipForward": "ទៅមុខ 10 វិនាទី",
+    "volume": "កម្រិតសំឡេង"
   },
   "admin": {
     "title": "ទំព័រគ្រប់គ្រង",
@@ -533,7 +542,9 @@
     "geographyTerrain": "លក្ខណៈភូមិសាស្ត្រ",
     "literatureAuthor": "អ្នកនិពន្ធ",
     "literatureGenre": "ប្រភេទ",
-    "literaturePeriod": "ចន្លោះពេល",
+    "literaturePeriod": "ចន្លោះពេល/ឆ្នាំ",
+    "literatureAudioUrl": "ប្រភពអូឌីយ៉ូ (ភ្ជាប់)",
+    "literatureAudioUpload": "ផ្ទុកឡើងអូឌីយ៉ូ (សៀវភៅសំឡេង)",
     "settings": "ការកំណត់",
     "logout": "ចាកចេញ",
     "login": "ចូល",
@@ -748,9 +759,85 @@
       "period": "សម័យកាល",
       "topic": "ប្រធានបទ"
     },
-    "addComponent": "Add component",
-    "componentName": "Component name",
-    "economicsDistribution": "Distribution"
+    "addComponent": "បន្ថែមសមាសភាគ",
+    "componentName": "ឈ្មោះសមាសធាតុ",
+    "economicsDistribution": "ការចែកចាយ",
+    "tagNameZh": "ឈ្មោះស្លាក (ចិនបុរាណ)",
+    "tagNameKm": "ឈ្មោះស្លាក (ខ្មែរ)",
+    "rankingSpecialNational": "ជាតិពិសេស",
+    "rankingNational": "ជាតិ",
+    "rankingProvincial": "ខេត្ត",
+    "imageGallery": "វិចិត្រសាលរូបភាព",
+    "achievementsLabel": "សមិទ្ធិផល / ការរួមចំណែក",
+    "analyticsAudio": "មានអូឌីយ៉ូ",
+    "analyticsAveragePerHeritage": "ជាមធ្យមក្នុងមួយបេតិកភណ្ឌ",
+    "analyticsContentStats": "ស្ថិតិមាតិកា",
+    "analyticsDataCoverage": "ទិន្នន័យ 100%",
+    "analyticsDataQualityIndex": "សន្ទស្សន៍គុណភាពទិន្នន័យ",
+    "analyticsFullInfo": "ព័ត៌មានពេញលេញ",
+    "analyticsImage": "មានរូបភាព",
+    "analyticsOverallScore": "ពិន្ទុសរុប",
+    "analyticsRankingDistribution": "ការចែកចាយតាមចំណាត់ថ្នាក់",
+    "analyticsRecentItems": "ធាតុថ្មីៗ (កំពូល 5)",
+    "analyticsSubtitle": "ស្ថិតិលម្អិត និងការវិភាគបេតិកភណ្ឌវប្បធម៌",
+    "analyticsTitle": "ការវិភាគទិន្នន័យ",
+    "analyticsTotalCharacters": "តួអក្សរសរុប",
+    "analyticsTotalHeritages": "តំបន់បេតិកភណ្ឌសរុប",
+    "analyticsVideo": "មានវីដេអូ",
+    "analyticsWithAudio": "មានអូឌីយ៉ូ",
+    "analyticsWithFullInfo": "ព័ត៌មានពេញលេញ",
+    "analyticsWithImages": "មានរូបភាព",
+    "analyticsWithVideo": "មានវីដេអូ",
+    "biographyLabel": "ជីវប្រវត្តិ",
+    "birthYearLabel": "ឆ្នាំកំណើត",
+    "deathYearLabel": "ឆ្នាំមរណៈ",
+    "exampleBirthYear": "ឧ. 1890",
+    "exampleDeathYear": "ឧ. 1975",
+    "festivalCount": "{{count}} ពិធីបុណ្យ",
+    "festivalDescriptionLabel": "ការពិពណ៌នា",
+    "festivalLocationLabel": "ទីតាំង",
+    "festivalNameLabel": "ឈ្មោះពិធីបុណ្យ *",
+    "festivalTimeLabel": "ពេលវេលាព្រឹត្តិការណ៍",
+    "hometownLabel": "ស្រុកកំណើត",
+    "imageUrlLabel": "URL រូបភាព",
+    "markdownBoldTooltip": "ដិត (**អត្ថបទ**)",
+    "markdownCharCount": "{{count}} តួអក្សរ",
+    "markdownChecklistTooltip": "Checkbox (- [ ] item)",
+    "markdownCodeTooltip": "Code (`code`)",
+    "markdownDefaultSelection": "text",
+    "markdownGuideBold": "ដិត",
+    "markdownGuideBoldCode": "**text**",
+    "markdownGuideHeading2": "កម្រិតក្បាល 2",
+    "markdownGuideHeading2Code": "## ក្បាល",
+    "markdownGuideHeading3": "កម្រិតក្បាល 3",
+    "markdownGuideHeading3Code": "### ក្បាល",
+    "markdownGuideItalic": "ទ្រេត",
+    "markdownGuideItalicCode": "*text*",
+    "markdownGuideLink": "តំណភ្ជាប់",
+    "markdownGuideLinkCode": "[link](url)",
+    "markdownGuideList": "បញ្ជី",
+    "markdownGuideListCode": "- item",
+    "markdownHeadingTooltip": "ចំណងជើង (##)",
+    "markdownImageTooltip": "រូបភាព (![alt](url))",
+    "markdownItalicTooltip": "ទ្រេត (*អត្ថបទ*)",
+    "markdownLinkTooltip": "តំណ ([អត្ថបទ](url))",
+    "markdownListTooltip": "បញ្ជី (-វត្ថុ)",
+    "markdownPlaceholder": "បញ្ចូល​ខ្លឹមសារ​សម្គាល់​នៅទីនេះ...\n\n## ក្បាល\n\n**ដិត**, *ទ្រេត*\n\n- បញ្ជីធាតុ\n- ធាតុ 2",
+    "markdownPlaceholderShort": "បញ្ចូលសញ្ញាសម្គាល់...",
+    "markdownPreviewEmpty": "មិន​ទាន់​មាន​មាតិកា​ត្រូវ​មើល​ជា​មុន​នៅ​ឡើយ​ទេ...",
+    "markdownQuickGuide": "ការណែនាំរហ័ស៖",
+    "markdownSplitPreviewEmpty": "ការមើលជាមុននឹងបង្ហាញនៅទីនេះ...",
+    "markdownTabEdit": "កែសម្រួល",
+    "markdownTabPreview": "មើលជាមុន",
+    "markdownTabSplit": "បំបែក",
+    "peopleCount": "{{count}} មនុស្ស",
+    "peopleNameLabel": "ឈ្មោះ​មនុស្ស *",
+    "roleLabel": "តួនាទី / មុខតំណែង",
+    "sampleHeritage1": "មូលដ្ឋាន Cai Chanh",
+    "sampleHeritage2": "វត្តអយ្យកោ",
+    "sampleHeritage3": "ផ្ទះ​សហគមន៍ Tan Hung",
+    "timeRangeAll": "ទាំងអស់។",
+    "unknownCommune": "មិនស្គាល់"
   },
   "favoritesPage": {
     "title": "បេតិកភណ្ឌចូលចិត្ត",
@@ -805,13 +892,16 @@
     "location": "កាម៉ៅ វៀតណាម",
     "contactUs": "ទាក់ទងយើង",
     "copyright": "© 2026 បេតិកភណ្ឌកាម៉ៅ — ថែរក្សា និងពង្រីកតម្លៃបេតិកភណ្ឌវប្បធម៌",
-    "madeWith": "ធ្វើដោយ ❤️ នៅកាម៉ៅ វៀតណាម"
+    "madeWith": "ធ្វើដោយ ❤️ នៅកាម៉ៅ វៀតណាម",
+    "advisorName": "Lê Nguyễn Thế Bảo",
+    "studentOneName": "Trương Minh Khiêm",
+    "studentTwoName": "Trần Thị Thanh Trúc"
   },
   "language": {
     "select": "ជ្រើសរើសភាសា",
-    "vi": "Tiếng Việt",
-    "en": "English",
-    "zh": "中文",
+    "vi": "ភាសាវៀតណាម",
+    "en": "ភាសាអង់គ្លេស",
+    "zh": "ភាសាចិន (អក្សរបុរាណ)",
     "km": "ភាសាខ្មែរ"
   },
   "settings": {
@@ -858,7 +948,11 @@
     "fourLanguages": "៤ ភាសា",
     "updatesDesc": "ការជូនដំណឹងអំពីការធ្វើបច្ចុប្បន្នភាពកម្មវិធី",
     "remindersDesc": "ការរំលឹករុករកបេតិកភណ្ឌជាប្រចាំ",
-    "version": "កំណែ"
+    "version": "កំណែ",
+    "framework": "ស៊ុមការងារ",
+    "aiBackend": "ផ្នែកខាងក្រោយ AI",
+    "aiBackendValue": "RAG + LLM",
+    "frameworkValue": "React + Vite"
   },
   "pwa": {
     "installTitle": "ដំឡើងកម្មវិធី",
@@ -1027,6 +1121,52 @@
       "8": "មហាមាស្ទ័រ"
     }
   },
+  "geography": {
+    "noData": "មិនមានទិន្នន័យភូមិសាស្ត្រទេ។",
+    "area": "តំបន់",
+    "terrain": "ដី",
+    "addMeasurement": "បន្ថែមការវាស់វែង",
+    "addMedia": "បន្ថែមប្រព័ន្ធផ្សព្វផ្សាយ",
+    "addSignificance": "អត្ថន័យបន្ថែមទៀត",
+    "addSource": "បន្ថែមប្រភព",
+    "category": "ប្រភេទ",
+    "description": "តំណាង",
+    "latitude": "រយៈទទឹង",
+    "location": "ទីតាំង",
+    "longitude": "រយៈបណ្តោយ",
+    "measurementType": "ប្រភេទនៃការវាស់វែង",
+    "measurements": "ការវាស់វែង",
+    "media": "ប្រព័ន្ធផ្សព្វផ្សាយ",
+    "name": "ឈ្មោះ",
+    "naturalFeatures": "លក្ខណៈធម្មជាតិ",
+    "significance": "អត្ថន័យ",
+    "significanceCategories": "បញ្ជីដ៏មានអត្ថន័យ",
+    "sourceTitle": "ចំណងជើងប្រភព",
+    "sources": "ប្រភព",
+    "terrainType": "ប្រភេទដី",
+    "unit": "ឯកតា"
+  },
+  "fineart": {
+    "title": "ចំណងជើងសិល្បៈ",
+    "titlePlaceholder": "ចំណងជើងសិល្បៈ",
+    "author": "អ្នកនិពន្ធ",
+    "createdDate": "កាលបរិច្ឆេទបង្កើត",
+    "illustration": "រូបភាព",
+    "uploadOrLink": "ផ្ទុកឡើងរូបឬភ្ជាប់រូប"
+  },
+  "music": {
+    "title": "ចំណងជើងចម្រៀង",
+    "titlePlaceholder": "ចំណងជើងចម្រៀង",
+    "author": "អ្នកនិពន្ធ/អ្នកនិពន្ធបទភ្លេង",
+    "performer": "អ្នកចម្រៀង",
+    "year": "ឆ្នាំ",
+    "sourceType": "ប្រភព",
+    "youtubeUrl": "ភ្ជាប់ YouTube",
+    "uploadMp3": "ផ្ទុកឡើង MP3",
+    "audio": "អូឌីយ៉ូ",
+    "untitled": "គ្មានចំណងជើង",
+    "noSource": "គ្មានប្រភពចាក់។"
+  },
   "about": {
     "badge": "អំពីយើង",
     "title": "បេតិកភណ្ឌវប្បធម៌",
@@ -1072,16 +1212,28 @@
     }
   },
   "economic": {
-    "noData": "No economics data available"
-  },
-  "geography": {
-    "noData": "No geography data available",
-    "area": "Area",
-    "terrain": "Terrain"
+    "noData": "មិនមានទិន្នន័យសេដ្ឋកិច្ចទេ។",
+    "addChart": "បន្ថែមគំនូសតាង",
+    "chartLayout": "ប្លង់គំនូសតាង",
+    "chartSection": "ផ្នែកគំនូសតាង",
+    "chartTitle": "ចំណងជើងគំនូសតាង",
+    "chartTitlePlaceholder": "កន្លែងដាក់ចំណងជើងគំនូសតាង",
+    "chartType": "ប្រភេទគំនូសតាង",
+    "componentsAndFiguresForChart": "សមាសធាតុ និងរង្វាស់សម្រាប់គំនូសតាង",
+    "layoutHorizontal": "ប្លង់ផ្ដេក",
+    "layoutVertical": "ប្លង់បញ្ឈរ",
+    "seriesLabel1": "ស៊េរីស្លាកលេខ 1",
+    "seriesLabel2": "ស៊េរីស្លាកលេខ 2",
+    "stacked": "ជង់",
+    "unit": "ឯកតា",
+    "unitBillion": "ឯកតាពាន់លាន",
+    "unitMillion": "លានឯកតា",
+    "unitTrillion": "ឯកតាទ្រីលាន"
   },
   "literature": {
-    "noData": "No literature data available",
-    "genre": "Genre",
-    "period": "Period"
+    "noData": "មិនមានទិន្នន័យអក្សរសិល្ប៍ទេ។",
+    "genre": "ប្រភេទ",
+    "period": "រយៈពេល",
+    "audioNotSupported": "សំឡេងមិនត្រូវបានគាំទ្រទេ។"
   }
 }

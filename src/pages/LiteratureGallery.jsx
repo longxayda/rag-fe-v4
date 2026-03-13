@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { X, BookOpen } from "lucide-react";
 import { literatureApi } from "../services/api";
@@ -66,7 +66,7 @@ export const LiteratureGallery = () => {
     return (
       <div className="h-96 flex flex-col items-center justify-center text-gray-400">
         <BookOpen className="w-14 h-14 mb-3 opacity-50" />
-        <p>{t("literature.noData", "ChÆ°a cÃ³ dá»¯ liá»‡u vÄƒn há»c")}</p>
+        <p>{t("literature.noData")}</p>
       </div>
     );
   }
@@ -172,13 +172,13 @@ export const LiteratureGallery = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm mb-4 text-gray-600 dark:text-gray-400">
                   <div>
                     <span className="font-semibold">
-                      {t("literature.genre", "Thá»ƒ loáº¡i")}:
+                      {t("literature.genre")}:
                     </span>{" "}
                     {detail.genre}
                   </div>
                   <div>
                     <span className="font-semibold">
-                      {t("literature.period", "Giai Ä‘oáº¡n")}:
+                      {t("literature.period")}:
                     </span>{" "}
                     {detail.period}
                   </div>
@@ -203,3 +203,4 @@ export const LiteratureGallery = () => {
 };
 
 export default LiteratureGallery;
+

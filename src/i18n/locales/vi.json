@@ -51,7 +51,8 @@
     "document": "Tài liệu",
     "relevance": "Độ liên quan",
     "searchAria": "Tìm kiếm",
-    "retry": "Th? l?i"
+    "retry": "Thử lại",
+    "errorOccurred": "Đã xảy ra lỗi"
   },
   "errors": {
     "network": "Lỗi kết nối. Vui lòng kiểm tra mạng và thử lại.",
@@ -69,7 +70,8 @@
     "exploreTitle": "Khám Phá Cà Mau",
     "muteAudio": "Tắt thuyết minh",
     "noLocationData": "Địa điểm này chưa có dữ liệu vị trí trên bản đồ",
-    "loadError": "Không tải được danh sách địa điểm."
+    "loadError": "Không tải được danh sách địa điểm.",
+    "noValidLocations": "Hiện không có địa điểm nào có tọa độ để hiển thị trên bản đồ."
   },
   "tts": {
     "sample1Title": "Về Mũi Cà Mau",
@@ -111,7 +113,8 @@
     "pageTitle": "AI Đọc Văn Bản",
     "pageSubtitle": "Chuyển đổi văn bản thành giọng nói tự nhiên",
     "inputLabel": "Văn bản đầu vào",
-    "speedValue": "Tốc độ đọc: {{speed}}x"
+    "speedValue": "Tốc độ đọc: {{speed}}x",
+    "googleAiStudio": "Google AI Studio"
   },
   "videoDetail": {
     "learnMoreVideo": "Tìm hiểu thêm qua video",
@@ -290,7 +293,10 @@
       "tts": "Đọc Văn Bản",
       "ttsDesc": "Nghe nội dung bằng giọng nói",
       "favorites": "Yêu Thích",
-      "favoritesDesc": "Xem danh sách di sản yêu thích"
+      "favoritesDesc": "Xem danh sách di sản yêu thích",
+      "exploreNow": "Khám phá ngay",
+      "journeyTitleLine1": "Hành trình khám phá",
+      "journeyTitleLine2": "Di sản Đất Mũi"
     },
     "categories": {
       "badge": "Phân Loại Di Sản",
@@ -450,7 +456,10 @@
     "welcomeDesc": "Hãy đặt câu hỏi về giáo dục địa phương, di sản văn hóa, lịch sử và các di tích của tỉnh Cà Mau",
     "send": "Gửi",
     "clear": "Xóa cuộc trò chuyện",
-    "thinking": "Đang suy nghĩ..."
+    "thinking": "Đang suy nghĩ...",
+    "scrollToBottom": "Cuộn xuống dưới cùng",
+    "sources": "Nguồn",
+    "documentDefault": "Tài liệu"
   },
   "quiz": {
     "title": "Hỏi Xoay Đáp Xoáy",
@@ -495,13 +504,13 @@
     "english": "English",
     "chinese": "中文",
     "khmer": "ភាសាខ្មែរ",
-    "mute": "T?t ti?ng",
-    "unmute": "B?t ti?ng",
-    "restart": "Ph?t l?i",
-    "seekSlider": "Thanh tua ?m thanh",
-    "skipBack": "L?i 10 gi?y",
-    "skipForward": "T?i 10 gi?y",
-    "volume": "?m l??ng"
+    "mute": "Tắt tiếng",
+    "unmute": "không hài lòng",
+    "restart": "Khởi động lại",
+    "seekSlider": "Thanh trượt tìm kiếm âm thanh",
+    "skipBack": "Quay lại 10 giây",
+    "skipForward": "Chuyển tiếp 10 giây",
+    "volume": "Âm lượng"
   },
   "admin": {
     "title": "Trang Quản trị",
@@ -748,9 +757,86 @@
       "period": "Thời kỳ",
       "topic": "Chủ đề"
     },
-    "addComponent": "Th?m th?nh ph?n",
-    "componentName": "T?n th?nh ph?n",
-    "economicsDistribution": "C? c?u ph?n b?"
+    "addComponent": "Thêm thành phần",
+    "componentName": "Tên thành phần",
+    "economicsDistribution": "Phân bổ",
+    "tagNameZh": "Tên thẻ (tiếng Trung phồn thể)",
+    "tagNameKm": "Tên thẻ (tiếng Khmer)",
+    "rankingSpecialNational": "Quốc gia đặc biệt",
+    "rankingNational": "Quốc gia",
+    "rankingProvincial": "Tỉnh",
+    "imageGallery": "Thư viện hình ảnh",
+    "achievementsLabel": "Thành tựu/Đóng góp",
+    "analyticsAudio": "Có audio",
+    "analyticsAveragePerHeritage": "Trung bình mỗi di sản",
+    "analyticsContentStats": "Thống kê nội dung",
+    "analyticsDataCoverage": "100% dữ liệu",
+    "analyticsDataQualityIndex": "Chỉ số chất lượng dữ liệu",
+    "analyticsFullInfo": "Thông tin đầy đủ",
+    "analyticsImage": "Có hình ảnh",
+    "analyticsOverallScore": "Tổng điểm",
+    "analyticsRankingDistribution": "Phân bổ theo thứ hạng",
+    "analyticsRecentItems": "Các mục gần đây (Top 5)",
+    "analyticsSubtitle": "Thống kê và phân tích chi tiết về di sản văn hóa",
+    "analyticsTitle": "Phân tích dữ liệu",
+    "analyticsTotalCharacters": "Tổng số ký tự",
+    "analyticsTotalHeritages": "Tổng số di tích",
+    "analyticsVideo": "Có video",
+    "analyticsWithAudio": "Có audio",
+    "analyticsWithFullInfo": "Thông tin đầy đủ",
+    "analyticsWithImages": "Có hình ảnh",
+    "analyticsWithVideo": "Có video",
+    "biographyLabel": "Tiểu sử",
+    "birthYearLabel": "Năm sinh",
+    "deathYearLabel": "Năm mất",
+    "exampleBirthYear": "VD: 1890",
+    "exampleDeathYear": "VD: 1975",
+    "festivalCount": "{{count}} lễ hội",
+    "festivalDescriptionLabel": "Mô tả",
+    "festivalLocationLabel": "Vị trí",
+    "festivalNameLabel": "Tên lễ hội *",
+    "festivalTimeLabel": "Thời gian sự kiện",
+    "hometownLabel": "Quê hương",
+    "imageUrlLabel": "URL hình ảnh",
+    "markdownBoldTooltip": "In đậm (**văn bản**)",
+    "markdownCharCount": "{{count}} ký tự",
+    "markdownChecklistTooltip": "Checkbox (- [ ] item)",
+    "markdownCodeTooltip": "Code (`code`)",
+    "markdownDefaultSelection": "text",
+    "markdownGuideBold": "In đậm",
+    "markdownGuideBoldCode": "**text**",
+    "markdownGuideHeading2": "Tiêu đề cấp 2",
+    "markdownGuideHeading2Code": "## Tiêu đề",
+    "markdownGuideHeading3": "Tiêu đề cấp 3",
+    "markdownGuideHeading3Code": "### Tiêu đề",
+    "markdownGuideItalic": "Nghiêng",
+    "markdownGuideItalicCode": "*text*",
+    "markdownGuideLink": "liên kết",
+    "markdownGuideLinkCode": "[link](url)",
+    "markdownGuideList": "Danh sách",
+    "markdownGuideListCode": "- item",
+    "markdownHeadingTooltip": "Tiêu đề (## )",
+    "markdownImageTooltip": "Hình ảnh (![alt](url))",
+    "markdownItalicTooltip": "Nghiêng (*văn bản*)",
+    "markdownLinkTooltip": "Link ([text](url))",
+    "markdownListTooltip": "Danh sách (- mục)",
+    "markdownPlaceholder": "Nhập nội dung đánh dấu ở đây...\n\n## Tiêu đề\n\n**Đậm**, *nghiêng*\n\n- Mục danh sách\n- Mục 2",
+    "markdownPlaceholderShort": "Nhập đánh dấu...",
+    "markdownPreviewEmpty": "Chưa có nội dung để xem trước...",
+    "markdownQuickGuide": "Hướng dẫn nhanh về đánh dấu",
+    "markdownSplitPreviewEmpty": "Bản xem trước sẽ xuất hiện ở đây...",
+    "markdownTabEdit": "Biên tập",
+    "markdownTabPreview": "Xem trước",
+    "markdownTabSplit": "Tách ra",
+    "peopleCount": "{{count}} người",
+    "peopleNameLabel": "Tên người *",
+    "roleLabel": "Vai trò/Vị trí",
+    "sampleHeritage1": "Cai Chanh Base",
+    "sampleHeritage2": "Chùa Tổ",
+    "sampleHeritage3": "Đình Tân Hưng",
+    "timeRangeAll": "Tất cả",
+    "unknownCommune": "Không xác định",
+    "literatureAudioUpload": "Tải lên âm thanh văn học"
   },
   "favoritesPage": {
     "title": "Di Sản Yêu Thích",
@@ -805,7 +891,10 @@
     "location": "Cà Mau, Việt Nam",
     "contactUs": "Liên hệ với chúng tôi",
     "copyright": "© 2026 Di Sản Cà Mau — Bảo tồn và phát huy giá trị di sản văn hóa",
-    "madeWith": "Made with ❤️ tại Cà Mau, Việt Nam"
+    "madeWith": "Made with ❤️ tại Cà Mau, Việt Nam",
+    "advisorName": "Lê Nguyễn Thế Bảo",
+    "studentOneName": "Trương Minh Khiêm",
+    "studentTwoName": "Trần Thị Thanh Trúc"
   },
   "language": {
     "select": "Chọn ngôn ngữ",
@@ -858,7 +947,11 @@
     "clearCacheConfirmDesc": "Tất cả dữ liệu đã lưu trữ offline sẽ bị xóa. Bạn sẽ cần kết nối mạng để tải lại dữ liệu.",
     "resetConfirmTitle": "Đặt lại cài đặt?",
     "resetToDefault": "Khôi phục về mặc định",
-    "resetConfirmDesc": "Tất cả cài đặt giao diện, ngôn ngữ và thông báo sẽ được đặt lại về giá trị mặc định."
+    "resetConfirmDesc": "Tất cả cài đặt giao diện, ngôn ngữ và thông báo sẽ được đặt lại về giá trị mặc định.",
+    "framework": "Framework",
+    "aiBackend": "AI Backend",
+    "aiBackendValue": "RAG + LLM",
+    "frameworkValue": "React + Vite"
   },
   "pwa": {
     "installTitle": "Cài đặt ứng dụng",
@@ -1072,16 +1165,64 @@
     }
   },
   "economic": {
-    "noData": "Ch?a c? d? li?u kinh t?"
+    "noData": "Không có dữ liệu kinh tế",
+    "addChart": "Thêm biểu đồ",
+    "chartLayout": "Bố cục biểu đồ",
+    "chartSection": "Phần biểu đồ",
+    "chartTitle": "Tiêu đề biểu đồ",
+    "chartTitlePlaceholder": "Trình giữ chỗ Tiêu đề Biểu đồ",
+    "chartType": "Loại biểu đồ",
+    "componentsAndFiguresForChart": "Các thành phần và số liệu cho biểu đồ",
+    "layoutHorizontal": "Bố cục ngang",
+    "layoutVertical": "Bố cục dọc",
+    "seriesLabel1": "Nhãn loạt1",
+    "seriesLabel2": "Nhãn loạt2",
+    "stacked": "xếp chồng lên nhau",
+    "unit": "Đơn vị",
+    "unitBillion": "Đơn vị tỷ",
+    "unitMillion": "Đơn vị Triệu",
+    "unitTrillion": "Đơn vị nghìn tỷ"
   },
   "geography": {
-    "noData": "Ch?a c? d? li?u ??a l?",
-    "area": "Di?n t?ch",
-    "terrain": "??a h?nh"
+    "noData": "Không có sẵn dữ liệu địa lý",
+    "area": "Khu vực",
+    "terrain": "địa hình",
+    "addMeasurement": "Thêm số đo",
+    "addMedia": "Thêm phương tiện",
+    "addSignificance": "Thêm ý nghĩa",
+    "addSource": "Thêm nguồn",
+    "category": "Loại",
+    "description": "Sự miêu tả",
+    "latitude": "Vĩ độ",
+    "location": "Vị trí",
+    "longitude": "Kinh độ",
+    "measurementType": "Loại đo lường",
+    "measurements": "Số đo",
+    "media": "Phương tiện truyền thông",
+    "name": "Tên",
+    "naturalFeatures": "Đặc điểm tự nhiên",
+    "significance": "Ý nghĩa",
+    "significanceCategories": "Danh mục ý nghĩa",
+    "sourceTitle": "Tiêu đề nguồn",
+    "sources": "Nguồn",
+    "terrainType": "Loại địa hình",
+    "unit": "Đơn vị"
   },
   "literature": {
-    "noData": "Ch?a c? d? li?u v?n h?c",
-    "genre": "Th? lo?i",
-    "period": "Th?i k?"
+    "noData": "Không có sẵn dữ liệu tài liệu",
+    "genre": "thể loại",
+    "period": "Giai đoạn",
+    "audioNotSupported": "Âm thanh không được hỗ trợ"
+  },
+  "fineart": {
+    "author": "Tác giả",
+    "createdDate": "Ngày tạo"
+  },
+  "music": {
+    "audio": "Âm thanh",
+    "author": "Tác giả",
+    "noSource": "Không có nguồn",
+    "performer": "Người biểu diễn",
+    "untitled": "Không có tiêu đề"
   }
 }
