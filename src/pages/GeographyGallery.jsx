@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { X, Globe2 } from "lucide-react";
 import { geographyApi } from "../services/api";
@@ -67,7 +67,7 @@ export const GeographyGallery = () => {
     return (
       <div className="h-96 flex flex-col items-center justify-center text-gray-400">
         <Globe2 className="w-14 h-14 mb-3 opacity-50" />
-        <p>{t("geography.noData", "ChÆ°a cÃ³ dá»¯ liá»‡u Ä‘á»‹a lÃ½")}</p>
+        <p>{t("geography.noData")}</p>
       </div>
     );
   }
@@ -173,13 +173,13 @@ export const GeographyGallery = () => {
                 <div className="grid grid-cols-2 gap-4 text-sm mb-4 text-gray-600 dark:text-gray-400">
                   <div>
                     <span className="font-semibold">
-                      {t("geography.terrain", "Äá»‹a hÃ¬nh")}:
+                      {t("geography.terrain")}:
                     </span>{" "}
                     {detail.terrain}
                   </div>
                   <div>
                     <span className="font-semibold">
-                      {t("geography.area", "Diá»‡n tÃ­ch")}:
+                      {t("geography.area")}:
                     </span>{" "}
                     {detail.area}
                   </div>
@@ -204,3 +204,4 @@ export const GeographyGallery = () => {
 };
 
 export default GeographyGallery;
+

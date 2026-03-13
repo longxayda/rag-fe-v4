@@ -51,7 +51,8 @@
     "document": "文档",
     "relevance": "相关度",
     "searchAria": "搜索",
-    "retry": "??"
+    "retry": "重試",
+    "errorOccurred": "發生錯誤"
   },
   "errors": {
     "network": "连接错误，请检查网络后重试。",
@@ -69,7 +70,8 @@
     "exploreTitle": "探索金瓯",
     "muteAudio": "关闭解说",
     "noLocationData": "该地点暂无地图位置数据",
-    "loadError": "无法加载地点列表。"
+    "loadError": "无法加载地点列表。",
+    "noValidLocations": "There are currently no locations with coordinates to display on the map."
   },
   "tts": {
     "sample1Title": "关于金瓯角",
@@ -111,7 +113,8 @@
     "pageTitle": "AI 文字转语音",
     "pageSubtitle": "将文本转换为自然语音",
     "inputLabel": "输入文本",
-    "speedValue": "朗读速度：{{speed}}x"
+    "speedValue": "朗读速度：{{speed}}x",
+    "googleAiStudio": "Google AI Studio"
   },
   "videoDetail": {
     "learnMoreVideo": "通过视频了解更多",
@@ -290,7 +293,10 @@
       "tts": "文字转语音",
       "ttsDesc": "聆听语音内容",
       "favorites": "收藏",
-      "favoritesDesc": "查看您收藏的遗产列表"
+      "favoritesDesc": "查看您收藏的遗产列表",
+      "exploreNow": "立即探索",
+      "journeyTitleLine1": "探索之旅",
+      "journeyTitleLine2": "金甌角遺產"
     },
     "categories": {
       "badge": "遗产分类",
@@ -450,7 +456,10 @@
     "welcomeDesc": "请询问关于金瓯省地方教育、文化遗产、历史和遗迹的问题",
     "send": "发送",
     "clear": "清除对话",
-    "thinking": "思考中..."
+    "thinking": "思考中...",
+    "scrollToBottom": "滾動到底部",
+    "sources": "來源",
+    "documentDefault": "文件"
   },
   "quiz": {
     "title": "知识问答",
@@ -495,13 +504,13 @@
     "english": "英语",
     "chinese": "中文",
     "khmer": "高棉语",
-    "mute": "??",
-    "unmute": "????",
-    "restart": "????",
-    "seekSlider": "?????",
-    "skipBack": "??10?",
-    "skipForward": "??10?",
-    "volume": "??"
+    "mute": "沉默的",
+    "unmute": "不高興",
+    "restart": "重新啟動",
+    "seekSlider": "音訊搜尋滑桿",
+    "skipBack": "後退10秒",
+    "skipForward": "快轉 10 秒",
+    "volume": "體積"
   },
   "admin": {
     "title": "管理页面",
@@ -533,7 +542,9 @@
     "geographyTerrain": "地形特点",
     "literatureAuthor": "作者",
     "literatureGenre": "体裁",
-    "literaturePeriod": "时期",
+    "literaturePeriod": "时期/年份",
+    "literatureAudioUrl": "音频来源（链接）",
+    "literatureAudioUpload": "上傳文學音訊",
     "settings": "设置",
     "logout": "退出登录",
     "login": "登录",
@@ -748,9 +759,85 @@
       "period": "时期",
       "topic": "主题"
     },
-    "addComponent": "?????",
-    "componentName": "?????",
-    "economicsDistribution": "????"
+    "addComponent": "新增組件",
+    "componentName": "元件名稱",
+    "economicsDistribution": "分配",
+    "tagNameZh": "標籤名稱（繁體中文）",
+    "tagNameKm": "標籤名稱（高棉語）",
+    "rankingSpecialNational": "特別國家",
+    "rankingNational": "國家的",
+    "rankingProvincial": "省",
+    "imageGallery": "圖片庫",
+    "achievementsLabel": "成就/貢獻",
+    "analyticsAudio": "有音訊",
+    "analyticsAveragePerHeritage": "每個遺產的平均數",
+    "analyticsContentStats": "內容統計",
+    "analyticsDataCoverage": "100%數據",
+    "analyticsDataQualityIndex": "數據品質指標",
+    "analyticsFullInfo": "資料齊全",
+    "analyticsImage": "有影像",
+    "analyticsOverallScore": "總分",
+    "analyticsRankingDistribution": "按排名分佈",
+    "analyticsRecentItems": "最近的項目（前 5 名）",
+    "analyticsSubtitle": "文化遺產詳細統計與分析",
+    "analyticsTitle": "數據分析",
+    "analyticsTotalCharacters": "總字元數",
+    "analyticsTotalHeritages": "遺產地總數",
+    "analyticsVideo": "有視頻",
+    "analyticsWithAudio": "有音訊",
+    "analyticsWithFullInfo": "資料齊全",
+    "analyticsWithImages": "有影像",
+    "analyticsWithVideo": "有視頻",
+    "biographyLabel": "傳",
+    "birthYearLabel": "出生年份",
+    "deathYearLabel": "逝世年份",
+    "exampleBirthYear": "例如1890年",
+    "exampleDeathYear": "例如1975年",
+    "festivalCount": "{{count}} 節日",
+    "festivalDescriptionLabel": "描述",
+    "festivalLocationLabel": "地點",
+    "festivalNameLabel": "節日名稱 *",
+    "festivalTimeLabel": "活動時間",
+    "hometownLabel": "家鄉",
+    "imageUrlLabel": "圖片網址",
+    "markdownBoldTooltip": "粗體（**文字**）",
+    "markdownCharCount": "{{count}} 個字符",
+    "markdownChecklistTooltip": "複選框（- [ ] 項）",
+    "markdownCodeTooltip": "代碼（`代碼`）",
+    "markdownDefaultSelection": "text",
+    "markdownGuideBold": "大膽的",
+    "markdownGuideBoldCode": "**text**",
+    "markdownGuideHeading2": "標題等級 2",
+    "markdownGuideHeading2Code": "## 標題",
+    "markdownGuideHeading3": "標題等級 3",
+    "markdownGuideHeading3Code": "### 標題",
+    "markdownGuideItalic": "斜體",
+    "markdownGuideItalicCode": "*text*",
+    "markdownGuideLink": "關聯",
+    "markdownGuideLinkCode": "[link](url)",
+    "markdownGuideList": "清單",
+    "markdownGuideListCode": "- item",
+    "markdownHeadingTooltip": "標題 (##)",
+    "markdownImageTooltip": "圖片 (![alt](url))",
+    "markdownItalicTooltip": "斜體（*文*）",
+    "markdownLinkTooltip": "連結（[文本]（url））",
+    "markdownListTooltip": "清單（- 項目）",
+    "markdownPlaceholder": "在此輸入 Markdown 內容...\n\n## 標題\n\n**粗體**，*斜體*\n\n- 清單項\n- 第 2 項",
+    "markdownPlaceholderShort": "輸入降價...",
+    "markdownPreviewEmpty": "還沒有可預覽的內容...",
+    "markdownQuickGuide": "快速指南：",
+    "markdownSplitPreviewEmpty": "預覽將出現在這裡...",
+    "markdownTabEdit": "編輯",
+    "markdownTabPreview": "預覽",
+    "markdownTabSplit": "分裂",
+    "peopleCount": "{{count}} 人",
+    "peopleNameLabel": "人名 *",
+    "roleLabel": "角色/職位",
+    "sampleHeritage1": "蔡正基地",
+    "sampleHeritage2": "祖師塔",
+    "sampleHeritage3": "陳洪公屋",
+    "timeRangeAll": "全部",
+    "unknownCommune": "未知"
   },
   "favoritesPage": {
     "title": "收藏的遗产",
@@ -805,14 +892,17 @@
     "location": "越南金瓯",
     "contactUs": "联系我们",
     "copyright": "© 2026 金瓯遗产 — 保护与弘扬文化遗产价值",
-    "madeWith": "用心制作于越南金瓯"
+    "madeWith": "用心制作于越南金瓯",
+    "advisorName": "Lê Nguyễn Thế Bảo",
+    "studentOneName": "Trương Minh Khiêm",
+    "studentTwoName": "Trần Thị Thanh Trúc"
   },
   "language": {
-    "select": "选择语言",
-    "vi": "越南语",
-    "en": "英语",
-    "zh": "中文",
-    "km": "高棉语"
+    "select": "選擇語言",
+    "vi": "越南語",
+    "en": "英語",
+    "zh": "繁體中文",
+    "km": "高棉語"
   },
   "settings": {
     "title": "设置",
@@ -858,7 +948,11 @@
     "fourLanguages": "4种语言",
     "updatesDesc": "应用更新通知",
     "remindersDesc": "定期探索遗产提醒",
-    "version": "版本"
+    "version": "版本",
+    "framework": "框架",
+    "aiBackend": "AI 後端",
+    "aiBackendValue": "RAG + LLM",
+    "frameworkValue": "React + Vite"
   },
   "pwa": {
     "installTitle": "安装应用",
@@ -1027,6 +1121,52 @@
       "8": "宗师"
     }
   },
+  "geography": {
+    "noData": "沒有可用的地理數據",
+    "area": "區域",
+    "terrain": "地形",
+    "addMeasurement": "新增測量值",
+    "addMedia": "新增媒體",
+    "addSignificance": "更多意義",
+    "addSource": "添加來源",
+    "category": "類型",
+    "description": "表示",
+    "latitude": "緯度",
+    "location": "地點",
+    "longitude": "經度",
+    "measurementType": "測量類型",
+    "measurements": "測量值",
+    "media": "媒體",
+    "name": "姓名",
+    "naturalFeatures": "自然特徵",
+    "significance": "意義",
+    "significanceCategories": "有意義的清單",
+    "sourceTitle": "來源標題",
+    "sources": "來源",
+    "terrainType": "地形類型",
+    "unit": "單元"
+  },
+  "fineart": {
+    "title": "作品名称",
+    "titlePlaceholder": "作品名称",
+    "author": "作者",
+    "createdDate": "建立日期",
+    "illustration": "插图",
+    "uploadOrLink": "上传图片或粘贴图片链接"
+  },
+  "music": {
+    "title": "歌曲名称",
+    "titlePlaceholder": "歌曲名称",
+    "author": "作者/作曲",
+    "performer": "演唱者",
+    "year": "年份",
+    "sourceType": "来源",
+    "youtubeUrl": "YouTube链接",
+    "uploadMp3": "上传MP3",
+    "audio": "音频",
+    "untitled": "無標題",
+    "noSource": "無可用來源"
+  },
   "about": {
     "badge": "关于我们",
     "title": "文化遗产",
@@ -1072,16 +1212,28 @@
     }
   },
   "economic": {
-    "noData": "??????"
-  },
-  "geography": {
-    "noData": "??????",
-    "area": "??",
-    "terrain": "??"
+    "noData": "沒有可用的經濟數據",
+    "addChart": "新增圖表",
+    "chartLayout": "圖表佈局",
+    "chartSection": "圖表部分",
+    "chartTitle": "圖表標題",
+    "chartTitlePlaceholder": "圖表標題佔位符",
+    "chartType": "圖表類型",
+    "componentsAndFiguresForChart": "圖表的組件和指標",
+    "layoutHorizontal": "橫向佈局",
+    "layoutVertical": "垂直佈局",
+    "seriesLabel1": "標籤系列1",
+    "seriesLabel2": "標籤系列2",
+    "stacked": "堆疊的",
+    "unit": "單元",
+    "unitBillion": "單位：十億",
+    "unitMillion": "百萬單位",
+    "unitTrillion": "單位萬億"
   },
   "literature": {
-    "noData": "??????",
-    "genre": "??",
-    "period": "??"
+    "noData": "無可用文獻數據",
+    "genre": "類型",
+    "period": "時期",
+    "audioNotSupported": "不支援音訊"
   }
 }

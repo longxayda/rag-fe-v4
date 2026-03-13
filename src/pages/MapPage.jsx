@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './MapPage.css';
 import { heritageApi } from '../services/api';
 import MapPageLeaflet from './MapPageLeaflet';
+import { parseMapCoordinates, toLeafletLatLng } from '../utils/mapCoordinates';
 
 const hasMapboxToken = !!(import.meta.env.VITE_MAPBOX_PK || '').trim();
 if (hasMapboxToken) {
@@ -16,6 +17,12 @@ const MapPage = () => {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const leafletMapRef = useRef(null);
+  const open360Timeout = useRef(null);
+  const panoramaContainer = useRef(null);
+  const pannellumViewer = useRef(null);
+  const audioRef = useRef(null);
+  const markersRef = useRef([]);
+
   const [activeLocation, setActiveLocation] = useState(null);
   const [is360Open, setIs360Open] = useState(false);
   const [locations, setLocations] = useState([]);
@@ -23,13 +30,20 @@ const MapPage = () => {
   const [mapError, setMapError] = useState(false);
   const [mapboxRetry, setMapboxRetry] = useState(0);
   const [, setIsAudioPlaying] = useState(false);
-  const open360Timeout = useRef(null);
-  const panoramaContainer = useRef(null);
-  const pannellumViewer = useRef(null);
-  const audioRef = useRef(null);
-  const markersRef = useRef([]);
 
   const useLeaflet = !hasMapboxToken;
+
+  const visibleLocations = useMemo(
+    () =>
+      locations
+        .map((location) => {
+          const normalizedCoordinates = parseMapCoordinates(location.coordinates);
+          if (!normalizedCoordinates) return null;
+          return { ...location, normalizedCoordinates };
+        })
+        .filter(Boolean),
+    [locations]
+  );
 
   const getAllLocations = async () => {
     try {
@@ -37,6 +51,8 @@ const MapPage = () => {
       const response = await heritageApi.getAll();
       if (response && response.data) {
         setLocations(response.data);
+      } else {
+        setLocations([]);
       }
     } catch {
       setLocations([]);
@@ -47,28 +63,6 @@ const MapPage = () => {
   useEffect(() => {
     getAllLocations();
   }, []);
-
-  const isValidLngLat = (coordinates) => {
-    if (!coordinates) return false;
-    if (Array.isArray(coordinates)) {
-      if (coordinates.length !== 2) return false;
-      const [lng, lat] = coordinates;
-      return (
-        typeof lng === 'number' &&
-        typeof lat === 'number' &&
-        lng >= -180 && lng <= 180 &&
-        lat >= -90 && lat <= 90
-      );
-    }
-    if (
-      typeof coordinates === 'object' &&
-      typeof coordinates.lng === 'number' &&
-      typeof coordinates.lat === 'number'
-    ) {
-      return true;
-    }
-    return false;
-  };
 
   const open360Viewer = (location) => {
     setIs360Open(true);
@@ -85,7 +79,7 @@ const MapPage = () => {
           pitch: 0,
           yaw: 0,
           mouseZoom: true,
-          autoRotate: -2
+          autoRotate: -2,
         });
       }
     }, 100);
@@ -93,9 +87,11 @@ const MapPage = () => {
 
   const playAudio = (location) => {
     if (!location?.audio_url) return;
+
     if (audioRef.current) {
       audioRef.current.pause();
     }
+
     const audio = new Audio(location.audio_url);
     audioRef.current = audio;
     audio.play();
@@ -103,43 +99,35 @@ const MapPage = () => {
     audio.onended = () => setIsAudioPlaying(false);
   };
 
-  const getLatLng = (coordinates) => {
-    if (!coordinates) return null;
-    if (Array.isArray(coordinates) && coordinates.length === 2) {
-      const [lng, lat] = coordinates;
-      return typeof lng === 'number' && typeof lat === 'number' ? [lat, lng] : null;
-    }
-    if (typeof coordinates === 'object' && typeof coordinates.lng === 'number' && typeof coordinates.lat === 'number') {
-      return [coordinates.lat, coordinates.lng];
-    }
-    return null;
-  };
-
   const flyToLocation = (location) => {
-    if (!isValidLngLat(location.coordinates)) {
-      alert(t('map.noLocationData') || 'Địa điểm này chưa có dữ liệu vị trí trên bản đồ');
-      return;
-    }
+    const normalizedCoordinates = parseMapCoordinates(
+      location.normalizedCoordinates ?? location.coordinates
+    );
+    if (!normalizedCoordinates) return;
+
     if (open360Timeout.current) {
       clearTimeout(open360Timeout.current);
     }
+
     setActiveLocation(location);
     playAudio(location);
+
     if (useLeaflet) {
-      const latLng = getLatLng(location.coordinates);
+      const latLng = toLeafletLatLng(normalizedCoordinates);
       if (latLng && leafletMapRef.current) {
         leafletMapRef.current.flyTo(latLng, 17, { duration: 2.5 });
       }
     } else if (map.current) {
       map.current.flyTo({
-        center: Array.isArray(location.coordinates) ? location.coordinates : [location.coordinates.lng, location.coordinates.lat],
+        center: normalizedCoordinates,
         zoom: 17,
         pitch: 60,
         bearing: 0,
         duration: 2500,
-        essential: true
+        essential: true,
       });
     }
+
     open360Timeout.current = setTimeout(() => {
       open360Viewer(location);
     }, 2600);
@@ -149,15 +137,14 @@ const MapPage = () => {
     if (!hasMapboxToken || !mapContainer.current) return;
     if (map.current) return;
 
-    const container = mapContainer.current;
     try {
       map.current = new mapboxgl.Map({
-        container,
+        container: mapContainer.current,
         style: 'mapbox://styles/mapbox/satellite-streets-v12',
         center: [105.0, 9.0],
         zoom: 9,
         pitch: 45,
-        bearing: 0
+        bearing: 0,
       });
       map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
       map.current.on('error', () => setMapError(true));
@@ -180,46 +167,33 @@ const MapPage = () => {
       map.current.remove();
       map.current = null;
     }
-    setMapboxRetry((c) => c + 1);
+    setMapboxRetry((count) => count + 1);
   };
 
-
   useEffect(() => {
-    if (useLeaflet || !map.current || locations.length === 0) return;
+    if (useLeaflet || !map.current) return;
 
-    markersRef.current.forEach(m => m.remove());
+    markersRef.current.forEach((marker) => marker.remove());
     markersRef.current = [];
 
-    locations.forEach(location => {
-      if (!isValidLngLat(location.coordinates)) {
-        if (import.meta.env.DEV) {
-          console.warn(
-            '⚠️ Location skipped (invalid coordinates):',
-            location.id,
-            location.name,
-            location.coordinates
-          );
-        }
-        return; // ⬅️ SKIP location này
-      }
-
+    visibleLocations.forEach((location) => {
       const el = document.createElement('div');
       el.className = 'custom-marker';
       el.innerHTML = `
-      <div class="marker-pulse"></div>
-      <div class="marker-pin"></div>
-    `;
+        <div class="marker-pulse"></div>
+        <div class="marker-pin"></div>
+      `;
 
       el.addEventListener('click', () => flyToLocation(location));
 
       const marker = new mapboxgl.Marker(el)
-        .setLngLat(location.coordinates)
+        .setLngLat(location.normalizedCoordinates)
         .addTo(map.current);
 
       markersRef.current.push(marker);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- flyToLocation stable
-  }, [locations, useLeaflet]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- flyToLocation intentionally not in deps
+  }, [visibleLocations, useLeaflet]);
 
   const close360Viewer = () => {
     if (open360Timeout.current) {
@@ -234,6 +208,7 @@ const MapPage = () => {
 
     setIs360Open(false);
     setActiveLocation(null);
+
     if (pannellumViewer.current) {
       pannellumViewer.current.destroy();
       pannellumViewer.current = null;
@@ -245,7 +220,7 @@ const MapPage = () => {
         zoom: 9,
         pitch: 45,
         bearing: 0,
-        duration: 2000
+        duration: 2000,
       });
     } else if (leafletMapRef.current) {
       leafletMapRef.current.flyTo([9.0, 105.0], 9, { duration: 2 });
@@ -256,7 +231,7 @@ const MapPage = () => {
     <div className="ca-mau-explorer">
       {useLeaflet ? (
         <MapPageLeaflet
-          locations={locations}
+          locations={visibleLocations}
           onLocationClick={flyToLocation}
           mapRef={leafletMapRef}
         />
@@ -267,8 +242,12 @@ const MapPage = () => {
             <div className="map-error-overlay">
               <p>{t('map.mapError')}</p>
               <p className="text-sm opacity-90 mt-1">{t('map.mapTokenHint')}</p>
-              <button type="button" onClick={retryMapbox} className="mt-4 px-4 py-2 rounded-lg bg-heritage-red-600 text-white hover:bg-heritage-red-700">
-                {t('common.retry') || 'Thử lại'}
+              <button
+                type="button"
+                onClick={retryMapbox}
+                className="mt-4 px-4 py-2 rounded-lg bg-heritage-red-600 text-white hover:bg-heritage-red-700"
+              >
+                {t('common.retry') || 'Thu lai'}
               </button>
             </div>
           )}
@@ -282,7 +261,7 @@ const MapPage = () => {
             <p>{activeLocation.address}</p>
             <div className="info-loading">
               <div className="loading-spinner"></div>
-              <span>Đang tải khung cảnh 360°...</span>
+              <span>{t('map.loadingScene360') || 'Dang tai khung canh 360...'}</span>
             </div>
           </div>
         </div>
@@ -302,22 +281,16 @@ const MapPage = () => {
           </div>
 
           <div ref={panoramaContainer} className="panorama-container" />
-          <button onClick={() => {
-            if (audioRef.current) {
-              audioRef.current.pause();
-              setIsAudioPlaying(false);
-            }
-          }}>
-            🔇 Tắt thuyết minh
+          <button
+            onClick={() => {
+              if (audioRef.current) {
+                audioRef.current.pause();
+                setIsAudioPlaying(false);
+              }
+            }}
+          >
+            {t('map.muteAudio') || 'Tat thuyet minh'}
           </button>
-          {/* <div className="viewer-controls">
-            <div className="control-hint">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-              </svg>
-              <span>Kéo để xoay • Cuộn để phóng to/thu nhỏ</span>
-            </div>
-          </div> */}
         </div>
       )}
 
@@ -326,12 +299,14 @@ const MapPage = () => {
           <h1>{t('map.exploreTitle')}</h1>
           <p>{t('map.selectLocationToStart')}</p>
           {locationsError && (
-            <p className="text-amber-600 dark:text-amber-400 text-sm mt-2">{t('map.loadError') || 'Không tải được danh sách địa điểm.'}</p>
+            <p className="text-amber-600 dark:text-amber-400 text-sm mt-2">
+              {t('map.loadError') || 'Khong tai duoc danh sach dia diem.'}
+            </p>
           )}
         </div>
 
         <div className="locations-list">
-          {locations.map(location => (
+          {visibleLocations.map((location) => (
             <button
               key={location.id}
               className={`location-item ${activeLocation?.id === location.id ? 'active' : ''}`}
@@ -348,6 +323,13 @@ const MapPage = () => {
               </div>
             </button>
           ))}
+
+          {!locationsError && locations.length > 0 && visibleLocations.length === 0 && (
+            <p className="text-sm text-gray-300 px-3 py-2">
+              {t('map.noValidLocations') ||
+                'Khong co dia diem co toa do de hien thi tren ban do.'}
+            </p>
+          )}
         </div>
       </div>
     </div>

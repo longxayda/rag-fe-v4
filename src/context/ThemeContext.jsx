@@ -7,10 +7,10 @@ const FONT_SIZE_KEY = 'heritage-font-size';
 
 // Font size options
 export const fontSizes = [
-  { id: 'small', label: 'Nhỏ', scale: 0.875, labelEn: 'Small' },
-  { id: 'normal', label: 'Bình thường', scale: 1, labelEn: 'Normal' },
-  { id: 'large', label: 'Lớn', scale: 1.125, labelEn: 'Large' },
-  { id: 'xlarge', label: 'Rất lớn', scale: 1.25, labelEn: 'Extra Large' },
+  { id: 'small', label: 'Small', scale: 0.875, labelEn: 'Small', labelZh: '小', labelKm: 'តូច' },
+  { id: 'normal', label: 'Normal', scale: 1, labelEn: 'Normal', labelZh: '正常', labelKm: 'ធម្មតា' },
+  { id: 'large', label: 'Large', scale: 1.125, labelEn: 'Large', labelZh: '大', labelKm: 'ធំ' },
+  { id: 'xlarge', label: 'Extra Large', scale: 1.25, labelEn: 'Extra Large', labelZh: '特大', labelKm: 'ធំណាស់' },
 ];
 
 export function ThemeProvider({ children }) {
