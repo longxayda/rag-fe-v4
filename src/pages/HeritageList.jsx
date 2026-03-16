@@ -14,10 +14,6 @@ import { hasRecognizedYear } from '../utils/heritageDisplay';
 import { getRankingStyle, hasDisplayableRanking, normalizeRankingCode } from '../utils/ranking';
 
 const getItemCommune = (item) => item.commune || '';
-const locationTextOutlineStyle = {
-  WebkitTextStroke: '1px #000000',
-  paintOrder: 'stroke fill',
-};
 
 export const getCategoryBadgeStyle = (category) => {
   switch (category) {
@@ -306,8 +302,8 @@ export default function HeritageListPage() {
 
                           <div className="p-4">
                             <h3
-                              className="text-base font-bold text-gray-800 mb-2 leading-tight group-hover:text-[#0077D4] transition-colors line-clamp-2 min-h-[40px]"
-                              style={locationTextOutlineStyle}
+                              className="text-base font-bold text-gray-800 mb-2 leading-tight group-hover:text-[#0077D4] transition-colors line-clamp-2 min-h-[40px] [--location-title-stroke:transparent] dark:[--location-title-stroke:#000000]"
+                              style={{ WebkitTextStroke: '1px var(--location-title-stroke)', paintOrder: 'stroke fill' }}
                             >
                               {item.name}
                             </h3>

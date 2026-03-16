@@ -228,7 +228,12 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                             )}
                         </div>
 
-                        <h2 className="text-2xl sm:text-3xl font-display font-bold mb-3 drop-shadow-lg">{item.name}</h2>
+                        <h2
+                            className="text-2xl sm:text-3xl font-display font-bold mb-3 drop-shadow-lg [--detail-title-stroke:#FFFFFF] dark:[--detail-title-stroke:#000000]"
+                            style={{ WebkitTextStroke: '1px var(--detail-title-stroke)', paintOrder: 'stroke fill' }}
+                        >
+                            {item.name}
+                        </h2>
                         <div className="flex items-center gap-3 text-sm flex-wrap">
                             {item.year_built && (
                                 <div className="flex items-center gap-1.5 bg-heritage-earth-900/60 backdrop-blur-sm px-3 py-1.5 rounded-full border border-white/10">
@@ -511,7 +516,7 @@ export function HeritageDetailModal({ itemId, initialItem, onClose, language = '
                                         href={doc.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="text-sm text-heritage-red-700 dark:text-heritage-gold-300 hover:underline"
+                                        className="text-sm text-white hover:underline"
                                     >
                                         {doc.title}
                                     </a>
