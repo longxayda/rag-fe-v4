@@ -10,7 +10,6 @@ import EconomicGallery from './EconomicGallery';
 import GeographyGallery from './GeographyGallery';
 import LiteratureGallery from './LiteratureGallery';
 import AmThucGallery from './AmThucGallery';
-import QuanAnGallery from './QuanAnGallery';
 import { formatHeritageLocation } from '../utils/formatLocation';
 import { hasRecognizedYear } from '../utils/heritageDisplay';
 import { getRankingStyle, hasDisplayableRanking, normalizeRankingCode } from '../utils/ranking';
@@ -73,7 +72,6 @@ export default function HeritageListPage() {
     { key: 'music', labelKey: 'heritageList.tabMusic' },
     { key: 'finearts', labelKey: 'heritageList.tabFineArts' },
     { key: 'am_thuc', labelKey: 'heritageList.tabAmThuc' },
-    { key: 'quan_an', labelKey: 'heritageList.tabQuanAn' },
     { key: 'kinh_te', labelKey: 'heritageList.tabKinhTe' },
     { key: 'dia_ly', labelKey: 'heritageList.tabDiaLy' },
     { key: 'van_hoc', labelKey: 'heritageList.tabVanHoc' },
@@ -347,12 +345,6 @@ export default function HeritageListPage() {
           {activeTab === 'am_thuc' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <AmThucGallery />
-            </motion.div>
-          )}
-
-          {activeTab === 'quan_an' && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-              <QuanAnGallery />
             </motion.div>
           )}
 
